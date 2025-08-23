@@ -1,0 +1,154 @@
+.itdo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+/* Sizes */
+.itdo-button--small {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  min-height: 32px;
+}
+
+.itdo-button--medium {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  min-height: 40px;
+}
+
+.itdo-button--large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+  min-height: 48px;
+}
+
+/* Variants */
+.itdo-button--primary {
+  background-color: #f97316;
+  color: white;
+  border-color: #f97316;
+}
+
+.itdo-button--primary:hover:not(.itdo-button--disabled) {
+  background-color: #ea580c;
+  border-color: #ea580c;
+}
+
+.itdo-button--primary:active:not(.itdo-button--disabled) {
+  background-color: #c2410c;
+  border-color: #c2410c;
+}
+
+.itdo-button--secondary {
+  background-color: #525252;
+  color: white;
+  border-color: #525252;
+}
+
+.itdo-button--secondary:hover:not(.itdo-button--disabled) {
+  background-color: #404040;
+  border-color: #404040;
+}
+
+.itdo-button--secondary:active:not(.itdo-button--disabled) {
+  background-color: #262626;
+  border-color: #262626;
+}
+
+.itdo-button--outline {
+  background-color: transparent;
+  color: #f97316;
+  border-color: #f97316;
+}
+
+.itdo-button--outline:hover:not(.itdo-button--disabled) {
+  background-color: #fff7ed;
+}
+
+.itdo-button--outline:active:not(.itdo-button--disabled) {
+  background-color: #ffedd5;
+}
+
+.itdo-button--ghost {
+  background-color: transparent;
+  color: #525252;
+  border-color: transparent;
+}
+
+.itdo-button--ghost:hover:not(.itdo-button--disabled) {
+  background-color: #f5f5f5;
+}
+
+.itdo-button--ghost:active:not(.itdo-button--disabled) {
+  background-color: #e5e5e5;
+}
+
+.itdo-button--danger {
+  background-color: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.itdo-button--danger:hover:not(.itdo-button--disabled) {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+.itdo-button--danger:active:not(.itdo-button--disabled) {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* States */
+.itdo-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itdo-button--full-width {
+  width: 100%;
+}
+
+.itdo-button--loading .itdo-button__content {
+  opacity: 0;
+}
+
+/* Spinner */
+.itdo-button__spinner {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itdo-button__spinner-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  animation: spin 1s linear infinite;
+}
+
+.itdo-button__spinner-circle {
+  stroke: currentColor;
+  stroke-dasharray: 62.83185307179586;
+  stroke-dashoffset: 47.12388980384689;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Focus styles */
+.itdo-button:focus-visible {
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #f97316;
+}

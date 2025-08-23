@@ -1,0 +1,1 @@
+export const placeholder = 'hooks will be added here';

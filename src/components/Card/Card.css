@@ -1,0 +1,54 @@
+.itdo-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Variants */
+.itdo-card--elevated {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.itdo-card--elevated:hover.itdo-card--clickable {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.itdo-card--outlined {
+  border: 1px solid #e5e5e5;
+  box-shadow: none;
+}
+
+.itdo-card--outlined:hover.itdo-card--clickable {
+  border-color: #d4d4d4;
+}
+
+.itdo-card--filled {
+  background-color: #f5f5f5;
+  box-shadow: none;
+}
+
+.itdo-card--filled:hover.itdo-card--clickable {
+  background-color: #e5e5e5;
+}
+
+/* Padding */
+.itdo-card--padding-none {
+  padding: 0;
+}
+
+.itdo-card--padding-small {
+  padding: 0.75rem;
+}
+
+.itdo-card--padding-medium {
+  padding: 1.5rem;
+}
+
+.itdo-card--padding-large {
+  padding: 2rem;
+}
+
+/* Clickable */
+.itdo-card--clickable {
+  cursor: pointer;
+}
