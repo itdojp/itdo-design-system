@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Card, Input } from '../src/components';
 import ITDODesignSystemDemo from './itdo-design-system-demo';
-import ColorComparisonDemo from './ColorComparisonDemo';
+import ThemeComparisonDemo from './ThemeComparisonDemo';
+import HybridThemeDemo from './HybridThemeDemo';
 import '../src/styles/global.css';
 
 const ComponentShowcase = () => {
@@ -132,7 +133,7 @@ const ComponentShowcase = () => {
 };
 
 const App = () => {
-  const [viewMode, setViewMode] = React.useState<'components' | 'demo' | 'colors'>('components');
+  const [viewMode, setViewMode] = React.useState<'components' | 'demo' | 'colors' | 'hybrid'>('components');
 
   return (
     <div>
@@ -186,13 +187,28 @@ const App = () => {
               cursor: 'pointer'
             }}
           >
-            Color Comparison
+            Colors
+          </button>
+          <button
+            onClick={() => setViewMode('hybrid')}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: viewMode === 'hybrid' ? 'white' : 'rgba(255, 255, 255, 0.2)',
+              color: viewMode === 'hybrid' ? '#f97316' : 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+          >
+            Hybrid
           </button>
         </div>
       </div>
       {viewMode === 'components' && <ComponentShowcase />}
       {viewMode === 'demo' && <ITDODesignSystemDemo />}
-      {viewMode === 'colors' && <ColorComparisonDemo />}
+      {viewMode === 'colors' && <ThemeComparisonDemo />}
+      {viewMode === 'hybrid' && <HybridThemeDemo />}
     </div>
   );
 };
