@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Card, Input } from '../src/components';
 import ITDODesignSystemDemo from './itdo-design-system-demo';
+import ColorComparisonDemo from './ColorComparisonDemo';
 import '../src/styles/global.css';
 
 const ComponentShowcase = () => {
@@ -131,7 +132,7 @@ const ComponentShowcase = () => {
 };
 
 const App = () => {
-  const [showDemo, setShowDemo] = React.useState(false);
+  const [viewMode, setViewMode] = React.useState<'components' | 'demo' | 'colors'>('components');
 
   return (
     <div>
@@ -144,22 +145,54 @@ const App = () => {
         alignItems: 'center'
       }}>
         <h1 style={{ margin: 0, fontSize: '1.25rem' }}>ITDO Design System</h1>
-        <button
-          onClick={() => setShowDemo(!showDemo)}
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: 'white',
-            color: '#f97316',
-            border: 'none',
-            borderRadius: '0.375rem',
-            fontWeight: '500',
-            cursor: 'pointer'
-          }}
-        >
-          {showDemo ? 'Show Components' : 'Show Full Demo'}
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button
+            onClick={() => setViewMode('components')}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: viewMode === 'components' ? 'white' : 'rgba(255, 255, 255, 0.2)',
+              color: viewMode === 'components' ? '#f97316' : 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+          >
+            Components
+          </button>
+          <button
+            onClick={() => setViewMode('demo')}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: viewMode === 'demo' ? 'white' : 'rgba(255, 255, 255, 0.2)',
+              color: viewMode === 'demo' ? '#f97316' : 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+          >
+            Full Demo
+          </button>
+          <button
+            onClick={() => setViewMode('colors')}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: viewMode === 'colors' ? 'white' : 'rgba(255, 255, 255, 0.2)',
+              color: viewMode === 'colors' ? '#f97316' : 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+          >
+            Color Comparison
+          </button>
+        </div>
       </div>
-      {showDemo ? <ITDODesignSystemDemo /> : <ComponentShowcase />}
+      {viewMode === 'components' && <ComponentShowcase />}
+      {viewMode === 'demo' && <ITDODesignSystemDemo />}
+      {viewMode === 'colors' && <ColorComparisonDemo />}
     </div>
   );
 };
