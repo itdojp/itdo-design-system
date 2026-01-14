@@ -1,6 +1,7 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import clsx from 'clsx';
 import { InputProps } from './Input.types';
+import { FormField } from '../FormField';
 import './Input.css';
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -9,6 +10,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       label,
       error,
       helperText,
+      helpText,
+      success,
       size = 'medium',
       fullWidth = false,
       disabled = false,
@@ -30,35 +33,21 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       className
     );
 
-    const containerClasses = clsx('itdo-input-container', containerClassName);
+    const resolvedHelpText = helpText ?? helperText;
 
     return (
-      <div className={containerClasses}>
-        {label && (
-          <label className="itdo-input__label">
-            {label}
-            {required && <span className="itdo-input__required">*</span>}
-          </label>
-        )}
-        <input
-          ref={ref}
-          className={inputClasses}
-          disabled={disabled}
-          aria-invalid={!!error}
-          aria-describedby={helperText || error ? 'input-helper-text' : undefined}
-          {...props}
-        />
-        {(helperText || error) && (
-          <p
-            id="input-helper-text"
-            className={clsx('itdo-input__helper-text', {
-              'itdo-input__helper-text--error': error,
-            })}
-          >
-            {error || helperText}
-          </p>
-        )}
-      </div>
+      <FormField
+        label={label}
+        helpText={resolvedHelpText}
+        error={error}
+        success={success}
+        required={required}
+        size={size}
+        fullWidth={fullWidth}
+        className={containerClassName}
+      >
+        <input ref={ref} className={inputClasses} disabled={disabled} {...props} />
+      </FormField>
     );
   }
 );

@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { themeColors, getTheme } from '../src/tokens/theme-colors';
+import { getTheme } from '../src/tokens/theme-colors';
 import '../src/styles/global.css';
 
 const ThemeComparisonDemo = () => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+
+  type Theme = ReturnType<typeof getTheme>;
+  type ThemeSectionProps = {
+    color: 'brown' | 'blue';
+    mode: 'light' | 'dark';
+    theme: Theme;
+  };
 
   const themes = [
     { color: 'brown', mode: 'light', theme: getTheme('brown', 'light') },
@@ -13,7 +20,7 @@ const ThemeComparisonDemo = () => {
     { color: 'blue', mode: 'dark', theme: getTheme('blue', 'dark') },
   ];
 
-  const ThemeSection = ({ color, mode, theme }: any) => {
+  const ThemeSection = ({ color, mode, theme }: ThemeSectionProps) => {
     const isDark = mode === 'dark';
     const isBrown = color === 'brown';
     const themeId = `${color}-${mode}`;

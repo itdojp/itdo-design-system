@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { themeColors } from '../src/tokens/theme-colors';
 import '../src/styles/global.css';
 
@@ -6,10 +6,6 @@ const HybridThemeDemo = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<'hybrid' | 'brown' | 'blue'>('hybrid');
   
-  // 時間に基づく自動切り替えのシミュレーション
-  const currentHour = new Date().getHours();
-  const shouldUseDarkMode = currentHour < 6 || currentHour >= 18;
-
   // テーマ設定を取得
   const getActiveTheme = () => {
     if (selectedTheme === 'hybrid') {
@@ -23,6 +19,12 @@ const HybridThemeDemo = () => {
   };
 
   const theme = getActiveTheme();
+
+  const themeOptions: { value: 'hybrid' | 'brown' | 'blue'; label: string; desc: string }[] = [
+    { value: 'hybrid', label: '🎨 ハイブリッド', desc: 'ライト=ブラウン / ダーク=ブルー' },
+    { value: 'brown', label: '🟫 ブラウン', desc: '一貫したブラウン' },
+    { value: 'blue', label: '🔵 ブルー', desc: '一貫したブルー' },
+  ];
 
   const MainInterface = () => {
     const styles = {
@@ -365,14 +367,10 @@ const HybridThemeDemo = () => {
           gap: '1rem', 
           marginBottom: '2rem' 
         }}>
-          {[
-            { value: 'hybrid', label: '🎨 ハイブリッド', desc: 'ライト=ブラウン / ダーク=ブルー' },
-            { value: 'brown', label: '🟫 ブラウン', desc: '一貫したブラウン' },
-            { value: 'blue', label: '🔵 ブルー', desc: '一貫したブルー' },
-          ].map((option) => (
+          {themeOptions.map((option) => (
             <button
               key={option.value}
-              onClick={() => setSelectedTheme(option.value as any)}
+              onClick={() => setSelectedTheme(option.value)}
               style={{
                 padding: '0.75rem 1.5rem',
                 backgroundColor: selectedTheme === option.value ? '#f97316' : 'white',

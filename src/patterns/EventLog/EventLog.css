@@ -1,0 +1,105 @@
+.itdo-event-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.itdo-event-log__item {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+  padding: var(--space-8);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-base);
+}
+
+.itdo-event-log__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-full);
+  margin-top: 0.4rem;
+  background-color: var(--color-info-500);
+  flex-shrink: 0;
+}
+
+.itdo-event-log__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.itdo-event-log__header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+  font-size: var(--font-size-sm);
+}
+
+.itdo-event-log__title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.itdo-event-log__timestamp {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.itdo-event-log__description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.itdo-event-log__meta {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.itdo-event-log__item--success {
+  border-color: var(--color-success-500);
+}
+
+.itdo-event-log__item--success .itdo-event-log__indicator {
+  background-color: var(--color-success-500);
+}
+
+.itdo-event-log__item--warning {
+  border-color: var(--color-warning-500);
+}
+
+.itdo-event-log__item--warning .itdo-event-log__indicator {
+  background-color: var(--color-warning-500);
+}
+
+.itdo-event-log__item--error {
+  border-color: var(--color-error-500);
+}
+
+.itdo-event-log__item--error .itdo-event-log__indicator {
+  background-color: var(--color-error-500);
+}
+
+.itdo-event-log__item--info {
+  border-color: var(--color-info-500);
+}
+
+.itdo-event-log__item--info .itdo-event-log__indicator {
+  background-color: var(--color-info-500);
+}
+
+.itdo-event-log__empty {
+  padding: var(--space-12);
+}
+
+@media (max-width: 768px) {
+  .itdo-event-log__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
