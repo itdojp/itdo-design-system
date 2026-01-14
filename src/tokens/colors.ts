@@ -34,6 +34,11 @@ export const colors = {
     dark: '#a16207',
   },
   error: {
+    50: '#fef2f2',
+    500: '#ef4444',
+    600: '#dc2626',
+    700: '#b91c1c',
+    800: '#991b1b',
     light: '#fef2f2',
     default: '#ef4444',
     dark: '#dc2626',

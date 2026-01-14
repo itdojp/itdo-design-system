@@ -29,7 +29,7 @@ export const Toast: React.FC<ToastProps> = ({
           onClick={onClose}
           aria-label="Close"
         >
-          x
+          &times;
         </button>
       )}
     </div>

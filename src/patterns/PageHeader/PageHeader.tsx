@@ -18,7 +18,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         <nav className="itdo-page-header__breadcrumbs" aria-label="Breadcrumb">
           <ol>
             {breadcrumbs.map((item, index) => (
-              <li key={`${item.label}-${index}`}>
+              <li key={item.id ?? item.href ?? item.label}>
                 {item.href ? (
                   <a href={item.href}>{item.label}</a>
                 ) : (

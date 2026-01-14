@@ -30,7 +30,7 @@ export const semantic = {
   statusText: {
     success: colors.success.dark,
     warning: colors.warning.dark,
-    error: '#b91c1c',
+    error: colors.error[700],
     info: colors.info.dark,
   },
   action: {
@@ -40,9 +40,9 @@ export const semantic = {
     secondary: colors.neutral[700],
     secondaryHover: colors.neutral[800],
     secondaryActive: colors.neutral[900],
-    danger: colors.error.dark,
-    dangerHover: '#b91c1c',
-    dangerActive: '#991b1b',
+    danger: colors.error[600],
+    dangerHover: colors.error[700],
+    dangerActive: colors.error[800],
     outline: colors.primary[700],
     outlineHover: colors.primary[50],
     ghostHover: colors.neutral[100],

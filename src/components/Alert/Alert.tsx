@@ -27,7 +27,7 @@ export const Alert: React.FC<AlertProps> = ({
           onClick={onClose}
           aria-label="Close"
         >
-          x
+          &times;
         </button>
       )}
     </div>

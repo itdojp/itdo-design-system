@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 const ITDODesignSystemDemo = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [notifications] = useState([
+  const notifications = [
     { id: 1, title: 'New Order', message: 'Order #12345 received', time: '2 min ago', read: false },
     { id: 2, title: 'System Update', message: 'Maintenance completed', time: '1 hour ago', read: true },
     { id: 3, title: 'Payment Alert', message: 'Invoice payment overdue', time: '3 hours ago', read: false }
-  ]);
+  ];
   const [modalOpen, setModalOpen] = useState(false);
   const [alertVisible, setAlertVisible] = useState(true);
 
