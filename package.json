@@ -30,7 +30,7 @@
     "build-storybook": "storybook build",
     "storybook:serve": "http-server ./storybook-static -p 6006",
     "test-storybook": "test-storybook --url http://127.0.0.1:6006",
-    "test-storybook:ci": "concurrently -k -s first -n serve,test \"npm run storybook:serve\" \"wait-on tcp:6006 && npm run test-storybook\"",
+    "test-storybook:ci": "concurrently -k -s first -n serve,test \"npm run storybook:serve\" \"wait-on tcp:6006 && npm run test-storybook -- --maxWorkers=2 --ci\"",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
