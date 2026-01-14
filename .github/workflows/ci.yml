@@ -27,6 +27,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
       - name: Storybook a11y tests
+        timeout-minutes: 20
         run: npm run test-storybook:ci
       - name: Test
         run: npm test -- --runInBand
