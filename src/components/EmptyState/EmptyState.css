@@ -1,0 +1,31 @@
+.itdo-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-24);
+  gap: var(--space-8);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-surface);
+}
+
+.itdo-empty-state__icon {
+  color: var(--color-text-muted);
+}
+
+.itdo-empty-state__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+}
+
+.itdo-empty-state__description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.itdo-empty-state__action {
+  margin-top: var(--space-6);
+}

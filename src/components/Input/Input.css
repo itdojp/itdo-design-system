@@ -1,60 +1,54 @@
-.itdo-input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
 .itdo-input {
   font-family: var(--font-sans);
-  border: 1px solid #d4d4d4;
-  border-radius: 0.375rem;
-  transition: all 0.2s ease;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   outline: none;
-  background-color: white;
-  color: #262626;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
 }
 
 /* Sizes */
 .itdo-input--small {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  min-height: 32px;
+  padding: var(--control-padding-y-sm) var(--control-padding-x-sm);
+  font-size: var(--font-size-sm);
+  min-height: var(--control-height-sm);
 }
 
 .itdo-input--medium {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  min-height: 40px;
+  padding: var(--control-padding-y-md) var(--control-padding-x-md);
+  font-size: var(--font-size-md);
+  min-height: var(--control-height-md);
 }
 
 .itdo-input--large {
-  padding: 0.75rem 1.25rem;
-  font-size: 1.125rem;
-  min-height: 48px;
+  padding: var(--control-padding-y-lg) var(--control-padding-x-lg);
+  font-size: var(--font-size-lg);
+  min-height: var(--control-height-lg);
 }
 
 /* States */
 .itdo-input:hover:not(.itdo-input--disabled) {
-  border-color: #a3a3a3;
+  border-color: var(--color-border-strong);
 }
 
 .itdo-input:focus {
-  border-color: #f97316;
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--color-focus-ring);
 }
 
 .itdo-input--error {
-  border-color: #ef4444;
+  border-color: var(--color-status-error);
 }
 
 .itdo-input--error:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  border-color: var(--color-status-error);
+  box-shadow: 0 0 0 var(--focus-ring-width) rgba(239, 68, 68, 0.2);
 }
 
 .itdo-input--disabled {
-  background-color: #f5f5f5;
-  color: #a3a3a3;
+  background-color: var(--color-bg-disabled);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
@@ -63,30 +57,5 @@
 }
 
 .itdo-input::placeholder {
-  color: #a3a3a3;
-}
-
-/* Label */
-.itdo-input__label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #404040;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.itdo-input__required {
-  color: #ef4444;
-}
-
-/* Helper text */
-.itdo-input__helper-text {
-  font-size: 0.75rem;
-  color: #737373;
-  margin: 0;
-}
-
-.itdo-input__helper-text--error {
-  color: #ef4444;
+  color: var(--color-text-muted);
 }

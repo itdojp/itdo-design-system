@@ -1,0 +1,30 @@
+.itdo-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itdo-spinner__circle {
+  border: 2px solid var(--color-border-default);
+  border-top-color: var(--color-action-primary);
+  border-radius: var(--radius-full);
+  width: 1.25rem;
+  height: 1.25rem;
+  animation: itdo-spin 1s linear infinite;
+}
+
+.itdo-spinner--small .itdo-spinner__circle {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.itdo-spinner--large .itdo-spinner__circle {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+@keyframes itdo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,103 +1,53 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { userEvent, within } from '@storybook/testing-library';
 import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'outline', 'ghost', 'danger'],
-    },
-    size: {
-      control: 'select',
-      options: ['small', 'medium', 'large'],
-    },
-    disabled: {
-      control: 'boolean',
-    },
-    loading: {
-      control: 'boolean',
-    },
-    fullWidth: {
-      control: 'boolean',
-    },
+  args: {
+    children: 'Primary',
+    variant: 'primary',
+    size: 'medium',
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
-  args: {
-    children: 'Primary Button',
-    variant: 'primary',
+type Story = StoryObj<typeof Button>;
+
+export const Default: Story = {};
+
+export const Hover: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.hover(canvas.getByRole('button'));
   },
 };
 
-export const Secondary: Story = {
-  args: {
-    children: 'Secondary Button',
-    variant: 'secondary',
-  },
-};
-
-export const Outline: Story = {
-  args: {
-    children: 'Outline Button',
-    variant: 'outline',
-  },
-};
-
-export const Ghost: Story = {
-  args: {
-    children: 'Ghost Button',
-    variant: 'ghost',
-  },
-};
-
-export const Danger: Story = {
-  args: {
-    children: 'Danger Button',
-    variant: 'danger',
-  },
-};
-
-export const Small: Story = {
-  args: {
-    children: 'Small Button',
-    size: 'small',
-  },
-};
-
-export const Large: Story = {
-  args: {
-    children: 'Large Button',
-    size: 'large',
+export const Focus: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    canvas.getByRole('button').focus();
   },
 };
 
 export const Disabled: Story = {
   args: {
-    children: 'Disabled Button',
     disabled: true,
   },
 };
 
 export const Loading: Story = {
   args: {
-    children: 'Loading Button',
     loading: true,
   },
 };
 
-export const FullWidth: Story = {
+export const Danger: Story = {
   args: {
-    children: 'Full Width Button',
-    fullWidth: true,
+    variant: 'danger',
+    children: 'Delete',
   },
 };

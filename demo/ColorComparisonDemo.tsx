@@ -5,6 +5,21 @@ const ColorComparisonDemo = () => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
+  type ColorSet = {
+    primary: string;
+    primaryHover: string;
+    text: string;
+    background: string;
+    border: string;
+    accent?: string;
+  };
+
+  type ComparisonSectionProps = {
+    title: string;
+    colors: ColorSet;
+    isImproved?: boolean;
+  };
+
   // 現在の配色（オレンジ中心）
   const currentColors = {
     primary: '#f97316',
@@ -24,7 +39,11 @@ const ColorComparisonDemo = () => {
     border: '#e5e7eb',
   };
 
-  const ComparisonSection = ({ title, colors, isImproved = false }: any) => {
+  const ComparisonSection = ({
+    title,
+    colors,
+    isImproved = false,
+  }: ComparisonSectionProps) => {
     const styles = {
       container: {
         padding: '2rem',

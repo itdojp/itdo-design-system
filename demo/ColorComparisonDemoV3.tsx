@@ -5,6 +5,28 @@ const ColorComparisonDemoV3 = () => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
+  type ColorScheme = 'blue' | 'brown' | 'brown-dark';
+
+  type ColorSet = {
+    name: string;
+    subtitle?: string;
+    primary: string;
+    primaryHover: string;
+    text: string;
+    background: string;
+    border: string;
+    accent?: string;
+    primaryLight?: string;
+  };
+
+  type ComparisonSectionProps = {
+    title: string;
+    subtitle?: string;
+    colors: ColorSet;
+    isImproved?: boolean;
+    colorScheme?: ColorScheme;
+  };
+
   // 改良版の配色1（ブルー中心、オレンジは差し色）
   const blueColors = {
     name: 'ブルー案',
@@ -43,7 +65,13 @@ const ColorComparisonDemoV3 = () => {
     border: '#d4b192',
   };
 
-  const ComparisonSection = ({ title, subtitle, colors, isImproved = false, colorScheme = 'blue' }: any) => {
+  const ComparisonSection = ({
+    title,
+    subtitle,
+    colors,
+    isImproved = false,
+    colorScheme = 'blue',
+  }: ComparisonSectionProps) => {
     const styles = {
       container: {
         padding: '1.5rem',

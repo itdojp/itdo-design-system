@@ -3,19 +3,18 @@ export * from './typography';
 export * from './spacing';
 export * from './shadows';
 export * from './radius';
+export * from './primitives';
+export * from './semantic';
+export * from './density';
 
-import { colors } from './colors';
-import { typography } from './typography';
-import { spacing } from './spacing';
-import { shadows } from './shadows';
-import { radius } from './radius';
+import { primitives } from './primitives';
+import { semantic } from './semantic';
+import { density } from './density';
 
 export const tokens = {
-  colors,
-  typography,
-  spacing,
-  shadows,
-  radius,
+  primitives,
+  semantic,
+  density,
 } as const;
 
 export type Tokens = typeof tokens;

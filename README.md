@@ -39,6 +39,20 @@ npm run build:lib
 npm run build-storybook
 ```
 
+### Versioning
+
+This repository uses Changesets for SemVer and CHANGELOG generation.
+
+```bash
+npm run changeset
+npm run version-packages
+```
+
+### Styles
+
+Base tokens and component styles are bundled into `dist/styles.css`. If your bundler does not
+include CSS side effects automatically, import `@itdojp/design-system/styles.css`.
+
 ## Project Structure
 
 ```
@@ -62,6 +76,17 @@ itdo-design-system/
 3. **Efficiency**: Optimized workflows for business users
 4. **Scalability**: Modular and extensible architecture
 5. **Beauty**: Modern and visually appealing
+
+## Token Structure
+
+Tokens are organized into two layers.
+
+- **Primitive**: Raw values such as `colors`, `spacing`, `typography`, `shadows`, `radius`
+- **Semantic**: UI meaning such as `text`, `background`, `border`, `status`, `action`, `focus`
+
+CSS variables follow the same naming scheme, for example `--color-primary-500` (primitive) and
+`--color-text-primary` (semantic). Density can be adjusted via `data-density="compact|comfortable"`
+on `:root`.
 
 ## Primary Color
 
