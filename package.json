@@ -7,9 +7,11 @@
   "types": "dist/index.d.ts",
   "style": "dist/styles.css",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -104,7 +106,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/itdojp/itdo-design-system.git"
+    "url": "git+https://github.com/itdojp/itdo-design-system.git"
   },
   "keywords": [
     "design-system",
