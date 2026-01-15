@@ -48,6 +48,16 @@ npm run changeset
 npm run version-packages
 ```
 
+### Release (npm publish)
+
+Publishing is triggered by a GitHub Release (published) via Trusted Publishing (OIDC).
+
+1. Run Changesets and push the version bump to `main`.
+2. Create a GitHub Release with a `vX.Y.Z` tag.
+3. The `Publish to npm (OIDC)` workflow runs `npm publish --provenance --access public`.
+
+Prerequisite: configure the npm package as a Trusted Publisher for this repository and workflow.
+
 ### Styles
 
 Base tokens and component styles are bundled into `dist/styles.css`. If your bundler does not

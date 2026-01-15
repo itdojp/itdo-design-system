@@ -1,0 +1,49 @@
+name: Publish to npm (OIDC)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Publish target ref (tag like v1.0.0 or commit SHA). Empty = release tag."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (release tag or input ref)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.event.release.tag_name }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Ensure npm CLI (>= 11.5.1)
+        run: |
+          npm i -g npm@11.5.1
+          npm --version
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build library
+        run: npm run build:lib
+
+      - name: Dry-run package contents
+        run: npm pack --dry-run
+
+      - name: Publish (public + provenance)
+        run: npm publish --provenance --access public
