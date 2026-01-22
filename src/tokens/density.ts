@@ -20,6 +20,11 @@ export const density = {
       medium: '0.5rem',
       large: '0.75rem',
     },
+    datagrid: {
+      rowHeight: '44px',
+      cellPaddingX: '0.75rem',
+      cellPaddingY: '0.5rem',
+    },
   },
   compact: {
     controlHeight: {
@@ -41,6 +46,11 @@ export const density = {
       small: '0.25rem',
       medium: '0.375rem',
       large: '0.5rem',
+    },
+    datagrid: {
+      rowHeight: '36px',
+      cellPaddingX: '0.5rem',
+      cellPaddingY: '0.375rem',
     },
   },
 } as const;

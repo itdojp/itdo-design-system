@@ -52,6 +52,15 @@ export const semantic = {
     ringWidth: '3px',
     ringOffset: '2px',
   },
+  datagrid: {
+    headerBackground: colors.neutral[50],
+    headerBorder: colors.neutral[300],
+    rowBorder: colors.neutral[200],
+    rowHover: colors.neutral[100],
+    rowSelected: colors.primary[50],
+    rowZebra: colors.neutral[50],
+    focusRing: 'rgba(249, 115, 22, 0.35)',
+  },
 } as const;
 
 export type SemanticTokens = typeof semantic;
