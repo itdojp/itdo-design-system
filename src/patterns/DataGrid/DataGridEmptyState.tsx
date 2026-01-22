@@ -5,15 +5,22 @@ import { DataGridEmptyStateProps } from './DataGrid.types';
 import './DataGrid.css';
 
 export const DataGridEmptyState: React.FC<DataGridEmptyStateProps> = ({
-  title = 'No data',
+  title,
   description,
   action,
   icon,
   className,
 }) => {
+  const resolvedTitle = title ?? 'No data';
+
   return (
     <div className={clsx('itdo-datagrid-state', className)}>
-      <EmptyState title={title} description={description} action={action} icon={icon} />
+      <EmptyState
+        title={resolvedTitle}
+        description={description}
+        action={action}
+        icon={icon}
+      />
     </div>
   );
 };
