@@ -148,6 +148,20 @@
   --control-gap-sm: 0.25rem;
   --control-gap-md: 0.5rem;
   --control-gap-lg: 0.75rem;
+
+  /* DataGrid */
+  --datagrid-row-height: 44px;
+  --datagrid-cell-padding-x: 0.75rem;
+  --datagrid-cell-padding-y: 0.5rem;
+  --datagrid-header-bg: var(--color-bg-surface);
+  --datagrid-header-border: var(--color-border-strong);
+  --datagrid-row-border: var(--color-border-default);
+  --datagrid-row-hover-bg: var(--color-action-ghost-hover);
+  --datagrid-row-selected-bg: var(--color-bg-accent);
+  --datagrid-row-zebra-bg: var(--color-bg-surface);
+  --datagrid-focus-ring: var(--color-focus-ring);
+  --datagrid-focus-ring-width: var(--focus-ring-width);
+  --datagrid-focus-ring-offset: var(--focus-ring-offset);
 }
 
 :root[data-density='compact'] {
@@ -163,6 +177,9 @@
   --control-gap-sm: 0.25rem;
   --control-gap-md: 0.375rem;
   --control-gap-lg: 0.5rem;
+  --datagrid-row-height: 36px;
+  --datagrid-cell-padding-x: 0.5rem;
+  --datagrid-cell-padding-y: 0.375rem;
 }
 
 :root[data-density='comfortable'] {
@@ -178,6 +195,9 @@
   --control-gap-sm: 0.25rem;
   --control-gap-md: 0.5rem;
   --control-gap-lg: 0.75rem;
+  --datagrid-row-height: 44px;
+  --datagrid-cell-padding-x: 0.75rem;
+  --datagrid-cell-padding-y: 0.5rem;
 }
 
 * {

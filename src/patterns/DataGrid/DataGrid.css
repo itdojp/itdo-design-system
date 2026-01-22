@@ -1,0 +1,106 @@
+.itdo-datagrid {
+  width: 100%;
+  border: 1px solid var(--datagrid-row-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-base);
+  overflow: hidden;
+}
+
+.itdo-datagrid__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.itdo-datagrid__header-row {
+  background: var(--datagrid-header-bg);
+}
+
+.itdo-datagrid__header-cell,
+.itdo-datagrid__cell {
+  padding: var(--datagrid-cell-padding-y) var(--datagrid-cell-padding-x);
+  border-bottom: 1px solid var(--datagrid-row-border);
+  height: var(--datagrid-row-height);
+  vertical-align: middle;
+}
+
+.itdo-datagrid__header-cell {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  border-bottom-color: var(--datagrid-header-border);
+}
+
+.itdo-datagrid__row {
+  background: var(--color-bg-base);
+}
+
+.itdo-datagrid__row:hover {
+  background: var(--datagrid-row-hover-bg);
+}
+
+.itdo-datagrid__row.is-selected,
+.itdo-datagrid__row[data-state='selected'] {
+  background: var(--datagrid-row-selected-bg);
+}
+
+.itdo-datagrid--zebra .itdo-datagrid__row:nth-child(even) {
+  background: var(--datagrid-row-zebra-bg);
+}
+
+.itdo-datagrid__cell:focus-visible,
+.itdo-datagrid__cell [data-datagrid-focus]:focus-visible {
+  outline: var(--datagrid-focus-ring-width) solid var(--datagrid-focus-ring);
+  outline-offset: var(--datagrid-focus-ring-offset);
+}
+
+.itdo-datagrid-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border: 1px solid var(--datagrid-row-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-base);
+}
+
+.itdo-datagrid-toolbar__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.itdo-datagrid-toolbar__actions {
+  display: flex;
+  gap: var(--space-4);
+  margin-left: auto;
+}
+
+.itdo-datagrid-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid var(--datagrid-row-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-base);
+}
+
+.itdo-datagrid-state {
+  padding: var(--space-16);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.itdo-datagrid-state__loading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.itdo-datagrid-state__text {
+  font-size: var(--font-size-sm);
+}
