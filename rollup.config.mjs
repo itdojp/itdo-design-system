@@ -1,4 +1,5 @@
 import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
@@ -17,6 +18,7 @@ export default [
     plugins: [
       peerDepsExternal(),
       resolve({ extensions }),
+      commonjs(),
       typescript({ tsconfig: './tsconfig.rollup.json' }),
       postcss({
         extract: 'styles.css',
