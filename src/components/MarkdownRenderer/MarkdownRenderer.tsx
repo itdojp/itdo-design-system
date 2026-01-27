@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import clsx from 'clsx';
-import { MarkdownRendererProps } from './MarkdownRenderer.types';
+import { MarkdownLinkComponent, MarkdownRendererProps } from './MarkdownRenderer.types';
 import './MarkdownRenderer.css';
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
@@ -16,7 +16,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     if (!linkComponent) return components;
     return {
       ...components,
-      a: linkComponent,
+      a: linkComponent as MarkdownLinkComponent,
     };
   }, [components, linkComponent]);
 
