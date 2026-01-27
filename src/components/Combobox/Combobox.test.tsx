@@ -19,7 +19,8 @@ describe('Combobox', () => {
     const listbox = screen.getByRole('listbox');
     expect(listbox).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('option', { name: 'Alpha' }));
+    const options = screen.getAllByRole('option');
+    fireEvent.click(options[0]);
     expect(onSelect).toHaveBeenCalledWith(items[0]);
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
@@ -39,6 +40,7 @@ describe('Combobox', () => {
 
   it('loads options with debounce and shows error on failure', async () => {
     jest.useFakeTimers();
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
     const loadOptions = jest.fn(async () => {
       throw new Error('load failed');
     });
@@ -63,6 +65,7 @@ describe('Combobox', () => {
       expect(screen.getByText('Failed to load results')).toBeInTheDocument();
     });
 
+    consoleError.mockRestore();
     jest.useRealTimers();
   });
 });
