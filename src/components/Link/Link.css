@@ -1,0 +1,39 @@
+.itdo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.itdo-link--small {
+  font-size: var(--font-size-xs);
+}
+
+.itdo-link--medium {
+  font-size: var(--font-size-sm);
+}
+
+.itdo-link--large {
+  font-size: var(--font-size-md);
+}
+
+.itdo-link--primary {
+  color: var(--color-text-link);
+}
+
+.itdo-link--secondary {
+  color: var(--color-text-secondary);
+}
+
+.itdo-link--muted {
+  color: var(--color-text-muted);
+}
+
+.itdo-link:hover {
+  text-decoration: underline;
+}
+
+.itdo-link__icon {
+  font-size: 0.8em;
+}
