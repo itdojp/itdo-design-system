@@ -11,3 +11,4 @@ export * from './Skeleton';
 export * from './EmptyState';
 export * from './Dialog';
 export * from './Popover';
+export * from './Combobox';
