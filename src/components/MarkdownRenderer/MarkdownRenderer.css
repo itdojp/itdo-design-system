@@ -1,0 +1,63 @@
+.itdo-markdown {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.itdo-markdown h1,
+.itdo-markdown h2,
+.itdo-markdown h3 {
+  margin: var(--space-10) 0 var(--space-4);
+  font-weight: 600;
+}
+
+.itdo-markdown p {
+  margin: var(--space-4) 0;
+}
+
+.itdo-markdown ul,
+.itdo-markdown ol {
+  padding-left: var(--space-12);
+  margin: var(--space-4) 0;
+}
+
+.itdo-markdown li + li {
+  margin-top: var(--space-2);
+}
+
+.itdo-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-6) 0;
+  font-size: var(--font-size-sm);
+}
+
+.itdo-markdown th,
+.itdo-markdown td {
+  border: 1px solid var(--color-border-default);
+  padding: var(--space-4);
+}
+
+.itdo-markdown th {
+  background: var(--color-bg-subtle);
+  text-align: left;
+}
+
+.itdo-markdown code {
+  background: var(--color-bg-subtle);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+.itdo-markdown pre {
+  background: var(--color-bg-subtle);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  overflow: auto;
+}
+
+.itdo-markdown a {
+  color: var(--color-text-link);
+  text-decoration: underline;
+}
