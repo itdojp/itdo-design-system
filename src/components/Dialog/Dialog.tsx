@@ -4,6 +4,24 @@ import clsx from 'clsx';
 import { DialogProps } from './Dialog.types';
 import './Dialog.css';
 
+const dialogStack: string[] = [];
+
+const registerDialog = (dialogId: string) => {
+  if (!dialogStack.includes(dialogId)) {
+    dialogStack.push(dialogId);
+  }
+};
+
+const unregisterDialog = (dialogId: string) => {
+  const index = dialogStack.indexOf(dialogId);
+  if (index >= 0) {
+    dialogStack.splice(index, 1);
+  }
+};
+
+const isTopmostDialog = (dialogId: string) =>
+  dialogStack.length > 0 && dialogStack[dialogStack.length - 1] === dialogId;
+
 const getFocusableElements = (element: HTMLElement | null) => {
   if (!element) return [] as HTMLElement[];
   const selectors = [
@@ -49,6 +67,7 @@ export const Dialog: React.FC<DialogProps> = ({
 
   useEffect(() => {
     if (!open) return;
+    registerDialog(id);
 
     const previousActive = document.activeElement as HTMLElement | null;
     const dialogElement = dialogRef.current;
@@ -61,6 +80,10 @@ export const Dialog: React.FC<DialogProps> = ({
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isTopmostDialog(id)) {
+        return;
+      }
+
       if (event.key === 'Escape' && closeOnEsc) {
         event.stopPropagation();
         onClose();
@@ -106,6 +129,7 @@ export const Dialog: React.FC<DialogProps> = ({
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      unregisterDialog(id);
       if (scrollBehavior === 'body') {
         document.body.style.overflow = previousOverflow ?? '';
       }
@@ -117,7 +141,7 @@ export const Dialog: React.FC<DialogProps> = ({
         }
       }
     };
-  }, [open, closeOnEsc, onClose, scrollBehavior, initialFocusRef]);
+  }, [open, closeOnEsc, onClose, scrollBehavior, initialFocusRef, id]);
 
   if (!open) return null;
 
