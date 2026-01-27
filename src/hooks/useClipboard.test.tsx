@@ -31,7 +31,7 @@ describe('useClipboard', () => {
 
   it('sets success and then timeout', async () => {
     jest.useFakeTimers();
-    const clipboard = navigator.clipboard as { writeText: jest.Mock };
+    const clipboard = navigator.clipboard as unknown as { writeText: jest.Mock };
     clipboard.writeText.mockResolvedValueOnce(undefined);
 
     render(<TestComponent text="hello" timeoutMs={100} />);
@@ -49,7 +49,7 @@ describe('useClipboard', () => {
   });
 
   it('sets error on failure', async () => {
-    const clipboard = navigator.clipboard as { writeText: jest.Mock };
+    const clipboard = navigator.clipboard as unknown as { writeText: jest.Mock };
     clipboard.writeText.mockRejectedValueOnce(new Error('fail'));
 
     render(<TestComponent text="hello" timeoutMs={100} />);
@@ -62,7 +62,7 @@ describe('useClipboard', () => {
 
   it('reset clears pending timeout', async () => {
     jest.useFakeTimers();
-    const clipboard = navigator.clipboard as { writeText: jest.Mock };
+    const clipboard = navigator.clipboard as unknown as { writeText: jest.Mock };
     clipboard.writeText.mockResolvedValueOnce(undefined);
 
     render(<TestComponent text="hello" timeoutMs={100} />);
