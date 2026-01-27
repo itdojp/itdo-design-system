@@ -32,20 +32,28 @@ export const useClipboard = (timeoutMs = 2000): ClipboardState => {
     (!!navigator.clipboard || document.queryCommandSupported?.('copy'));
 
   const reset = useCallback(() => {
+    if (timeoutRef.current !== null) {
+      window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     setStatus('idle');
     setError(undefined);
   }, []);
 
   useEffect(() => () => {
-    if (timeoutRef.current) {
+    if (timeoutRef.current !== null) {
       window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
   }, []);
 
   const copy = useCallback(async (text: string) => {
-    if (timeoutRef.current) {
+    if (timeoutRef.current !== null) {
       window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
+    setStatus('idle');
+    setError(undefined);
 
     try {
       let success = false;

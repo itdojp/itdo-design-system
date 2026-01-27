@@ -1,13 +1,12 @@
 import type { ButtonProps } from '../Button/Button.types';
 
-export interface CopyButtonProps {
+export interface CopyButtonProps
+  extends Omit<ButtonProps, 'children' | 'onClick' | 'className'> {
   text: string;
   label?: string;
   successLabel?: string;
   errorLabel?: string;
   timeoutMs?: number;
-  size?: ButtonProps['size'];
-  variant?: ButtonProps['variant'];
   className?: string;
   showStatus?: boolean;
 }

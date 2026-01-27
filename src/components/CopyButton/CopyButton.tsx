@@ -15,8 +15,10 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
   variant = 'secondary',
   className,
   showStatus = true,
+  disabled,
+  ...buttonProps
 }) => {
-  const { status, copy } = useClipboard(timeoutMs);
+  const { status, copy, isSupported } = useClipboard(timeoutMs);
 
   const statusText =
     status === 'success'
@@ -32,8 +34,13 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
       <Button
         size={size}
         variant={variant}
-        onClick={() => copy(text)}
+        onClick={() => {
+          if (!isSupported) return;
+          copy(text);
+        }}
         type="button"
+        disabled={disabled || !isSupported}
+        {...buttonProps}
       >
         {label}
       </Button>
