@@ -152,11 +152,9 @@ export const MemoMarkdown: Story = {
                 <MarkdownRenderer
                   content={text}
                   linkComponent={(props) => (
-                    <Link
-                      {...props}
-                      href={props.href ?? '#'}
-                      external={Boolean(props.href?.startsWith('http'))}
-                    />
+                    <Link href={props.href ?? '#'} external={Boolean(props.href?.startsWith('http'))}>
+                      {props.children ?? props.href ?? 'Link'}
+                    </Link>
                   )}
                 />
               </div>
