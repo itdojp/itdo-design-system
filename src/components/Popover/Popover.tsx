@@ -110,7 +110,7 @@ export const Popover: React.FC<PopoverProps> = ({
     if (!open) return;
     setPosition(null);
     updatePosition();
-  }, [open, updatePosition]);
+  }, [open, updatePosition, children]);
 
   useEffect(() => {
     if (!open) return;
