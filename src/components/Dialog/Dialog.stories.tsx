@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Textarea } from '../Textarea';
@@ -28,7 +28,7 @@ export const ConfirmDialog: Story = {
           title="Delete item"
           description="This action cannot be undone."
           size="small"
-          confirmAction={<Button>Delete</Button>}
+          confirmAction={<Button onClick={() => setOpen(false)}>Delete</Button>}
           cancelAction={
             <Button variant="secondary" onClick={() => setOpen(false)}>
               Cancel
@@ -55,7 +55,7 @@ export const FormDialog: Story = {
           onClose={() => setOpen(false)}
           title="Update record"
           description="Review details before saving."
-          confirmAction={<Button>Save</Button>}
+          confirmAction={<Button onClick={() => setOpen(false)}>Save</Button>}
           cancelAction={
             <Button variant="secondary" onClick={() => setOpen(false)}>
               Cancel
@@ -94,7 +94,7 @@ export const LongContent: Story = {
           description="Review the content before continuing."
           size="large"
           scrollBehavior="dialog"
-          confirmAction={<Button>Accept</Button>}
+          confirmAction={<Button onClick={() => setOpen(false)}>Accept</Button>}
           cancelAction={
             <Button variant="secondary" onClick={() => setOpen(false)}>
               Cancel

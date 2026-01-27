@@ -15,7 +15,7 @@ const getFocusableElements = (element: HTMLElement | null) => {
     '[tabindex]:not([tabindex="-1"])',
   ];
   return Array.from(element.querySelectorAll<HTMLElement>(selectors.join(','))).filter(
-    (node) => !node.hasAttribute('disabled') && !node.getAttribute('aria-hidden')
+    (node) => !node.hasAttribute('disabled') && node.getAttribute('aria-hidden') !== 'true'
   );
 };
 
@@ -76,6 +76,16 @@ export const Dialog: React.FC<DialogProps> = ({
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
         const current = document.activeElement as HTMLElement | null;
+        const currentIndex = current ? focusables.indexOf(current) : -1;
+        if (currentIndex === -1) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            last.focus();
+          } else {
+            first.focus();
+          }
+          return;
+        }
         if (event.shiftKey && current === first) {
           event.preventDefault();
           last.focus();
@@ -99,8 +109,12 @@ export const Dialog: React.FC<DialogProps> = ({
       if (scrollBehavior === 'body') {
         document.body.style.overflow = previousOverflow ?? '';
       }
-      if (previousActive) {
-        previousActive.focus();
+      if (previousActive && document.contains(previousActive)) {
+        try {
+          previousActive.focus();
+        } catch {
+          // ignore
+        }
       }
     };
   }, [open, closeOnEsc, onClose, scrollBehavior, initialFocusRef]);
