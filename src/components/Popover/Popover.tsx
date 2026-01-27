@@ -15,9 +15,11 @@ const getFocusableElements = (element: HTMLElement | null) => {
     '[tabindex]:not([tabindex="-1"])',
   ];
   return Array.from(element.querySelectorAll<HTMLElement>(selectors.join(','))).filter(
-    (node) => !node.hasAttribute('disabled') && !node.getAttribute('aria-hidden')
+    (node) => !node.hasAttribute('disabled') && node.getAttribute('aria-hidden') !== 'true'
   );
 };
+
+const VIEWPORT_PADDING = 8;
 
 const getPlacement = (
   anchorRect: DOMRect,
@@ -56,8 +58,16 @@ const getPlacement = (
   }[placement];
 
   const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-  const top = clamp(positions.top, 8, viewportHeight - popoverRect.height - 8);
-  const left = clamp(positions.left, 8, viewportWidth - popoverRect.width - 8);
+  const top = clamp(
+    positions.top,
+    VIEWPORT_PADDING,
+    viewportHeight - popoverRect.height - VIEWPORT_PADDING
+  );
+  const left = clamp(
+    positions.left,
+    VIEWPORT_PADDING,
+    viewportWidth - popoverRect.width - VIEWPORT_PADDING
+  );
 
   return { top, left };
 };
@@ -71,14 +81,18 @@ export const Popover: React.FC<PopoverProps> = ({
   offset = 8,
   portal = true,
   role = 'dialog',
+  ariaLabel,
+  ariaLabelledby,
+  ariaDescribedby,
   closeOnEsc = true,
   closeOnOutsideClick = true,
   autoFocus = true,
+  trapFocus = false,
   initialFocusRef,
   className,
 }) => {
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
 
   const updatePosition = useMemo(
     () => () => {
@@ -94,6 +108,7 @@ export const Popover: React.FC<PopoverProps> = ({
 
   useLayoutEffect(() => {
     if (!open) return;
+    setPosition(null);
     updatePosition();
   }, [open, updatePosition]);
 
@@ -102,8 +117,35 @@ export const Popover: React.FC<PopoverProps> = ({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && closeOnEsc) {
-        event.stopPropagation();
         onClose();
+      }
+
+      if (event.key === 'Tab' && trapFocus) {
+        const focusables = getFocusableElements(popoverRef.current);
+        if (focusables.length === 0) {
+          event.preventDefault();
+          return;
+        }
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const current = document.activeElement as HTMLElement | null;
+        const currentIndex = current ? focusables.indexOf(current) : -1;
+        if (currentIndex === -1) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            last.focus();
+          } else {
+            first.focus();
+          }
+          return;
+        }
+        if (event.shiftKey && current === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && current === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -117,7 +159,14 @@ export const Popover: React.FC<PopoverProps> = ({
       onClose();
     };
 
-    const handleScrollOrResize = () => updatePosition();
+    let animationFrameId: number | null = null;
+    const handleScrollOrResize = () => {
+      if (animationFrameId !== null) return;
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = null;
+        updatePosition();
+      });
+    };
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('mousedown', handleClick);
@@ -129,13 +178,18 @@ export const Popover: React.FC<PopoverProps> = ({
       document.removeEventListener('mousedown', handleClick);
       window.removeEventListener('resize', handleScrollOrResize);
       window.removeEventListener('scroll', handleScrollOrResize, true);
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
-  }, [open, closeOnEsc, closeOnOutsideClick, onClose, anchorRef, updatePosition]);
+  }, [open, closeOnEsc, closeOnOutsideClick, onClose, anchorRef, updatePosition, trapFocus]);
 
   useEffect(() => {
     if (!open || !autoFocus) return;
     const focusTarget = initialFocusRef?.current || getFocusableElements(popoverRef.current)[0];
-    focusTarget?.focus();
+    if (focusTarget && document.contains(focusTarget)) {
+      focusTarget.focus();
+    }
   }, [open, autoFocus, initialFocusRef]);
 
   if (!open) return null;
@@ -145,7 +199,14 @@ export const Popover: React.FC<PopoverProps> = ({
       ref={popoverRef}
       className={clsx('itdo-popover', className)}
       role={role}
-      style={{ top: position.top, left: position.left }}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      aria-describedby={ariaDescribedby}
+      style={{
+        top: position?.top ?? 0,
+        left: position?.left ?? 0,
+        visibility: position ? 'visible' : 'hidden',
+      }}
     >
       {children}
     </div>

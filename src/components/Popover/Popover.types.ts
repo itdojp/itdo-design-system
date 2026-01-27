@@ -17,9 +17,13 @@ export interface PopoverProps {
   offset?: number;
   portal?: boolean;
   role?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
+  ariaDescribedby?: string;
   closeOnEsc?: boolean;
   closeOnOutsideClick?: boolean;
   autoFocus?: boolean;
+  trapFocus?: boolean;
   initialFocusRef?: RefObject<HTMLElement>;
   className?: string;
 }
