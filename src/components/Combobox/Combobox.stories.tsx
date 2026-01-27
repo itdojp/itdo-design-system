@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Combobox } from './Combobox';
 import { ComboboxItem } from './Combobox.types';
 
@@ -68,13 +68,20 @@ export const ManyItems: Story = {
   },
 };
 
-export const TypeVariants: Story = {
-  render: () => (
-    <Combobox
-      label="Search"
-      placeholder="Search"
-      items={baseItems}
-      onSelect={(item) => console.log(item.id)}
-    />
-  ),
+export const WithSelectHandler: Story = {
+  render: () => {
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+
+    return (
+      <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+        <Combobox
+          label="Search"
+          placeholder="Search"
+          items={baseItems}
+          onSelect={(item) => setSelectedId(item.id)}
+        />
+        {selectedId && <span>Selected: {selectedId}</span>}
+      </div>
+    );
+  },
 };

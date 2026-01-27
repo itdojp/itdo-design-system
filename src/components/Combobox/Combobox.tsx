@@ -53,9 +53,33 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
   const query = isControlled ? value ?? '' : internalValue;
 
+  const displayItems = items ?? internalItems;
+  const isLoading = loading ?? internalLoading;
+  const wasControlled = useRef(isControlled);
+
   useEffect(() => {
-    if (items) setInternalItems(items);
+    if (process.env.NODE_ENV !== 'production' && wasControlled.current !== isControlled) {
+      console.warn(
+        'Combobox switched between controlled and uncontrolled mode. This is not recommended.'
+      );
+      wasControlled.current = isControlled;
+    }
+  }, [isControlled]);
+
+  useEffect(() => {
+    if (items) {
+      setInternalItems(items);
+      setActiveIndex(0);
+    }
   }, [items]);
+
+  useEffect(() => {
+    if (displayItems.length === 0) {
+      setActiveIndex(0);
+    } else {
+      setActiveIndex((prev) => Math.min(prev, displayItems.length - 1));
+    }
+  }, [displayItems.length]);
 
   useEffect(() => {
     if (!open) return;
@@ -80,6 +104,10 @@ export const Combobox: React.FC<ComboboxProps> = ({
       } catch (error) {
         if (active) {
           setLoadError(true);
+          if (process.env.NODE_ENV !== 'production') {
+            const err = error as Error;
+            console.error('Combobox loadOptions failed:', err?.message ?? err);
+          }
         }
       } finally {
         if (active) {
@@ -94,9 +122,6 @@ export const Combobox: React.FC<ComboboxProps> = ({
     };
   }, [loadOptions, query, debounceMs, open]);
 
-  const displayItems = items ?? internalItems;
-  const isLoading = loading ?? internalLoading;
-
   const setValue = (next: string) => {
     if (!isControlled) {
       setInternalValue(next);
@@ -105,7 +130,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
   };
 
   const handleSelect = (item: ComboboxItem) => {
-    setValue(item.label);
+    setValue(item.value ?? item.label);
     onSelect?.(item);
     setOpen(false);
   };
@@ -117,6 +142,10 @@ export const Combobox: React.FC<ComboboxProps> = ({
     }
 
     if (!open) return;
+
+    if (displayItems.length === 0) {
+      return;
+    }
 
     if (event.key === 'ArrowDown') {
       event.preventDefault();
@@ -141,6 +170,15 @@ export const Combobox: React.FC<ComboboxProps> = ({
     }
   };
 
+  const highlightedItems = useMemo(
+    () =>
+      displayItems.map((item) => ({
+        item,
+        highlightedLabel: highlightText(item.label, query),
+      })),
+    [displayItems, query]
+  );
+
   const listContent = useMemo(() => {
     if (isLoading) {
       return <div className="itdo-combobox__status">Loading...</div>;
@@ -156,9 +194,10 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
     return (
       <div className="itdo-combobox__list" role="listbox" id={listId}>
-        {displayItems.map((item, index) => (
+        {highlightedItems.map(({ item, highlightedLabel }, index) => (
           <button
             key={item.id}
+            id={`${listId}-option-${index}`}
             type="button"
             className={clsx('itdo-combobox__item', {
               'is-active': index === activeIndex,
@@ -169,7 +208,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
             onClick={() => handleSelect(item)}
           >
             <div className="itdo-combobox__item-main">
-              <span className="itdo-combobox__label">{highlightText(item.label, query)}</span>
+              <span className="itdo-combobox__label">{highlightedLabel}</span>
               {item.description && (
                 <span className="itdo-combobox__description">{item.description}</span>
               )}
@@ -180,7 +219,18 @@ export const Combobox: React.FC<ComboboxProps> = ({
         ))}
       </div>
     );
-  }, [displayItems, activeIndex, emptyMessage, errorMessage, isLoading, loadError, listId, query]);
+  }, [
+    activeIndex,
+    emptyMessage,
+    errorMessage,
+    highlightedItems,
+    isLoading,
+    listId,
+    loadError,
+  ]);
+
+  const activeDescendant =
+    open && displayItems[activeIndex] ? `${listId}-option-${activeIndex}` : undefined;
 
   return (
     <div className={clsx('itdo-combobox', className)}>
@@ -200,6 +250,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
         aria-autocomplete="list"
         aria-controls={listId}
         aria-expanded={open}
+        aria-activedescendant={inputProps?.['aria-activedescendant'] ?? activeDescendant}
         role="combobox"
         {...inputProps}
       />
@@ -209,6 +260,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
         anchorRef={inputRef}
         placement="bottom-start"
         autoFocus={false}
+        role="presentation"
       >
         <div style={{ minWidth: anchorWidth }}>{listContent}</div>
       </Popover>
