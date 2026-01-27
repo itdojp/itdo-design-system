@@ -35,6 +35,19 @@ const items: EventLogItem[] = [
     timestamp: '2024-10-01 09:18',
     status: 'warning',
   },
+  {
+    id: '4',
+    title: 'Manual override applied',
+    description: 'Admin updated approval status.',
+    timestamp: '2024-10-01 10:05',
+    status: 'error',
+    adminOverride: true,
+    changes: [
+      { field: 'status', before: 'Pending', after: 'Approved' },
+      { field: 'approver', before: 'Auto', after: 'Admin' },
+    ],
+    meta: 'Operator: Admin user',
+  },
 ];
 
 export const Default: Story = {
