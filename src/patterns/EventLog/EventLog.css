@@ -41,8 +41,20 @@
 }
 
 .itdo-event-log__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
   font-weight: 600;
   color: var(--color-text-primary);
+}
+
+.itdo-event-log__badge {
+  font-size: var(--font-size-xs);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-error-50);
+  color: var(--color-status-error-text);
+  border: 1px solid var(--color-error-500);
 }
 
 .itdo-event-log__timestamp {
@@ -54,6 +66,55 @@
   margin: 0;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
+}
+
+.itdo-event-log__changes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.itdo-event-log__changes-title {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.itdo-event-log__changes-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.itdo-event-log__change-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.itdo-event-log__change-field {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.itdo-event-log__change-values {
+  display: inline-flex;
+  gap: var(--space-3);
+}
+
+.itdo-event-log__change-before {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.itdo-event-log__change-after {
+  color: var(--color-status-success-text);
 }
 
 .itdo-event-log__meta {
