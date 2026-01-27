@@ -1,0 +1,10 @@
+.itdo-copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.itdo-copy-button__status {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
