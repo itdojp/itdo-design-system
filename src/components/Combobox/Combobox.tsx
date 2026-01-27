@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Input } from '../Input';
 import { Popover } from '../Popover';
@@ -122,18 +122,24 @@ export const Combobox: React.FC<ComboboxProps> = ({
     };
   }, [loadOptions, query, debounceMs, open]);
 
-  const setValue = (next: string) => {
-    if (!isControlled) {
-      setInternalValue(next);
-    }
-    onChange?.(next);
-  };
+  const setValue = useCallback(
+    (next: string) => {
+      if (!isControlled) {
+        setInternalValue(next);
+      }
+      onChange?.(next);
+    },
+    [isControlled, onChange]
+  );
 
-  const handleSelect = (item: ComboboxItem) => {
-    setValue(item.value ?? item.label);
-    onSelect?.(item);
-    setOpen(false);
-  };
+  const handleSelect = useCallback(
+    (item: ComboboxItem) => {
+      setValue(item.value ?? item.label);
+      onSelect?.(item);
+      setOpen(false);
+    },
+    [onSelect, setValue]
+  );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
@@ -221,9 +227,11 @@ export const Combobox: React.FC<ComboboxProps> = ({
     );
   }, [
     activeIndex,
+    displayItems.length,
     emptyMessage,
     errorMessage,
     highlightedItems,
+    handleSelect,
     isLoading,
     listId,
     loadError,
