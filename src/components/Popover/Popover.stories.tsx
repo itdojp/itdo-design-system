@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Popover } from './Popover';
@@ -16,13 +16,15 @@ type Story = StoryObj<typeof Popover>;
 export const Menu: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
-    const anchorRef = useRef<HTMLButtonElement>(null);
+    const anchorRef = useRef<HTMLSpanElement>(null);
 
     return (
       <>
-        <Button ref={anchorRef} size="small" onClick={() => setOpen((prev) => !prev)}>
-          Open menu
-        </Button>
+        <span ref={anchorRef} style={{ display: 'inline-flex' }}>
+          <Button size="small" onClick={() => setOpen((prev) => !prev)}>
+            Open menu
+          </Button>
+        </span>
         <Popover open={open} onClose={() => setOpen(false)} anchorRef={anchorRef}>
           <div className="itdo-popover__list">
             <button className="itdo-popover__item" type="button">Edit</button>
@@ -41,13 +43,20 @@ export const Combobox: Story = {
     const anchorRef = useRef<HTMLInputElement>(null);
 
     return (
-      <div style={{ maxWidth: 320 }}>
+      <div
+        style={{ maxWidth: 320 }}
+        onFocus={() => setOpen(true)}
+        onBlur={(event) => {
+          const next = event.relatedTarget as Node | null;
+          if (!event.currentTarget.contains(next)) {
+            setOpen(false);
+          }
+        }}
+      >
         <Input
           ref={anchorRef}
           label="Search"
           placeholder="Type to search"
-          onFocus={() => setOpen(true)}
-          onBlur={() => setTimeout(() => setOpen(false), 100)}
         />
         <Popover
           open={open}
@@ -79,18 +88,21 @@ export const Combobox: Story = {
 export const Help: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
-    const anchorRef = useRef<HTMLButtonElement>(null);
+    const anchorRef = useRef<HTMLSpanElement>(null);
 
     return (
       <>
-        <Button ref={anchorRef} size="small" variant="secondary" onClick={() => setOpen(true)}>
-          Show help
-        </Button>
+        <span ref={anchorRef} style={{ display: 'inline-flex' }}>
+          <Button size="small" variant="secondary" onClick={() => setOpen(true)}>
+            Show help
+          </Button>
+        </span>
         <Popover
           open={open}
           onClose={() => setOpen(false)}
           anchorRef={anchorRef}
           placement="right"
+          ariaLabel="Help"
         >
           <div className="itdo-popover__help">
             <strong>Reference picker</strong>

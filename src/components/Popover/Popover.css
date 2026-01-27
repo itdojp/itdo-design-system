@@ -23,6 +23,10 @@
   padding: var(--space-4) var(--space-6);
   border-radius: var(--radius-sm);
   cursor: pointer;
+  border: none;
+  background: none;
+  text-align: left;
+  font: inherit;
 }
 
 .itdo-popover__item:hover,
