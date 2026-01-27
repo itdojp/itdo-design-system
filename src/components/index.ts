@@ -9,3 +9,4 @@ export * from './Toast';
 export * from './Spinner';
 export * from './Skeleton';
 export * from './EmptyState';
+export * from './CopyButton';
