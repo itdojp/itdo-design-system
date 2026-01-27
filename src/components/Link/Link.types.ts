@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes, ReactNode } from 'react';
+import { AnchorHTMLAttributes, ReactNode } from 'react';
 
 export type LinkSize = 'small' | 'medium' | 'large';
 export type LinkVariant = 'primary' | 'secondary' | 'muted';
