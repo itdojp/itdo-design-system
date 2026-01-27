@@ -50,7 +50,9 @@
 
 .itdo-event-log__badge {
   font-size: var(--font-size-xs);
-  padding: 0 var(--space-3);
+  padding: 2px var(--space-3);
+  line-height: 1.4;
+  font-weight: 500;
   border-radius: var(--radius-full);
   background: var(--color-error-50);
   color: var(--color-status-error-text);
@@ -106,6 +108,10 @@
 .itdo-event-log__change-values {
   display: inline-flex;
   gap: var(--space-3);
+}
+
+.itdo-event-log__change-separator {
+  color: var(--color-text-muted);
 }
 
 .itdo-event-log__change-before {

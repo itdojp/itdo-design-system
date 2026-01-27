@@ -19,8 +19,14 @@ export interface EventLogItem {
   meta?: ReactNode;
 }
 
+export interface EventLogLabels {
+  adminOverride?: string;
+  changes?: string;
+}
+
 export interface EventLogProps {
   items: EventLogItem[];
   emptyState?: ReactNode;
   className?: string;
+  labels?: EventLogLabels;
 }
