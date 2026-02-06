@@ -13,18 +13,18 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@tokens': path.resolve(__dirname, './src/tokens'),
-      '@styles': path.resolve(__dirname, './src/styles'),
-      '@utils': path.resolve(__dirname, './src/utils'),
-      '@types': path.resolve(__dirname, './src/types'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@': path.resolve(dirname, './src'),
+      '@components': path.resolve(dirname, './src/components'),
+      '@tokens': path.resolve(dirname, './src/tokens'),
+      '@styles': path.resolve(dirname, './src/styles'),
+      '@utils': path.resolve(dirname, './src/utils'),
+      '@types': path.resolve(dirname, './src/types'),
+      '@hooks': path.resolve(dirname, './src/hooks'),
     },
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: path.resolve(dirname, 'src/index.ts'),
       name: 'ITDODesignSystem',
       fileName: (format) => `itdo-design-system.${format}.js`,
     },
