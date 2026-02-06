@@ -61,7 +61,7 @@ Prerequisite: configure the npm package as a Trusted Publisher for this reposito
 ### Styles
 
 Base tokens and component styles are bundled into `dist/styles.css`. If your bundler does not
-include CSS side effects automatically, import `@itdojp/design-system/styles.css`.
+include CSS side effects automatically, import `@itdo/design-system/styles.css`.
 
 ## Project Structure
 
