@@ -1,0 +1,126 @@
+.itdo-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.itdo-status-badge--sm {
+  min-height: 20px;
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-xs);
+}
+
+.itdo-status-badge--md {
+  min-height: 24px;
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-sm);
+}
+
+.itdo-status-badge__icon {
+  width: 1.1em;
+  text-align: center;
+  font-size: 0.95em;
+  font-weight: 700;
+}
+
+.itdo-status-badge--tone-neutral {
+  --itdo-status-soft-bg: var(--color-bg-subtle);
+  --itdo-status-soft-border: var(--color-border-strong);
+  --itdo-status-text: var(--color-text-secondary);
+  --itdo-status-solid-bg: var(--color-neutral-700);
+  --itdo-status-outline-border: var(--color-border-strong);
+}
+
+.itdo-status-badge--tone-info {
+  --itdo-status-soft-bg: var(--color-info-50);
+  --itdo-status-soft-border: var(--color-info-500);
+  --itdo-status-text: var(--color-status-info-text);
+  --itdo-status-solid-bg: var(--color-status-info);
+  --itdo-status-outline-border: var(--color-status-info);
+}
+
+.itdo-status-badge--tone-success {
+  --itdo-status-soft-bg: var(--color-success-50);
+  --itdo-status-soft-border: var(--color-success-500);
+  --itdo-status-text: var(--color-status-success-text);
+  --itdo-status-solid-bg: var(--color-status-success);
+  --itdo-status-outline-border: var(--color-status-success);
+}
+
+.itdo-status-badge--tone-warning {
+  --itdo-status-soft-bg: var(--color-warning-50);
+  --itdo-status-soft-border: var(--color-warning-500);
+  --itdo-status-text: var(--color-status-warning-text);
+  --itdo-status-solid-bg: var(--color-status-warning);
+  --itdo-status-outline-border: var(--color-status-warning);
+}
+
+.itdo-status-badge--tone-danger {
+  --itdo-status-soft-bg: var(--color-error-50);
+  --itdo-status-soft-border: var(--color-status-error);
+  --itdo-status-text: var(--color-status-error-text);
+  --itdo-status-solid-bg: var(--color-status-error);
+  --itdo-status-outline-border: var(--color-status-error);
+}
+
+.itdo-status-badge--soft {
+  background: var(--itdo-status-soft-bg);
+  border-color: var(--itdo-status-soft-border);
+  color: var(--itdo-status-text);
+}
+
+.itdo-status-badge--solid {
+  background: var(--itdo-status-solid-bg);
+  border-color: var(--itdo-status-solid-bg);
+  color: var(--color-text-inverse);
+}
+
+.itdo-status-badge--outline {
+  background: var(--color-bg-base);
+  border-color: var(--itdo-status-outline-border);
+  color: var(--itdo-status-text);
+}
+
+.itdo-status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--itdo-status-text);
+  font-size: var(--font-size-sm);
+}
+
+.itdo-status-dot__circle {
+  display: inline-block;
+  border-radius: var(--radius-full);
+  background: var(--itdo-status-solid-bg);
+}
+
+.itdo-status-dot--sm .itdo-status-dot__circle {
+  width: 8px;
+  height: 8px;
+}
+
+.itdo-status-dot--md .itdo-status-dot__circle {
+  width: 10px;
+  height: 10px;
+}
+
+.itdo-status-dot__label {
+  font-size: var(--font-size-sm);
+}
+
+.itdo-status-dot__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}

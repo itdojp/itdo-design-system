@@ -6,12 +6,23 @@ export interface BreadcrumbItem {
   href?: string;
 }
 
+export type PageHeaderBreadcrumbs = ReactNode | BreadcrumbItem[];
+
 export interface PageHeaderProps {
-  title: string;
-  description?: string;
-  breadcrumbs?: BreadcrumbItem[];
-  status?: ReactNode;
-  actions?: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  breadcrumbs?: PageHeaderBreadcrumbs;
+  primaryAction?: ReactNode;
+  secondaryActions?: ReactNode;
   meta?: ReactNode;
+  sticky?: boolean;
   className?: string;
+  /**
+   * @deprecated Use `meta` instead.
+   */
+  status?: ReactNode;
+  /**
+   * @deprecated Use `primaryAction` and `secondaryActions` instead.
+   */
+  actions?: ReactNode;
 }
