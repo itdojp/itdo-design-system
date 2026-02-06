@@ -1,6 +1,6 @@
 {
   "name": "@itdo/design-system",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "ITDO Design System - Enterprise-Grade Component Library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
