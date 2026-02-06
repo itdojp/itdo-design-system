@@ -1,5 +1,5 @@
 {
-  "name": "@itdojp/design-system",
+  "name": "@itdo/design-system",
   "version": "1.0.2",
   "description": "ITDO Design System - Enterprise-Grade Component Library",
   "main": "dist/index.js",
