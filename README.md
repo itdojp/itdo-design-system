@@ -79,6 +79,10 @@ itdo-design-system/
 └── docs/               # Documentation
 ```
 
+## Component Guides
+
+- `docs/priority-a-components-guide.md`: operational guidance for `PageHeader`, `SectionCard`, `StatusBadge`, `AsyncStatePanel`, `ConfirmActionDialog`, `FilterBar`, and `DataTable`.
+
 ## Design Principles
 
 1. **Consistency**: Unified experience across all products

@@ -6,8 +6,8 @@ export type DialogScrollBehavior = 'body' | 'dialog';
 export interface DialogProps {
   open: boolean;
   onClose: () => void;
-  title?: string;
-  description?: string;
+  title?: ReactNode;
+  description?: ReactNode;
   children?: ReactNode;
   footer?: ReactNode;
   confirmAction?: ReactNode;

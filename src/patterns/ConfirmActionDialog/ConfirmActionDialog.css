@@ -1,0 +1,12 @@
+.itdo-confirm-action-dialog__form {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.itdo-confirm-action-dialog--danger .itdo-dialog__title {
+  color: var(--color-status-error-text);
+}
+
+.itdo-confirm-action-dialog--danger .itdo-dialog__header {
+  border-bottom-color: var(--color-status-error);
+}

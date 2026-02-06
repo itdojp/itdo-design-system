@@ -1,0 +1,96 @@
+.itdo-section-card,
+.itdo-list-card {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-base);
+  box-shadow: var(--shadow-xs);
+}
+
+.itdo-section-card--comfortable,
+.itdo-list-card--comfortable {
+  --itdo-card-padding: var(--space-16);
+  --itdo-card-gap: var(--space-10);
+}
+
+.itdo-section-card--compact,
+.itdo-list-card--compact {
+  --itdo-card-padding: var(--space-10);
+  --itdo-card-gap: var(--space-6);
+}
+
+.itdo-section-card__header {
+  padding: var(--itdo-card-padding);
+  border-bottom: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--itdo-card-gap);
+}
+
+.itdo-section-card__heading {
+  min-width: 0;
+}
+
+.itdo-section-card__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-tight);
+}
+
+.itdo-section-card__description {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.itdo-section-card__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.itdo-section-card__body {
+  padding: var(--itdo-card-padding);
+}
+
+.itdo-section-card__footer {
+  padding: var(--itdo-card-padding);
+  border-top: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.itdo-list-card__header {
+  padding: var(--itdo-card-padding);
+  border-bottom: 1px solid var(--color-border-default);
+  font-weight: 600;
+  font-size: var(--font-size-md);
+}
+
+.itdo-list-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.itdo-list-card__item {
+  padding: var(--itdo-card-padding);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.itdo-list-card__item:last-child {
+  border-bottom: none;
+}
+
+.itdo-list-card__empty {
+  padding: var(--itdo-card-padding);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+  .itdo-section-card__header {
+    flex-direction: column;
+  }
+}
