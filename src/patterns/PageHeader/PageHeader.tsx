@@ -10,7 +10,7 @@ const isBreadcrumbList = (value: PageHeaderBreadcrumbs): value is BreadcrumbItem
       typeof item === 'object' &&
       item !== null &&
       'label' in item &&
-      typeof (item as BreadcrumbItem).label === 'string'
+      typeof item.label === 'string'
   );
 
 export const PageHeader: React.FC<PageHeaderProps> = ({

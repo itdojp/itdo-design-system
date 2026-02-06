@@ -13,7 +13,7 @@ export const FilterChip: React.FC<FilterChipProps> = ({ label, onRemove, classNa
           onClick={onRemove}
           aria-label={`Remove filter: ${label}`}
         >
-          x
+          <span aria-hidden="true">×</span>
         </button>
       )}
     </span>

@@ -32,7 +32,7 @@
   --itdo-status-soft-bg: var(--color-bg-subtle);
   --itdo-status-soft-border: var(--color-border-strong);
   --itdo-status-text: var(--color-text-secondary);
-  --itdo-status-solid-bg: var(--color-neutral-700);
+  --itdo-status-solid-bg: var(--color-neutral-800);
   --itdo-status-outline-border: var(--color-border-strong);
 }
 
@@ -40,7 +40,7 @@
   --itdo-status-soft-bg: var(--color-info-50);
   --itdo-status-soft-border: var(--color-info-500);
   --itdo-status-text: var(--color-status-info-text);
-  --itdo-status-solid-bg: var(--color-status-info);
+  --itdo-status-solid-bg: var(--color-status-info-text);
   --itdo-status-outline-border: var(--color-status-info);
 }
 
@@ -48,15 +48,15 @@
   --itdo-status-soft-bg: var(--color-success-50);
   --itdo-status-soft-border: var(--color-success-500);
   --itdo-status-text: var(--color-status-success-text);
-  --itdo-status-solid-bg: var(--color-status-success);
+  --itdo-status-solid-bg: var(--color-status-success-text);
   --itdo-status-outline-border: var(--color-status-success);
 }
 
 .itdo-status-badge--tone-warning {
   --itdo-status-soft-bg: var(--color-warning-50);
   --itdo-status-soft-border: var(--color-warning-500);
-  --itdo-status-text: var(--color-status-warning-text);
-  --itdo-status-solid-bg: var(--color-status-warning);
+  --itdo-status-text: var(--color-neutral-900);
+  --itdo-status-solid-bg: var(--color-status-warning-text);
   --itdo-status-outline-border: var(--color-status-warning);
 }
 
@@ -64,7 +64,7 @@
   --itdo-status-soft-bg: var(--color-error-50);
   --itdo-status-soft-border: var(--color-status-error);
   --itdo-status-text: var(--color-status-error-text);
-  --itdo-status-solid-bg: var(--color-status-error);
+  --itdo-status-solid-bg: var(--color-status-error-text);
   --itdo-status-outline-border: var(--color-status-error);
 }
 

@@ -15,7 +15,7 @@ describe('FilterBar', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Search records'), { target: { value: 'invoice' } });
+    fireEvent.change(screen.getByLabelText('Search'), { target: { value: 'invoice' } });
     expect(onChange).toHaveBeenCalledWith('invoice');
   });
 
@@ -55,7 +55,7 @@ describe('FilterBar', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Saved views'), { target: { value: 'pending' } });
+    fireEvent.change(screen.getByLabelText('Saved view'), { target: { value: 'pending' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(onSelect).toHaveBeenCalledWith('pending');

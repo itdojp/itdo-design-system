@@ -7,7 +7,7 @@
 .itdo-page-header--sticky {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-index-page-header, 20);
   background: var(--color-bg-base);
   padding: var(--space-8) 0;
 }
@@ -92,10 +92,6 @@
   width: 100%;
 }
 
-.itdo-page-header__actions--primary .itdo-button {
-  width: 100%;
-}
-
 @media (max-width: 768px) {
   .itdo-page-header__row {
     flex-direction: column;
@@ -112,10 +108,6 @@
   }
 
   .itdo-page-header__actions--primary > * {
-    width: auto;
-  }
-
-  .itdo-page-header__actions--primary .itdo-button {
     width: auto;
   }
 }

@@ -5,6 +5,7 @@ import {
   StatusTone,
 } from './StatusBadge.types';
 
+// Text placeholders are used as default icons so the component works without an icon dependency.
 const DEFAULT_TONE_ICON: Record<StatusTone, ReactNode> = {
   neutral: 'N',
   info: 'I',
@@ -29,9 +30,12 @@ const formatFallbackLabel = (status: string) => {
     .replace(/\b\w/g, (match) => match.toUpperCase());
 };
 
+export const defaultStatusFallbackLabelFormatter = (status: string) => formatFallbackLabel(status);
+
 export const resolveStatusDictionaryEntry = (
   status: string,
-  dictionary?: StatusDictionary
+  dictionary?: StatusDictionary,
+  fallbackLabelFormatter: (status: string) => string = defaultStatusFallbackLabelFormatter
 ): StatusDictionaryEntry => {
   const key = status.trim().toLowerCase();
   const merged = { ...defaultStatusDictionary, ...dictionary };
@@ -46,7 +50,7 @@ export const resolveStatusDictionaryEntry = (
   }
 
   return {
-    label: formatFallbackLabel(status) || 'Unknown',
+    label: fallbackLabelFormatter(status) || 'Unknown',
     tone: 'neutral',
     icon: DEFAULT_TONE_ICON.neutral,
   };

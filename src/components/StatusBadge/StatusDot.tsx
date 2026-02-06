@@ -7,11 +7,12 @@ export const StatusDot: React.FC<StatusDotProps> = ({
   status,
   size = 'sm',
   dictionary,
+  fallbackLabelFormatter,
   className,
   showLabel = false,
   ariaLabel,
 }) => {
-  const entry = resolveStatusDictionaryEntry(status, dictionary);
+  const entry = resolveStatusDictionaryEntry(status, dictionary, fallbackLabelFormatter);
 
   return (
     <span

@@ -8,12 +8,21 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   children,
   actions,
   className,
+  labels,
   search,
   filters,
   chips,
   onClearAll,
   savedViews,
 }) => {
+  const resolvedLabels = {
+    search: labels?.search ?? 'Search',
+    savedView: labels?.savedView ?? 'Saved view',
+    savedViewPlaceholder: labels?.savedViewPlaceholder ?? 'Select view',
+    saveView: labels?.saveView ?? 'Save',
+    clearAll: labels?.clearAll ?? 'Clear all',
+  };
+
   const hasStructuredFilters =
     !!search || !!savedViews || (filters !== undefined && filters.length > 0);
   const hasTopBarContent = hasStructuredFilters || !!children || !!actions;
@@ -26,12 +35,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <div className="itdo-filter-bar__fields">
             {search && (
               <label className="itdo-filter-bar__search">
-                <span className="itdo-filter-bar__label">Search</span>
+                <span className="itdo-filter-bar__label">{resolvedLabels.search}</span>
                 <input
                   value={search.value}
                   onChange={(event) => search.onChange(event.target.value)}
                   placeholder={search.placeholder}
-                  aria-label={search.ariaLabel ?? 'Search records'}
+                  aria-label={search.ariaLabel ?? resolvedLabels.search}
                   className="itdo-filter-bar__search-input"
                 />
               </label>
@@ -39,15 +48,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
             {savedViews && (
               <label className="itdo-filter-bar__saved-view">
-                <span className="itdo-filter-bar__label">Saved view</span>
+                <span className="itdo-filter-bar__label">{resolvedLabels.savedView}</span>
                 <div className="itdo-filter-bar__saved-view-controls">
                   <select
                     value={savedViews.selectedId ?? ''}
                     onChange={(event) => savedViews.onSelect(event.target.value)}
-                    aria-label={savedViews.ariaLabel ?? 'Saved views'}
+                    aria-label={savedViews.ariaLabel ?? resolvedLabels.savedView}
                     className="itdo-filter-bar__saved-view-select"
                   >
-                    <option value="">Select view</option>
+                    <option value="">{resolvedLabels.savedViewPlaceholder}</option>
                     {savedViews.items.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.name}
@@ -56,7 +65,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   </select>
                   {savedViews.onSave && (
                     <button type="button" onClick={savedViews.onSave} className="itdo-filter-bar__saved-view-save">
-                      Save
+                      {resolvedLabels.saveView}
                     </button>
                   )}
                 </div>
@@ -85,7 +94,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
           {onClearAll && (
             <button type="button" className="itdo-filter-bar__clear-all" onClick={onClearAll}>
-              Clear all
+              {resolvedLabels.clearAll}
             </button>
           )}
         </div>

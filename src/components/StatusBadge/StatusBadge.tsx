@@ -8,11 +8,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   variant = 'soft',
   size = 'md',
   dictionary,
+  fallbackLabelFormatter,
   className,
   hideIcon = false,
   ariaLabel,
 }) => {
-  const entry = resolveStatusDictionaryEntry(status, dictionary);
+  const entry = resolveStatusDictionaryEntry(status, dictionary, fallbackLabelFormatter);
 
   return (
     <span

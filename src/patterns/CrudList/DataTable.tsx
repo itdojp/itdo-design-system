@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Spinner } from '../../components/Spinner';
 import { DataTableColumn, DataTableProps, DataTableRow, DataTableSortDirection } from './CrudList.types';
@@ -6,9 +6,9 @@ import './CrudList.css';
 
 const toSortValue = (value: React.ReactNode) => {
   if (typeof value === 'number') return value;
-  if (typeof value === 'string') return value.toLowerCase();
+  if (typeof value === 'string') return value;
   if (typeof value === 'boolean') return value ? 1 : 0;
-  return String(value ?? '').toLowerCase();
+  return String(value ?? '');
 };
 
 const sortRows = (
@@ -24,6 +24,14 @@ const sortRows = (
   cloned.sort((a, b) => {
     const aValue = toSortValue(a[key]);
     const bValue = toSortValue(b[key]);
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      const result = aValue.localeCompare(bValue, undefined, {
+        sensitivity: 'base',
+        numeric: true,
+      });
+      return direction === 'asc' ? result : result * -1;
+    }
 
     if (aValue < bValue) {
       return direction === 'asc' ? -1 : 1;
@@ -50,13 +58,25 @@ export const DataTable: React.FC<DataTableProps> = ({
   pageSizeOptions = [10, 20, 50],
   initialSort,
   onSelectionChange,
+  radioGroupName,
+  labels,
 }) => {
+  const tableId = useId();
   const [sortKey, setSortKey] = useState<string | null>(initialSort?.key ?? null);
   const [sortDirection, setSortDirection] = useState<DataTableSortDirection>(initialSort?.direction ?? 'asc');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageSize, setCurrentPageSize] = useState(pageSize);
   const rowRefs = useRef<Array<HTMLTableRowElement | null>>([]);
+  const selectionGroupName = radioGroupName ?? `itdo-data-table-selection-${tableId}`;
+
+  const resolvedLabels = {
+    noRecords: labels?.noRecords ?? 'No records found.',
+    rowsPerPage: labels?.rowsPerPage ?? 'Rows',
+    prevPage: labels?.prevPage ?? 'Prev',
+    nextPage: labels?.nextPage ?? 'Next',
+    page: labels?.page ?? ((page: number, total: number) => `Page ${page} / ${total}`),
+  };
 
   useEffect(() => {
     setCurrentPageSize(pageSize);
@@ -89,6 +109,10 @@ export const DataTable: React.FC<DataTableProps> = ({
     const offset = (currentPage - 1) * currentPageSize;
     return sortedRows.slice(offset, offset + currentPageSize);
   }, [sortedRows, currentPage, currentPageSize]);
+
+  useEffect(() => {
+    rowRefs.current = rowRefs.current.slice(0, pagedRows.length);
+  }, [pagedRows.length]);
 
   const updateSelection = (nextSelection: string[]) => {
     setSelectedIds(nextSelection);
@@ -139,14 +163,14 @@ export const DataTable: React.FC<DataTableProps> = ({
   if (rows.length === 0) {
     return (
       <div className={clsx('itdo-data-table__state', className)}>
-        {emptyState ?? <span>No records found.</span>}
+        {emptyState ?? <span>{resolvedLabels.noRecords}</span>}
       </div>
     );
   }
 
   return (
     <div className={clsx('itdo-data-table', className)}>
-      <table role="grid" aria-rowcount={sortedRows.length}>
+      <table role="grid" aria-rowcount={sortedRows.length + 1}>
         {caption && <caption>{caption}</caption>}
         <thead>
           <tr>
@@ -174,6 +198,11 @@ export const DataTable: React.FC<DataTableProps> = ({
                       type="button"
                       className="itdo-data-table__sort-trigger"
                       onClick={() => handleSort(column)}
+                      aria-label={
+                        typeof column.header === 'string'
+                          ? `Sort by ${column.header}, current: ${ariaSort}`
+                          : `Sort column, current: ${ariaSort}`
+                      }
                     >
                       <span>{column.header}</span>
                       <span aria-hidden="true">
@@ -213,15 +242,21 @@ export const DataTable: React.FC<DataTableProps> = ({
                     return;
                   }
 
-                  if ((event.key === 'Enter' || event.key === ' ') && selectable !== 'none') {
+                  if (event.key === ' ' && selectable !== 'none') {
                     event.preventDefault();
                     toggleSelection(row.id);
                     return;
                   }
 
-                  if (event.key === 'Enter' && selectable === 'none' && rowActions && rowActions.length > 0) {
+                  if (event.key === 'Enter' && rowActions && rowActions.length > 0) {
                     event.preventDefault();
                     rowActions[0].onSelect(row);
+                    return;
+                  }
+
+                  if (event.key === 'Enter' && selectable !== 'none') {
+                    event.preventDefault();
+                    toggleSelection(row.id);
                   }
                 }}
               >
@@ -230,7 +265,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                     {selectable === 'single' ? (
                       <input
                         type="radio"
-                        name="itdo-data-table-selection"
+                        name={selectionGroupName}
                         checked={selected}
                         onChange={() => toggleSelection(row.id)}
                         aria-label={`Select row ${row.id}`}
@@ -276,7 +311,7 @@ export const DataTable: React.FC<DataTableProps> = ({
         <div className="itdo-data-table__pagination" aria-label="Table pagination">
           <div className="itdo-data-table__page-size">
             <label>
-              Rows
+              {resolvedLabels.rowsPerPage}
               <select
                 value={currentPageSize}
                 onChange={(event) => {
@@ -299,17 +334,15 @@ export const DataTable: React.FC<DataTableProps> = ({
               onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
               disabled={currentPage <= 1}
             >
-              Prev
+              {resolvedLabels.prevPage}
             </button>
-            <span>
-              Page {currentPage} / {totalPages}
-            </span>
+            <span>{resolvedLabels.page(currentPage, totalPages)}</span>
             <button
               type="button"
               onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
               disabled={currentPage >= totalPages}
             >
-              Next
+              {resolvedLabels.nextPage}
             </button>
           </div>
         </div>

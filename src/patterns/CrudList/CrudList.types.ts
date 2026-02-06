@@ -16,6 +16,13 @@ export interface FilterBarProps {
   children?: ReactNode;
   actions?: ReactNode;
   className?: string;
+  labels?: {
+    search?: string;
+    savedView?: string;
+    savedViewPlaceholder?: string;
+    saveView?: string;
+    clearAll?: string;
+  };
   search?: {
     value: string;
     onChange: (value: string) => void;
@@ -57,7 +64,7 @@ export type DataTableSortDirection = 'asc' | 'desc';
 
 export interface DataTableColumn {
   key: string;
-  header: ReactNode;
+  header: string | ReactNode;
   align?: 'left' | 'center' | 'right';
   width?: string;
   sortable?: boolean;
@@ -92,6 +99,14 @@ export interface DataTableProps {
     direction?: DataTableSortDirection;
   };
   onSelectionChange?: (selectedIds: string[]) => void;
+  radioGroupName?: string;
+  labels?: {
+    noRecords?: string;
+    rowsPerPage?: string;
+    prevPage?: string;
+    nextPage?: string;
+    page?: (currentPage: number, totalPages: number) => string;
+  };
 }
 
 export interface DataTableToolbarProps {

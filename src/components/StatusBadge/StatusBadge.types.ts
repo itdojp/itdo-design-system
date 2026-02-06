@@ -17,6 +17,7 @@ export interface StatusBadgeProps {
   variant?: StatusVariant;
   size?: StatusSize;
   dictionary?: StatusDictionary;
+  fallbackLabelFormatter?: (status: string) => string;
   className?: string;
   hideIcon?: boolean;
   ariaLabel?: string;
@@ -26,6 +27,7 @@ export interface StatusDotProps {
   status: string;
   size?: StatusSize;
   dictionary?: StatusDictionary;
+  fallbackLabelFormatter?: (status: string) => string;
   className?: string;
   showLabel?: boolean;
   ariaLabel?: string;

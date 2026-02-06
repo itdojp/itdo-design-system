@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import clsx from 'clsx';
 import { Button } from '../../components/Button';
 import { Dialog } from '../../components/Dialog';
@@ -22,6 +22,7 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
   confirmDisabled = false,
   className,
 }) => {
+  const formId = useId();
   const [reason, setReason] = useState('');
 
   useEffect(() => {
@@ -30,10 +31,7 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
     }
   }, [open]);
 
-  const shouldRequireReason = useMemo(
-    () => requireReason && reasonRequired,
-    [requireReason, reasonRequired]
-  );
+  const shouldRequireReason = requireReason && reasonRequired;
 
   const isConfirmDisabled = confirmDisabled || (shouldRequireReason && reason.trim().length === 0);
 
@@ -42,7 +40,9 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
       return;
     }
     if (requireReason) {
-      onConfirm({ reason: reason.trim() || undefined });
+      const trimmedReason = reason.trim();
+      const reasonValue = trimmedReason.length > 0 ? trimmedReason : undefined;
+      onConfirm({ reason: reasonValue });
       return;
     }
     onConfirm();
@@ -56,7 +56,7 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
       description={description}
       className={clsx('itdo-confirm-action-dialog', `itdo-confirm-action-dialog--${tone}`, className)}
       confirmAction={
-        <Button type="submit" form="itdo-confirm-action-dialog-form" variant={tone === 'danger' ? 'danger' : 'primary'} disabled={isConfirmDisabled}>
+        <Button type="submit" form={formId} variant={tone === 'danger' ? 'danger' : 'primary'} disabled={isConfirmDisabled}>
           {confirmLabel}
         </Button>
       }
@@ -67,7 +67,7 @@ export const ConfirmActionDialog: React.FC<ConfirmActionDialogProps> = ({
       }
     >
       <form
-        id="itdo-confirm-action-dialog-form"
+        id={formId}
         className="itdo-confirm-action-dialog__form"
         onSubmit={(event) => {
           event.preventDefault();
