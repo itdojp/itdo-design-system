@@ -194,7 +194,9 @@ export const Dialog: React.FC<DialogProps> = ({
           </div>
         )}
 
-        <div className="itdo-dialog__body">{children}</div>
+        <div className="itdo-dialog__body" tabIndex={scrollBehavior === 'dialog' ? 0 : undefined}>
+          {children}
+        </div>
 
         {(footer || confirmAction || cancelAction) && (
           <div className="itdo-dialog__footer">

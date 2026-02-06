@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/testing-library';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { userEvent, within } from 'storybook/test';
 import { Link } from './Link';
 
 const meta: Meta<typeof Link> = {
