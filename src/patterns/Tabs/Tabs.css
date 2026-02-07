@@ -1,0 +1,68 @@
+.itdo-tabs {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.itdo-tabs__list {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.itdo-tabs__list--full {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  width: 100%;
+}
+
+.itdo-tabs__tab {
+  height: var(--control-height-md);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.itdo-tabs__tab:hover:not(:disabled) {
+  color: var(--color-text-default);
+}
+
+.itdo-tabs__tab:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.itdo-tabs__tab.is-active {
+  color: var(--color-text-default);
+  border-bottom-color: var(--color-border-focus);
+  font-weight: 600;
+}
+
+.itdo-tabs--pill .itdo-tabs__list {
+  border-bottom: none;
+  gap: var(--space-4);
+}
+
+.itdo-tabs--pill .itdo-tabs__tab {
+  border: 1px solid var(--color-border-default);
+  border-bottom-width: 1px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-base);
+}
+
+.itdo-tabs--pill .itdo-tabs__tab.is-active {
+  border-color: var(--color-border-focus);
+  background: var(--color-bg-subtle);
+}
+
+.itdo-tabs__panel {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  background: var(--color-bg-base);
+}
