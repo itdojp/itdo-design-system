@@ -16,7 +16,8 @@
 - [ ] npm run type-check
 - [ ] npm test -- --runInBand
 - [ ] npm run test-storybook:ci
-- [ ] npm run build
+- [ ] npm run build:lib
+- [ ] npm run build-storybook
 
 ## Docs Updated
 - [ ] Storybook Do/Don't

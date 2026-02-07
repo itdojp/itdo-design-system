@@ -11,7 +11,8 @@ Use this checklist when closing each roadmap wave.
 - [ ] `npm run type-check`
 - [ ] `npm test -- --runInBand`
 - [ ] `npm run test-storybook:ci`
-- [ ] `npm run build`
+- [ ] `npm run build:lib`
+- [ ] `npm run build-storybook`
 
 ## UX / A11y
 - [ ] Keyboard flow validated for changed components.

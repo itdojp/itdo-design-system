@@ -18,7 +18,7 @@ This document defines Do/Don't guidance for key components introduced in Issue #
 ### Do
 - Replace ad-hoc `div.card` wrappers with `SectionCard`.
 - Replace custom list wrappers with `ListCard`.
-- Use `density=\"compact\"` only for dense operator views.
+- Use `density="compact"` only for dense operator views.
 
 ### Don't
 - Do not mix multiple card density levels in a single list context.
@@ -51,7 +51,7 @@ This document defines Do/Don't guidance for key components introduced in Issue #
 ### Do
 - Use `requireReason={true}` for reject/revoke/destructive operations.
 - Persist `onConfirm({ reason })` into audit logs.
-- Use `tone=\"danger\"` for irreversible operations.
+- Use `tone="danger"` for irreversible operations.
 
 ### Don't
 - Do not skip confirmation for privilege-sensitive mutations.
