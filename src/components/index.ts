@@ -4,6 +4,7 @@ export * from './FormField';
 export * from './Input';
 export * from './Select';
 export * from './Textarea';
+export * from './Combobox';
 export * from './Alert';
 export * from './Toast';
 export * from './Spinner';

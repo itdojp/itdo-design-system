@@ -5,6 +5,14 @@ import '../Input/Input.css';
 const meta: Meta<typeof FormField> = {
   title: 'Components/FormField',
   component: FormField,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '実装規約: `validationState` と `validationMessage` を優先し、`helpText` は補助情報として併記します。Do: 入力理由を短文で提示。Do not: エラー文のみで解決手順を欠く。',
+      },
+    },
+  },
   args: {
     label: 'Label',
     helpText: 'Helper text',
@@ -35,6 +43,21 @@ export const Error: Story = {
 
 export const Success: Story = {
   args: {
-    success: 'Looks good',
+    validationState: 'success',
+    validationMessage: 'Looks good',
+  },
+};
+
+export const Warning: Story = {
+  args: {
+    validationState: 'warning',
+    validationMessage: 'Review this value before saving',
+  },
+};
+
+export const Validating: Story = {
+  args: {
+    validationState: 'validating',
+    validationMessage: 'Validating...',
   },
 };

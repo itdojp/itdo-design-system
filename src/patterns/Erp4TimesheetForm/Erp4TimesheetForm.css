@@ -1,0 +1,25 @@
+.itdo-erp4-timesheet-form {
+  display: grid;
+  gap: var(--space-12);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-12);
+  background: var(--color-bg-base);
+}
+
+.itdo-erp4-timesheet-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+
+.itdo-erp4-timesheet-form__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .itdo-erp4-timesheet-form__grid {
+    grid-template-columns: 1fr;
+  }
+}

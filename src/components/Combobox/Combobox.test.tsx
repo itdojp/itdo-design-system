@@ -62,7 +62,15 @@ describe('Combobox', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Failed to load results')).toBeInTheDocument();
+      expect(input).toHaveClass('itdo-input--error');
+    });
+
+    await waitFor(() => {
+      const status = screen.getByText('Failed to load results');
+      expect(status).toHaveClass('itdo-combobox__status--error');
+      expect(
+        screen.queryByText('Failed to load results', { selector: '.itdo-form-field__message' })
+      ).not.toBeInTheDocument();
     });
 
     consoleError.mockRestore();

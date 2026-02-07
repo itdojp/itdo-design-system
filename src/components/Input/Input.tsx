@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import clsx from 'clsx';
 import { InputProps } from './Input.types';
 import { FormField } from '../FormField';
+import { resolveValidationMessage, resolveValidationState } from '../FormField/validation';
 import './Input.css';
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -9,9 +10,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       label,
       error,
+      warning,
       helperText,
       helpText,
+      hint,
+      description,
       success,
+      validationState,
+      validationMessage,
       size = 'medium',
       fullWidth = false,
       disabled = false,
@@ -22,25 +28,41 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
+    const resolvedValidationState = resolveValidationState({
+      validationState,
+      error,
+      warning,
+      success,
+    });
+    const resolvedValidationMessage = resolveValidationMessage(resolvedValidationState, {
+      validationMessage,
+      error,
+      warning,
+      success,
+    });
+
     const inputClasses = clsx(
       'itdo-input',
       `itdo-input--${size}`,
       {
-        'itdo-input--error': error,
+        'itdo-input--error': resolvedValidationState === 'error',
+        'itdo-input--warning': resolvedValidationState === 'warning',
+        'itdo-input--success': resolvedValidationState === 'success',
+        'itdo-input--validating': resolvedValidationState === 'validating',
         'itdo-input--disabled': disabled,
         'itdo-input--full-width': fullWidth,
       },
       className
     );
 
-    const resolvedHelpText = helpText ?? helperText;
+    const resolvedHelpText = hint ?? description ?? helpText ?? helperText;
 
     return (
       <FormField
         label={label}
         helpText={resolvedHelpText}
-        error={error}
-        success={success}
+        validationState={resolvedValidationState}
+        validationMessage={resolvedValidationMessage}
         required={required}
         size={size}
         fullWidth={fullWidth}
