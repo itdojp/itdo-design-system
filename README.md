@@ -88,6 +88,7 @@ itdo-design-system/
 - `docs/changelog-template.md`: release note template (Breaking/Non-breaking).
 - `docs/wave-review-checklist.md`: wave completion review checklist.
 - `docs/token-system-wave3.md`: token inventory, naming policy, and migration notes for Wave3.
+- `docs/i18n-layout-guidelines.md`: text expansion/RTL implementation rules and regression checklist.
 
 ## Design Principles
 
