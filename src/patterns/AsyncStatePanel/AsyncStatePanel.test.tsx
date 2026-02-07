@@ -5,8 +5,7 @@ describe('AsyncStatePanel', () => {
   it('renders loading state', () => {
     render(<AsyncStatePanel state="loading" loadingText="Loading list..." />);
     expect(screen.getByText('Loading list...')).toBeInTheDocument();
-    const panel = document.querySelector('.itdo-async-state-panel--loading');
-    expect(panel).toHaveAttribute('aria-live', 'polite');
+    expect(screen.getByRole('status', { name: 'Loading list...' })).toBeInTheDocument();
   });
 
   it('renders empty state', () => {
@@ -57,8 +56,7 @@ describe('AsyncStatePanel', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onSecondary).toHaveBeenCalledTimes(1);
     expect(onContact).toHaveBeenCalledTimes(1);
-    const panel = document.querySelector('.itdo-async-state-panel--error');
-    expect(panel).toHaveAttribute('aria-live', 'assertive');
+    expect(screen.getByRole('alert')).toBeInTheDocument();
   });
 
   it('renders children in ready state', () => {

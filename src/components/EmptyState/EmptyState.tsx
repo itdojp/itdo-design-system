@@ -15,9 +15,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   className,
 }) => {
   const structuredActions = [
-    primaryAction && { ...primaryAction, tone: 'primary' as const },
-    secondaryAction && { ...secondaryAction, tone: 'secondary' as const },
-    ghostAction && { ...ghostAction, tone: 'ghost' as const },
+    primaryAction && { label: primaryAction.label, onClick: primaryAction.onClick, tone: 'primary' as const },
+    secondaryAction && { label: secondaryAction.label, onClick: secondaryAction.onClick, tone: 'secondary' as const },
+    ghostAction && { label: ghostAction.label, onClick: ghostAction.onClick, tone: 'ghost' as const },
   ].filter((value): value is NonNullable<typeof value> => Boolean(value));
 
   return (

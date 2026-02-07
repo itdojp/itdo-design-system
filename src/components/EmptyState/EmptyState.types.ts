@@ -5,7 +5,6 @@ export type EmptyStateActionTone = 'primary' | 'secondary' | 'ghost';
 export interface EmptyStateActionConfig {
   label: string;
   onClick: () => void;
-  tone?: EmptyStateActionTone;
 }
 
 export interface EmptyStateProps {

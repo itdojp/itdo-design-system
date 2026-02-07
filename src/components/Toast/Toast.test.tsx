@@ -1,11 +1,7 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Toast } from './Toast';
 
 describe('Toast', () => {
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
   it('uses assertive live region for error severity', () => {
     render(<Toast severity="error" title="Failed to save" />);
 
@@ -20,17 +16,11 @@ describe('Toast', () => {
     expect(toast).toHaveAttribute('aria-live', 'polite');
   });
 
-  it('auto closes based on ttl', () => {
-    jest.useFakeTimers();
+  it('does not auto close by itself even when ttl is provided', () => {
     const onClose = jest.fn();
 
     render(<Toast severity="info" title="Processing" ttl={100} onClose={onClose} />);
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it('calls onClose from dismiss button', () => {

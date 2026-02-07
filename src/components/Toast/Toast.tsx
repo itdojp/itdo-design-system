@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { TOAST_DEFAULT_TTL_MS, ToastProps } from './Toast.types';
 import './Toast.css';
@@ -23,24 +23,6 @@ export const Toast: React.FC<ToastProps> = ({
     ? 'alert'
     : 'status';
   const toastClasses = clsx('itdo-toast', `itdo-toast--${resolvedSeverity}`, className);
-
-  useEffect(() => {
-    if (!onClose) {
-      return;
-    }
-
-    if (resolvedTtl === null || resolvedTtl <= 0) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      onClose();
-    }, resolvedTtl);
-
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, [onClose, resolvedTtl]);
 
   const hasContent = useMemo(() => Boolean(title || description), [description, title]);
 

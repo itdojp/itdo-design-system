@@ -26,11 +26,7 @@ export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
 }) => {
   if (state === 'loading') {
     return (
-      <section
-        className={clsx('itdo-async-state-panel itdo-async-state-panel--loading', className)}
-        role="status"
-        aria-live="polite"
-      >
+      <section className={clsx('itdo-async-state-panel itdo-async-state-panel--loading', className)}>
         <Spinner label={loadingText} />
         <span className="itdo-async-state-panel__text">{loadingText}</span>
       </section>
@@ -70,11 +66,7 @@ export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
     ].filter((value): value is NonNullable<typeof value> => Boolean(value));
 
     return (
-      <section
-        className={clsx('itdo-async-state-panel itdo-async-state-panel--error', className)}
-        role="status"
-        aria-live="assertive"
-      >
+      <section className={clsx('itdo-async-state-panel itdo-async-state-panel--error', className)}>
         <Alert variant="error" title={error?.title ?? 'Failed to load'}>
           <div className="itdo-async-state-panel__error-content">
             {error?.expandableDetail && error.detail ? (
@@ -87,10 +79,10 @@ export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
             )}
             {actions.length > 0 && (
               <div className="itdo-async-state-panel__actions">
-                {actions.map((action) => {
+                {actions.map((action, index) => {
                   return (
                     <Button
-                      key={action.label}
+                      key={action.id ?? `${action.tone ?? 'secondary'}-${action.label}-${index}`}
                       size="small"
                       variant={getButtonVariant(action.tone)}
                       onClick={action.onClick}

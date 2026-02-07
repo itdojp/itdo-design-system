@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactNode } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { Combobox } from '../../components/Combobox';
@@ -278,10 +278,26 @@ export const ErrorRecoveryFlow: Story = {
     const { toasts, enqueue, dismiss } = useToastQueue({ maxVisible: 4 });
     const [state, setState] = useState<'loading' | 'error' | 'ready'>('loading');
     const [attempts, setAttempts] = useState(0);
+    const timersRef = useRef<number[]>([]);
+
+    useEffect(() => {
+      return () => {
+        timersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+        timersRef.current = [];
+      };
+    }, []);
+
+    const schedule = (callback: () => void, delayMs: number) => {
+      const timerId = window.setTimeout(() => {
+        timersRef.current = timersRef.current.filter((id) => id !== timerId);
+        callback();
+      }, delayMs);
+      timersRef.current.push(timerId);
+    };
 
     const simulateFail = () => {
       setState('loading');
-      window.setTimeout(() => {
+      schedule(() => {
         setState('error');
         setAttempts((prev) => prev + 1);
         enqueue({
@@ -295,7 +311,7 @@ export const ErrorRecoveryFlow: Story = {
 
     const simulateSuccess = () => {
       setState('loading');
-      window.setTimeout(() => {
+      schedule(() => {
         setState('ready');
         enqueue({
           severity: 'success',

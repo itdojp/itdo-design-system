@@ -5,6 +5,7 @@ export type AsyncPanelState = 'loading' | 'empty' | 'error' | 'ready';
 export type AsyncPanelActionTone = 'primary' | 'secondary' | 'ghost';
 
 export interface AsyncPanelAction {
+  id?: string;
   label: string;
   onClick: () => void;
   tone?: AsyncPanelActionTone;
