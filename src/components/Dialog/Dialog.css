@@ -7,7 +7,6 @@
   justify-content: center;
   padding: var(--space-16);
   z-index: var(--z-index-dialog, 1000);
-  transition: opacity var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-dialog-overlay--scroll {
@@ -24,7 +23,6 @@
   flex-direction: column;
   max-height: calc(100vh - var(--space-16) * 2);
   outline: none;
-  transition: box-shadow var(--motion-duration-standard) var(--motion-easing-standard);
 }
 
 .itdo-dialog--small {

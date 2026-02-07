@@ -301,6 +301,7 @@
 
 .itdo-data-table th,
 .itdo-data-table td {
+  height: var(--density-table-row-height);
   padding: var(--density-table-cell-padding-y) var(--density-table-cell-padding-x);
   border-bottom: 1px solid var(--color-border-default);
   vertical-align: middle;
@@ -338,7 +339,6 @@
 
 .itdo-data-table tbody tr {
   outline: none;
-  min-height: var(--density-table-row-height);
   transition: background-color var(--motion-duration-fast) var(--motion-easing-standard),
     box-shadow var(--motion-duration-fast) var(--motion-easing-standard);
 }

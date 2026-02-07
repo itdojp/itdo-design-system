@@ -1,3 +1,15 @@
+const comfortableTableDensity = {
+  rowHeight: '44px',
+  cellPaddingX: '0.75rem',
+  cellPaddingY: '0.5rem',
+} as const;
+
+const compactTableDensity = {
+  rowHeight: '36px',
+  cellPaddingX: '0.5rem',
+  cellPaddingY: '0.375rem',
+} as const;
+
 export const density = {
   comfortable: {
     controlHeight: {
@@ -20,16 +32,8 @@ export const density = {
       medium: '0.5rem',
       large: '0.75rem',
     },
-    datagrid: {
-      rowHeight: '44px',
-      cellPaddingX: '0.75rem',
-      cellPaddingY: '0.5rem',
-    },
-    table: {
-      rowHeight: '44px',
-      cellPaddingX: '0.75rem',
-      cellPaddingY: '0.5rem',
-    },
+    datagrid: comfortableTableDensity,
+    table: comfortableTableDensity,
     section: {
       cardPadding: '2rem',
       cardGap: '1.25rem',
@@ -62,16 +66,8 @@ export const density = {
       medium: '0.375rem',
       large: '0.5rem',
     },
-    datagrid: {
-      rowHeight: '36px',
-      cellPaddingX: '0.5rem',
-      cellPaddingY: '0.375rem',
-    },
-    table: {
-      rowHeight: '36px',
-      cellPaddingX: '0.5rem',
-      cellPaddingY: '0.375rem',
-    },
+    datagrid: compactTableDensity,
+    table: compactTableDensity,
     section: {
       cardPadding: '1.25rem',
       cardGap: '0.75rem',
