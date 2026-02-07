@@ -56,4 +56,43 @@ describe('Tabs', () => {
     expect(screen.getByRole('tab', { name: 'Activity' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByRole('tabpanel')).toHaveTextContent('Activity panel');
   });
+
+  it('preserves uncontrolled selected tab when items reference changes', () => {
+    const { rerender } = render(<Tabs items={[...items]} />);
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Settings' }));
+    expect(screen.getByRole('tab', { name: 'Settings' })).toHaveAttribute('aria-selected', 'true');
+
+    rerender(<Tabs items={[...items]} />);
+    expect(screen.getByRole('tab', { name: 'Settings' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('falls back from disabled controlled value to first enabled tab', () => {
+    const onValueChange = jest.fn();
+    const disabledItems: TabItem[] = [
+      { id: 'summary', label: 'Summary', panel: 'Summary panel' },
+      { id: 'activity', label: 'Activity', panel: 'Activity panel', disabled: true },
+      { id: 'settings', label: 'Settings', panel: 'Settings panel' },
+    ];
+
+    render(<Tabs items={disabledItems} value="activity" onValueChange={onValueChange} />);
+
+    expect(screen.getByRole('tab', { name: 'Summary' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tab', { name: 'Activity' })).toHaveAttribute('aria-selected', 'false');
+    expect(onValueChange).toHaveBeenCalledWith('summary');
+  });
+
+  it('does not set aria-controls when no panel is rendered', () => {
+    render(
+      <Tabs
+        items={[
+          { id: 'summary', label: 'Summary' },
+          { id: 'activity', label: 'Activity' },
+        ]}
+      />
+    );
+
+    expect(screen.getByRole('tab', { name: 'Summary' })).not.toHaveAttribute('aria-controls');
+    expect(screen.queryByRole('tabpanel')).not.toBeInTheDocument();
+  });
 });

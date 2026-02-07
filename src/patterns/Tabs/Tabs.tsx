@@ -3,11 +3,6 @@ import clsx from 'clsx';
 import { TabItem, TabsProps } from './Tabs.types';
 import './Tabs.css';
 
-const findFirstEnabledTabId = (items: TabItem[]) => {
-  const tab = items.find((item) => !item.disabled);
-  return tab?.id ?? null;
-};
-
 const findNextEnabledIndex = (
   items: TabItem[],
   currentIndex: number,
@@ -41,40 +36,43 @@ export const Tabs: React.FC<TabsProps> = ({
 }) => {
   const isControlled = value !== undefined;
   const tabSetId = useId();
+  const enabledItems = useMemo(() => items.filter((item) => !item.disabled), [items]);
 
   const initialValue = useMemo(() => {
-    if (defaultValue && items.some((item) => item.id === defaultValue && !item.disabled)) {
+    if (defaultValue && enabledItems.some((item) => item.id === defaultValue)) {
       return defaultValue;
     }
-    return findFirstEnabledTabId(items);
-  }, [defaultValue, items]);
+    return enabledItems[0]?.id ?? null;
+  }, [defaultValue, enabledItems]);
 
-  const [internalValue, setInternalValue] = useState<string | null>(initialValue);
+  const [internalValue, setInternalValue] = useState<string | null>(() => initialValue);
   const activeValue = isControlled ? value ?? null : internalValue;
 
   useEffect(() => {
-    if (isControlled) return;
-    setInternalValue(initialValue);
-  }, [initialValue, isControlled]);
-
-  useEffect(() => {
     if (!activeValue) return;
-    const exists = items.some((item) => item.id === activeValue && !item.disabled);
+    const exists = enabledItems.some((item) => item.id === activeValue);
     if (exists) return;
 
-    const fallbackValue = findFirstEnabledTabId(items);
+    const fallbackValue = enabledItems[0]?.id ?? null;
     if (!isControlled) {
       setInternalValue(fallbackValue);
     }
-    if (fallbackValue && fallbackValue !== activeValue) {
+    if (fallbackValue !== null && fallbackValue !== activeValue) {
       onValueChange?.(fallbackValue);
     }
-  }, [activeValue, isControlled, items, onValueChange]);
+  }, [activeValue, enabledItems, isControlled, onValueChange]);
 
-  const activeItem = useMemo(
-    () => items.find((item) => item.id === activeValue) ?? null,
-    [activeValue, items]
-  );
+  const activeItem = useMemo(() => {
+    if (enabledItems.length === 0) {
+      return null;
+    }
+
+    const matched = enabledItems.find((item) => item.id === activeValue);
+    return matched ?? enabledItems[0] ?? null;
+  }, [activeValue, enabledItems]);
+
+  const activeTabId = activeItem?.id ?? null;
+  const hasRenderablePanel = activeItem !== null && (renderPanel !== undefined || activeItem.panel !== undefined);
 
   const selectTab = (nextValue: string) => {
     const target = items.find((item) => item.id === nextValue);
@@ -106,7 +104,7 @@ export const Tabs: React.FC<TabsProps> = ({
         className={clsx('itdo-tabs__list', { 'itdo-tabs__list--full': fullWidth }, listClassName)}
       >
         {items.map((item, index) => {
-          const isActive = item.id === activeValue;
+          const isActive = item.id === activeTabId;
           const tabId = `${tabSetId}-tab-${item.id}`;
           const panelId = `${tabSetId}-panel-${item.id}`;
 
@@ -117,7 +115,7 @@ export const Tabs: React.FC<TabsProps> = ({
               type="button"
               role="tab"
               aria-selected={isActive}
-              aria-controls={panelId}
+              aria-controls={isActive && hasRenderablePanel ? panelId : undefined}
               tabIndex={isActive ? 0 : -1}
               className={clsx('itdo-tabs__tab', { 'is-active': isActive })}
               disabled={item.disabled}
@@ -161,7 +159,7 @@ export const Tabs: React.FC<TabsProps> = ({
         })}
       </div>
 
-      {activeItem && (activeItem.panel || renderPanel) && (
+      {activeItem && hasRenderablePanel && (
         <div
           id={`${tabSetId}-panel-${activeItem.id}`}
           role="tabpanel"
