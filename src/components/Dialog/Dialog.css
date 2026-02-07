@@ -68,6 +68,7 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   padding: var(--space-2);
+  transition: color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-dialog__close:hover {

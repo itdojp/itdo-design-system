@@ -76,7 +76,7 @@
 .itdo-filter-bar__logic {
   display: grid;
   gap: var(--space-2);
-  min-width: 180px;
+  min-width: var(--density-filter-control-min-width);
 }
 
 .itdo-filter-bar__logic-controls {
@@ -94,6 +94,8 @@
   padding: 0 var(--space-6);
   font-size: var(--font-size-xs);
   cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-filter-bar__logic-button:last-child {
@@ -136,6 +138,7 @@
   background: var(--color-bg-base);
   padding: 0 var(--space-6);
   cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-filter-bar__saved-view-save:hover,
@@ -239,6 +242,8 @@
   padding: 0 var(--space-6);
   cursor: pointer;
   font-size: var(--font-size-xs);
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    border-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-data-table__column-settings-menu {
@@ -296,7 +301,8 @@
 
 .itdo-data-table th,
 .itdo-data-table td {
-  padding: var(--space-6);
+  height: var(--density-table-row-height);
+  padding: var(--density-table-cell-padding-y) var(--density-table-cell-padding-x);
   border-bottom: 1px solid var(--color-border-default);
   vertical-align: middle;
 }
@@ -333,6 +339,8 @@
 
 .itdo-data-table tbody tr {
   outline: none;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-data-table tbody tr:hover {
@@ -340,7 +348,7 @@
 }
 
 .itdo-data-table tbody tr:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--color-border-focus);
+  box-shadow: inset 0 0 0 var(--focus-outline-width) var(--color-focus-outline);
 }
 
 .itdo-data-table tbody tr.is-selected {
@@ -378,6 +386,7 @@
   padding: 0 var(--space-6);
   cursor: pointer;
   font-size: var(--font-size-xs);
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-data-table__row-action:hover {
@@ -417,6 +426,8 @@
   background: var(--color-bg-base);
   padding: 0 var(--space-6);
   cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    border-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-data-table__pagination button:disabled,

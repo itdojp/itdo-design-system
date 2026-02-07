@@ -3,6 +3,7 @@ import { typography } from './typography';
 import { spacing } from './spacing';
 import { shadows } from './shadows';
 import { radius } from './radius';
+import { motion } from './motion';
 
 export const primitives = {
   colors,
@@ -10,6 +11,7 @@ export const primitives = {
   spacing,
   shadows,
   radius,
+  motion,
 } as const;
 
 export type Primitives = typeof primitives;
