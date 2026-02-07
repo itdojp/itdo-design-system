@@ -82,3 +82,13 @@
 .itdo-toast--info .itdo-toast__indicator {
   background-color: var(--color-info-500);
 }
+
+.itdo-toast-viewport {
+  position: fixed;
+  right: var(--space-10);
+  bottom: var(--space-10);
+  z-index: var(--z-index-toast, 1100);
+  display: grid;
+  gap: var(--space-4);
+  width: min(420px, calc(100vw - var(--space-10) * 2));
+}

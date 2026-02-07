@@ -34,6 +34,7 @@ This document covers the implementation and usage guidance for Issue #27 to #33.
 - `loading` -> `empty` when request succeeds but dataset is empty.
 - `loading` -> `error` when request fails.
 - `error` -> `loading` on retry.
+- Recovery action order: retry -> secondary -> contact -> back.
 
 ## ConfirmActionDialog
 
@@ -41,6 +42,9 @@ This document covers the implementation and usage guidance for Issue #27 to #33.
 - Set `requireReason={true}` for reject, revoke, or destructive operations.
 - Use `onConfirm({ reason })` payload to persist reason in application audit log.
 - Use `tone="danger"` for irreversible actions.
+
+## Related Operational Guide
+- See `docs/async-feedback-guidelines.md` for Toast TTL/deduplication, Spinner/Skeleton criteria, and destructive dialog rules.
 
 ## FilterBar / FilterChip
 
