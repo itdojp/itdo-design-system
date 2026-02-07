@@ -28,3 +28,10 @@ export interface DataGridLoadingStateProps {
   label?: string;
   className?: string;
 }
+
+export interface DataGridErrorStateProps {
+  title?: string;
+  description?: string;
+  action?: ReactNode;
+  className?: string;
+}

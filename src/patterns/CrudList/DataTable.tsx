@@ -44,6 +44,29 @@ const sortRows = (
   return cloned;
 };
 
+const resolveNextVisibleKeys = (
+  columns: DataTableColumn[],
+  currentVisibleKeys: string[],
+  key: string
+) => {
+  const isVisible = currentVisibleKeys.includes(key);
+  if (isVisible && currentVisibleKeys.length === 1) {
+    return currentVisibleKeys;
+  }
+
+  const nextSet = new Set(currentVisibleKeys);
+  if (isVisible) {
+    nextSet.delete(key);
+  } else {
+    nextSet.add(key);
+  }
+
+  const next = columns
+    .map((column) => column.key)
+    .filter((columnKey) => nextSet.has(columnKey));
+  return next.length > 0 ? next : currentVisibleKeys;
+};
+
 export const DataTable: React.FC<DataTableProps> = ({
   columns,
   rows,
@@ -54,6 +77,13 @@ export const DataTable: React.FC<DataTableProps> = ({
   loadingLabel = 'Loading rows...',
   selectable = 'none',
   rowActions,
+  rowActionSlot,
+  bulkActions,
+  visibleColumnKeys,
+  onVisibleColumnKeysChange,
+  enableColumnVisibilityControl = false,
+  query,
+  onQueryChange,
   pageSize = 10,
   pageSizeOptions = [10, 20, 50],
   initialSort,
@@ -62,13 +92,22 @@ export const DataTable: React.FC<DataTableProps> = ({
   labels,
 }) => {
   const tableId = useId();
-  const [sortKey, setSortKey] = useState<string | null>(initialSort?.key ?? null);
-  const [sortDirection, setSortDirection] = useState<DataTableSortDirection>(initialSort?.direction ?? 'asc');
+  const [sortKey, setSortKey] = useState<string | null>(query?.sort?.key ?? initialSort?.key ?? null);
+  const [sortDirection, setSortDirection] = useState<DataTableSortDirection>(
+    query?.sort?.direction ?? initialSort?.direction ?? 'asc'
+  );
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentPageSize, setCurrentPageSize] = useState(pageSize);
+  const [currentPage, setCurrentPage] = useState(query?.pagination?.page ?? 1);
+  const [currentPageSize, setCurrentPageSize] = useState(query?.pagination?.pageSize ?? pageSize);
+  const [internalVisibleColumnKeys, setInternalVisibleColumnKeys] = useState<string[]>(
+    columns.map((column) => column.key)
+  );
+  const [isColumnMenuOpen, setIsColumnMenuOpen] = useState(false);
   const rowRefs = useRef<Array<HTMLTableRowElement | null>>([]);
+  const selectAllRef = useRef<HTMLInputElement | null>(null);
+  const columnSettingsRef = useRef<HTMLDivElement | null>(null);
   const selectionGroupName = radioGroupName ?? `itdo-data-table-selection-${tableId}`;
+  const columnSettingsMenuId = `itdo-data-table-column-settings-${tableId}`;
 
   const resolvedLabels = {
     noRecords: labels?.noRecords ?? 'No records found.',
@@ -76,11 +115,85 @@ export const DataTable: React.FC<DataTableProps> = ({
     prevPage: labels?.prevPage ?? 'Prev',
     nextPage: labels?.nextPage ?? 'Next',
     page: labels?.page ?? ((page: number, total: number) => `Page ${page} / ${total}`),
+    columnSettings: labels?.columnSettings ?? 'Columns',
+    selectedRows: labels?.selectedRows ?? ((selectedRows: number) => `${selectedRows} rows selected`),
+    clearSelection: labels?.clearSelection ?? 'Clear',
+    selectAllRows: labels?.selectAllRows ?? 'Select all rows in page',
+    deselectAllRows: labels?.deselectAllRows ?? 'Deselect all rows in page',
   };
 
   useEffect(() => {
-    setCurrentPageSize(pageSize);
-  }, [pageSize]);
+    setCurrentPageSize(query?.pagination?.pageSize ?? pageSize);
+  }, [pageSize, query?.pagination?.pageSize]);
+
+  useEffect(() => {
+    if (query?.pagination?.page !== undefined) {
+      setCurrentPage(query.pagination.page);
+    }
+  }, [query?.pagination?.page]);
+
+  useEffect(() => {
+    if (query?.sort?.key !== undefined) {
+      setSortKey(query.sort.key);
+      if (query.sort.direction !== undefined) {
+        setSortDirection(query.sort.direction);
+      }
+    }
+  }, [query?.sort?.direction, query?.sort?.key]);
+
+  useEffect(() => {
+    setInternalVisibleColumnKeys((previous) => {
+      const available = columns.map((column) => column.key);
+      const next = previous.filter((columnKey) => available.includes(columnKey));
+      for (const columnKey of available) {
+        if (!next.includes(columnKey)) {
+          next.push(columnKey);
+        }
+      }
+      return next;
+    });
+  }, [columns]);
+
+  useEffect(() => {
+    if (!isColumnMenuOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!columnSettingsRef.current) return;
+      if (columnSettingsRef.current.contains(event.target as Node)) return;
+      setIsColumnMenuOpen(false);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [isColumnMenuOpen]);
+
+  const alwaysVisibleColumnKeys = useMemo(
+    () => columns.filter((column) => column.hideable === false).map((column) => column.key),
+    [columns]
+  );
+
+  const resolvedVisibleColumnKeys = useMemo(() => {
+    const requestedKeys = visibleColumnKeys ?? internalVisibleColumnKeys;
+    const requestedSet = new Set(requestedKeys);
+    for (const columnKey of alwaysVisibleColumnKeys) {
+      requestedSet.add(columnKey);
+    }
+    return columns.map((column) => column.key).filter((columnKey) => requestedSet.has(columnKey));
+  }, [alwaysVisibleColumnKeys, columns, internalVisibleColumnKeys, visibleColumnKeys]);
+
+  const visibleColumns = useMemo(
+    () => columns.filter((column) => resolvedVisibleColumnKeys.includes(column.key)),
+    [columns, resolvedVisibleColumnKeys]
+  );
+
+  const hideableColumns = useMemo(
+    () => columns.filter((column) => column.hideable !== false),
+    [columns]
+  );
+
+  const canControlColumns = enableColumnVisibilityControl && hideableColumns.length > 1;
 
   const sortedRows = useMemo(() => sortRows(rows, sortKey, sortDirection), [rows, sortKey, sortDirection]);
 
@@ -94,6 +207,8 @@ export const DataTable: React.FC<DataTableProps> = ({
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 
   useEffect(() => {
     const nextSelected = selectedIds.filter((selectedId) =>
@@ -110,9 +225,47 @@ export const DataTable: React.FC<DataTableProps> = ({
     return sortedRows.slice(offset, offset + currentPageSize);
   }, [sortedRows, currentPage, currentPageSize]);
 
+  const pagedRowIds = useMemo(() => pagedRows.map((row) => row.id), [pagedRows]);
+
+  const allCurrentPageSelected =
+    pagedRowIds.length > 0 && pagedRowIds.every((rowId) => selectedIdSet.has(rowId));
+  const someCurrentPageSelected = pagedRowIds.some((rowId) => selectedIdSet.has(rowId));
+
+  useEffect(() => {
+    if (!selectAllRef.current) return;
+    selectAllRef.current.indeterminate = !allCurrentPageSelected && someCurrentPageSelected;
+  }, [allCurrentPageSelected, someCurrentPageSelected]);
+
+  const selectedRows = useMemo(
+    () => rows.filter((row) => selectedIdSet.has(row.id)),
+    [rows, selectedIdSet]
+  );
+
   useEffect(() => {
     rowRefs.current = rowRefs.current.slice(0, pagedRows.length);
   }, [pagedRows.length]);
+
+  useEffect(() => {
+    onQueryChange?.({
+      search: query?.search,
+      filters: query?.filters,
+      sort: sortKey ? { key: sortKey, direction: sortDirection } : undefined,
+      pagination: {
+        page: currentPage,
+        pageSize: currentPageSize,
+        totalItems: sortedRows.length,
+      },
+    });
+  }, [
+    currentPage,
+    currentPageSize,
+    onQueryChange,
+    query?.filters,
+    query?.search,
+    sortDirection,
+    sortKey,
+    sortedRows.length,
+  ]);
 
   const updateSelection = (nextSelection: string[]) => {
     setSelectedIds(nextSelection);
@@ -137,6 +290,24 @@ export const DataTable: React.FC<DataTableProps> = ({
     updateSelection([...selectedIds, rowId]);
   };
 
+  const togglePageSelection = () => {
+    if (selectable !== 'multiple') {
+      return;
+    }
+
+    if (allCurrentPageSelected) {
+      const removed = selectedIds.filter((selectedId) => !pagedRowIds.includes(selectedId));
+      updateSelection(removed);
+      return;
+    }
+
+    const nextSet = new Set(selectedIds);
+    for (const rowId of pagedRowIds) {
+      nextSet.add(rowId);
+    }
+    updateSelection(Array.from(nextSet));
+  };
+
   const handleSort = (column: DataTableColumn) => {
     if (!column.sortable) {
       return;
@@ -149,6 +320,37 @@ export const DataTable: React.FC<DataTableProps> = ({
 
     setSortKey(column.key);
     setSortDirection('asc');
+  };
+
+  const handleColumnVisibilityToggle = (columnKey: string) => {
+    const next = resolveNextVisibleKeys(columns, resolvedVisibleColumnKeys, columnKey);
+
+    if (!visibleColumnKeys) {
+      setInternalVisibleColumnKeys(next);
+    }
+    onVisibleColumnKeysChange?.(next);
+  };
+
+  const hasRowActions = (rowActions?.length ?? 0) > 0 || !!rowActionSlot;
+  const hasBulkActions = selectable === 'multiple' && (bulkActions?.length ?? 0) > 0;
+  const leftPinnedColumnKey = useMemo(
+    () => visibleColumns.find((column) => column.pinned === 'left')?.key,
+    [visibleColumns]
+  );
+  const rightPinnedColumnKey = useMemo(
+    () => visibleColumns.find((column) => column.pinned === 'right')?.key,
+    [visibleColumns]
+  );
+  const shouldPinActionsColumn = hasRowActions && rightPinnedColumnKey === undefined;
+
+  const getPinnedCellClassName = (column: DataTableColumn) => {
+    if (column.pinned === 'left' && column.key === leftPinnedColumnKey) {
+      return 'itdo-data-table__cell--pinned-left';
+    }
+    if (column.pinned === 'right' && column.key === rightPinnedColumnKey) {
+      return 'itdo-data-table__cell--pinned-right';
+    }
+    return undefined;
   };
 
   if (loading) {
@@ -170,26 +372,96 @@ export const DataTable: React.FC<DataTableProps> = ({
 
   return (
     <div className={clsx('itdo-data-table', className)}>
+      {canControlColumns && (
+        <div className="itdo-data-table__header">
+          <div className="itdo-data-table__column-settings" ref={columnSettingsRef}>
+            <button
+              type="button"
+              className="itdo-data-table__column-settings-trigger"
+              onClick={() => setIsColumnMenuOpen((previous) => !previous)}
+              aria-expanded={isColumnMenuOpen}
+              aria-controls={isColumnMenuOpen ? columnSettingsMenuId : undefined}
+            >
+              {resolvedLabels.columnSettings}
+            </button>
+            {isColumnMenuOpen && (
+              <div className="itdo-data-table__column-settings-menu" id={columnSettingsMenuId}>
+                {hideableColumns.map((column) => (
+                  <label key={column.key} className="itdo-data-table__column-settings-item">
+                    <input
+                      type="checkbox"
+                      checked={resolvedVisibleColumnKeys.includes(column.key)}
+                      onChange={() => handleColumnVisibilityToggle(column.key)}
+                    />
+                    <span>{column.header}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {hasBulkActions && selectedRows.length > 0 && (
+        <div className="itdo-data-table__bulk-bar" role="status" aria-live="polite">
+          <span className="itdo-data-table__bulk-count">
+            {resolvedLabels.selectedRows(selectedRows.length)}
+          </span>
+          <div className="itdo-data-table__bulk-actions">
+            {bulkActions?.map((action) => (
+              <button
+                key={action.key}
+                type="button"
+                className="itdo-data-table__bulk-action"
+                onClick={() => action.onSelect(selectedRows)}
+                disabled={action.disabled}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="itdo-data-table__clear-selection"
+            onClick={() => updateSelection([])}
+          >
+            {resolvedLabels.clearSelection}
+          </button>
+        </div>
+      )}
+
       <table role="grid" aria-rowcount={sortedRows.length + 1}>
         {caption && <caption>{caption}</caption>}
         <thead>
           <tr>
             {selectable !== 'none' && (
               <th className="itdo-data-table__selection-header">
-                <span className="itdo-data-table__sr-only">Select rows</span>
+                {selectable === 'multiple' ? (
+                  <input
+                    ref={selectAllRef}
+                    type="checkbox"
+                    checked={allCurrentPageSelected}
+                    onChange={togglePageSelection}
+                    aria-label={allCurrentPageSelected ? resolvedLabels.deselectAllRows : resolvedLabels.selectAllRows}
+                  />
+                ) : (
+                  <span className="itdo-data-table__sr-only">Select rows</span>
+                )}
               </th>
             )}
-            {columns.map((column) => {
+            {visibleColumns.map((column) => {
               const isActiveSort = sortKey === column.key;
               const ariaSort = isActiveSort
                 ? sortDirection === 'asc'
                   ? 'ascending'
                   : 'descending'
                 : 'none';
+              const pinnedClassName = getPinnedCellClassName(column);
 
               return (
                 <th
                   key={column.key}
+                  className={pinnedClassName}
                   style={{ textAlign: column.align ?? 'left', width: column.width }}
                   aria-sort={ariaSort}
                 >
@@ -215,12 +487,16 @@ export const DataTable: React.FC<DataTableProps> = ({
                 </th>
               );
             })}
-            {rowActions && rowActions.length > 0 && <th>Actions</th>}
+            {hasRowActions && (
+              <th className={clsx({ 'itdo-data-table__cell--pinned-right': shouldPinActionsColumn })}>
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
           {pagedRows.map((row, rowIndex) => {
-            const selected = selectedIds.includes(row.id);
+            const selected = selectedIdSet.has(row.id);
             return (
               <tr
                 key={row.id}
@@ -280,25 +556,34 @@ export const DataTable: React.FC<DataTableProps> = ({
                     )}
                   </td>
                 )}
-                {columns.map((column) => (
-                  <td key={`${row.id}-${column.key}`} style={{ textAlign: column.align ?? 'left' }}>
+                {visibleColumns.map((column) => (
+                  <td
+                    key={`${row.id}-${column.key}`}
+                    className={getPinnedCellClassName(column)}
+                    style={{ textAlign: column.align ?? 'left' }}
+                  >
                     {column.cell ? column.cell(row) : row[column.key]}
                   </td>
                 ))}
-                {rowActions && rowActions.length > 0 && (
-                  <td>
-                    <div className="itdo-data-table__row-actions">
-                      {rowActions.map((action) => (
-                        <button
-                          type="button"
-                          key={action.key}
-                          className="itdo-data-table__row-action"
-                          onClick={() => action.onSelect(row)}
-                        >
-                          {action.label}
-                        </button>
-                      ))}
-                    </div>
+                {hasRowActions && (
+                  <td className={clsx({ 'itdo-data-table__cell--pinned-right': shouldPinActionsColumn })}>
+                    {rowActionSlot ? (
+                      rowActionSlot(row)
+                    ) : (
+                      <div className="itdo-data-table__row-actions">
+                        {rowActions?.map((action) => (
+                          <button
+                            type="button"
+                            key={action.key}
+                            className="itdo-data-table__row-action"
+                            onClick={() => action.onSelect(row)}
+                            disabled={action.disabled}
+                          >
+                            {action.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </td>
                 )}
               </tr>

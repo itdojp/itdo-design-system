@@ -12,7 +12,7 @@ export default meta;
 type Story = StoryObj<typeof DataTable>;
 
 const invoiceColumns = [
-  { key: 'invoiceNo', header: 'Invoice No', sortable: true },
+  { key: 'invoiceNo', header: 'Invoice No', sortable: true, pinned: 'left' as const, hideable: false },
   { key: 'vendor', header: 'Vendor', sortable: true },
   { key: 'amount', header: 'Amount', sortable: true, align: 'right' as const },
   { key: 'status', header: 'Status' },
@@ -80,9 +80,14 @@ export const InvoiceList: Story = {
     rows: invoiceRows,
     selectable: 'multiple',
     pageSize: 2,
+    enableColumnVisibilityControl: true,
     rowActions: [
       { key: 'approve', label: 'Approve', onSelect: () => undefined },
       { key: 'reject', label: 'Reject', onSelect: () => undefined },
+    ],
+    bulkActions: [
+      { key: 'bulk-approve', label: 'Bulk approve', onSelect: () => undefined },
+      { key: 'bulk-export', label: 'Bulk export', onSelect: () => undefined },
     ],
   },
 };
@@ -94,6 +99,6 @@ export const AuditLogList: Story = {
     rows: auditRows,
     selectable: 'single',
     pageSize: 2,
-    rowActions: [{ key: 'detail', label: 'Detail', onSelect: () => undefined }],
+    rowActionSlot: (row) => <a href={`#${row.id}`}>Detail</a>,
   },
 };

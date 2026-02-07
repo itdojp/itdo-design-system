@@ -85,6 +85,7 @@ const invoiceRows = [
 
 const ProjectFilters = () => {
   const [search, setSearch] = useState('');
+  const [logic, setLogic] = useState<'and' | 'or'>('and');
 
   return (
     <FilterBar
@@ -92,6 +93,10 @@ const ProjectFilters = () => {
         value: search,
         onChange: setSearch,
         placeholder: 'Search project name',
+      }}
+      logic={{
+        value: logic,
+        onChange: setLogic,
       }}
       filters={[
         {

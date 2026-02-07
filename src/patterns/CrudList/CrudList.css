@@ -72,10 +72,38 @@
 
 .itdo-filter-bar__search,
 .itdo-filter-bar__saved-view,
-.itdo-filter-bar__control {
+.itdo-filter-bar__control,
+.itdo-filter-bar__logic {
   display: grid;
   gap: var(--space-2);
   min-width: 180px;
+}
+
+.itdo-filter-bar__logic-controls {
+  display: inline-flex;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.itdo-filter-bar__logic-button {
+  height: var(--control-height-sm);
+  border: none;
+  border-right: 1px solid var(--color-border-default);
+  background: var(--color-bg-base);
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+
+.itdo-filter-bar__logic-button:last-child {
+  border-right: none;
+}
+
+.itdo-filter-bar__logic-button.is-active {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-default);
+  font-weight: 600;
 }
 
 .itdo-filter-bar__label {
@@ -187,6 +215,79 @@
   overflow: hidden;
 }
 
+.itdo-data-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border-default);
+  padding: var(--space-4) var(--space-6);
+}
+
+.itdo-data-table__column-settings {
+  position: relative;
+  margin-left: auto;
+}
+
+.itdo-data-table__column-settings-trigger,
+.itdo-data-table__bulk-action,
+.itdo-data-table__clear-selection {
+  height: var(--control-height-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-base);
+  padding: 0 var(--space-6);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+}
+
+.itdo-data-table__column-settings-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  z-index: 2;
+  display: grid;
+  gap: var(--space-2);
+  min-width: 220px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-base);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4);
+}
+
+.itdo-data-table__column-settings-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+}
+
+.itdo-data-table__bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface);
+}
+
+.itdo-data-table__bulk-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.itdo-data-table__bulk-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.itdo-data-table__clear-selection {
+  margin-left: auto;
+}
+
 .itdo-data-table table {
   width: 100%;
   border-collapse: collapse;
@@ -198,6 +299,29 @@
   padding: var(--space-6);
   border-bottom: 1px solid var(--color-border-default);
   vertical-align: middle;
+}
+
+.itdo-data-table__cell--pinned-left,
+.itdo-data-table__cell--pinned-right {
+  position: sticky;
+  z-index: 1;
+  background: var(--color-bg-base);
+}
+
+.itdo-data-table th.itdo-data-table__cell--pinned-left,
+.itdo-data-table th.itdo-data-table__cell--pinned-right {
+  z-index: 2;
+  background: var(--color-bg-surface);
+}
+
+.itdo-data-table__cell--pinned-left {
+  left: 0;
+  box-shadow: 1px 0 0 var(--color-border-default);
+}
+
+.itdo-data-table__cell--pinned-right {
+  right: 0;
+  box-shadow: -1px 0 0 var(--color-border-default);
 }
 
 .itdo-data-table th {

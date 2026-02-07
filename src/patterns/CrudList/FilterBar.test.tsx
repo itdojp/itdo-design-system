@@ -61,4 +61,42 @@ describe('FilterBar', () => {
     expect(onSelect).toHaveBeenCalledWith('pending');
     expect(onSave).toHaveBeenCalledTimes(1);
   });
+
+  it('switches logical operator in structured filters', () => {
+    const onChange = jest.fn();
+
+    render(
+      <FilterBar
+        logic={{
+          value: 'and',
+          onChange,
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'OR' }));
+    expect(onChange).toHaveBeenCalledWith('or');
+  });
+
+  it('supports custom logic labels for i18n', () => {
+    render(
+      <FilterBar
+        labels={{
+          logicLabel: '条件結合',
+          logicAriaLabel: '絞り込み条件結合',
+          logicAnd: 'かつ',
+          logicOr: 'または',
+        }}
+        logic={{
+          value: 'and',
+          onChange: () => undefined,
+        }}
+      />
+    );
+
+    expect(screen.getByText('条件結合')).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: '絞り込み条件結合' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'かつ' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'または' })).toBeInTheDocument();
+  });
 });

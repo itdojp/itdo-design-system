@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Select } from '../../components/Select';
-import { Alert } from '../../components/Alert';
 import {
   DataGridSurface,
   DataGridToolbar,
   DataGridPagination,
   DataGridEmptyState,
   DataGridLoadingState,
+  DataGridErrorState,
 } from './';
 
 const meta: Meta<typeof DataGridSurface> = {
@@ -124,11 +124,15 @@ export const Empty: Story = {
 export const Error: Story = {
   render: () => (
     <DataGridSurface>
-      <div className="itdo-datagrid-state">
-        <Alert variant="error" title="Failed to load">
-          Please refresh or try again later.
-        </Alert>
-      </div>
+      <DataGridErrorState
+        title="Failed to load grid data"
+        description="The latest records could not be fetched."
+        action={
+          <Button size="small" variant="secondary">
+            Retry
+          </Button>
+        }
+      />
     </DataGridSurface>
   ),
 };

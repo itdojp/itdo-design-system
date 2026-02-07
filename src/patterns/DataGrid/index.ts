@@ -3,4 +3,5 @@ export * from './DataGridToolbar';
 export * from './DataGridPagination';
 export * from './DataGridEmptyState';
 export * from './DataGridLoadingState';
+export * from './DataGridErrorState';
 export * from './DataGrid.types';

@@ -12,6 +12,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   search,
   filters,
   chips,
+  logic,
   onClearAll,
   savedViews,
 }) => {
@@ -21,10 +22,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     savedViewPlaceholder: labels?.savedViewPlaceholder ?? 'Select view',
     saveView: labels?.saveView ?? 'Save',
     clearAll: labels?.clearAll ?? 'Clear all',
+    logicLabel: labels?.logicLabel ?? 'Logic',
+    logicAriaLabel: labels?.logicAriaLabel ?? 'Filter logic',
+    logicAnd: labels?.logicAnd ?? 'AND',
+    logicOr: labels?.logicOr ?? 'OR',
   };
 
   const hasStructuredFilters =
-    !!search || !!savedViews || (filters !== undefined && filters.length > 0);
+    !!search || !!savedViews || !!logic || (filters !== undefined && filters.length > 0);
   const hasTopBarContent = hasStructuredFilters || !!children || !!actions;
   const hasChips = chips !== undefined && chips.length > 0;
 
@@ -70,6 +75,38 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   )}
                 </div>
               </label>
+            )}
+
+            {logic && (
+              <div
+                className="itdo-filter-bar__logic"
+                role="group"
+                aria-label={logic.ariaLabel ?? resolvedLabels.logicAriaLabel}
+              >
+                <span className="itdo-filter-bar__label">{resolvedLabels.logicLabel}</span>
+                <div className="itdo-filter-bar__logic-controls">
+                  <button
+                    type="button"
+                    aria-pressed={logic.value === 'and'}
+                    className={clsx('itdo-filter-bar__logic-button', {
+                      'is-active': logic.value === 'and',
+                    })}
+                    onClick={() => logic.onChange('and')}
+                  >
+                    {resolvedLabels.logicAnd}
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={logic.value === 'or'}
+                    className={clsx('itdo-filter-bar__logic-button', {
+                      'is-active': logic.value === 'or',
+                    })}
+                    onClick={() => logic.onChange('or')}
+                  >
+                    {resolvedLabels.logicOr}
+                  </button>
+                </div>
+              </div>
             )}
 
             {filters?.map((filter) => (
