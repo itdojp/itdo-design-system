@@ -5,6 +5,14 @@ import { Select } from './Select';
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
   component: Select,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '選択入力規約: 選択必須項目は `required` を付与し、検証結果は `validationState` で表現します。',
+      },
+    },
+  },
   args: {
     label: 'Label',
     helpText: 'Helper text',
@@ -53,5 +61,26 @@ export const Disabled: Story = {
 export const Error: Story = {
   args: {
     error: 'Required field',
+  },
+};
+
+export const Warning: Story = {
+  args: {
+    validationState: 'warning',
+    validationMessage: 'Review selected role before apply',
+  },
+};
+
+export const Success: Story = {
+  args: {
+    validationState: 'success',
+    validationMessage: 'Selection is valid',
+  },
+};
+
+export const Validating: Story = {
+  args: {
+    validationState: 'validating',
+    validationMessage: 'Checking dependency...',
   },
 };

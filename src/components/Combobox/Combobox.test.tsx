@@ -62,7 +62,7 @@ describe('Combobox', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Failed to load results')).toBeInTheDocument();
+      expect(screen.getAllByText('Failed to load results')).toHaveLength(2);
     });
 
     consoleError.mockRestore();

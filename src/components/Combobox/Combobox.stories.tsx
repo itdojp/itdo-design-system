@@ -6,6 +6,14 @@ import { ComboboxItem } from './Combobox.types';
 const meta: Meta<typeof Combobox> = {
   title: 'Components/Combobox',
   component: Combobox,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '実装規約: 非同期検索中は `validationState=validating` を表示し、失敗時は `errorMessage` を `validationMessage` として利用します。',
+      },
+    },
+  },
 };
 
 export default meta;
@@ -46,6 +54,7 @@ export const AsyncSearch: Story = {
       <Combobox
         label="Reference"
         placeholder="Search"
+        helpText="Project name or module code"
         value={selected}
         onChange={setSelected}
         loadOptions={loadOptions}
@@ -83,5 +92,15 @@ export const WithSelectHandler: Story = {
         {selectedId && <span>Selected: {selectedId}</span>}
       </div>
     );
+  },
+};
+
+export const ValidationWarning: Story = {
+  args: {
+    label: 'Reference',
+    placeholder: 'Search',
+    items: baseItems,
+    validationState: 'warning',
+    validationMessage: 'The selected module is archived',
   },
 };

@@ -46,6 +46,29 @@
   box-shadow: 0 0 0 var(--focus-ring-width) rgba(239, 68, 68, 0.2);
 }
 
+.itdo-select--warning {
+  border-color: var(--color-status-warning);
+}
+
+.itdo-select--warning:focus {
+  border-color: var(--color-status-warning);
+  box-shadow: 0 0 0 var(--focus-ring-width) rgba(245, 158, 11, 0.24);
+}
+
+.itdo-select--success {
+  border-color: var(--color-status-success);
+}
+
+.itdo-select--success:focus {
+  border-color: var(--color-status-success);
+  box-shadow: 0 0 0 var(--focus-ring-width) rgba(34, 197, 94, 0.2);
+}
+
+.itdo-select--validating {
+  border-color: var(--color-border-focus);
+  border-style: dashed;
+}
+
 .itdo-select--disabled {
   background-color: var(--color-bg-disabled);
   color: var(--color-text-muted);

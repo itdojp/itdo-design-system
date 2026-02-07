@@ -5,6 +5,14 @@ import { Input } from './Input';
 const meta: Meta<typeof Input> = {
   title: 'Components/Input',
   component: Input,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '入力規約: `validationState`/`validationMessage` を第一優先で使い、`helpText` は入力ヒントに限定します。',
+      },
+    },
+  },
   args: {
     label: 'Label',
     placeholder: 'Type here',
@@ -47,6 +55,21 @@ export const Error: Story = {
 
 export const Success: Story = {
   args: {
-    success: 'Looks good',
+    validationState: 'success',
+    validationMessage: 'Looks good',
+  },
+};
+
+export const Warning: Story = {
+  args: {
+    validationState: 'warning',
+    validationMessage: 'Check the format before submit',
+  },
+};
+
+export const Validating: Story = {
+  args: {
+    validationState: 'validating',
+    validationMessage: 'Validating...',
   },
 };

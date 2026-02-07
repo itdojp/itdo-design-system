@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import clsx from 'clsx';
 import { SelectProps } from './Select.types';
 import { FormField } from '../FormField';
+import { resolveValidationMessage, resolveValidationState } from '../FormField/validation';
 import './Select.css';
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -9,8 +10,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     {
       label,
       helpText,
+      hint,
+      description,
       error,
+      warning,
       success,
+      validationState,
+      validationMessage,
       size = 'medium',
       fullWidth = false,
       disabled = false,
@@ -23,11 +29,28 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     },
     ref
   ) => {
+    const resolvedValidationState = resolveValidationState({
+      validationState,
+      error,
+      warning,
+      success,
+    });
+    const resolvedValidationMessage = resolveValidationMessage(resolvedValidationState, {
+      validationMessage,
+      error,
+      warning,
+      success,
+    });
+    const resolvedHelpText = hint ?? description ?? helpText;
+
     const selectClasses = clsx(
       'itdo-select',
       `itdo-select--${size}`,
       {
-        'itdo-select--error': error,
+        'itdo-select--error': resolvedValidationState === 'error',
+        'itdo-select--warning': resolvedValidationState === 'warning',
+        'itdo-select--success': resolvedValidationState === 'success',
+        'itdo-select--validating': resolvedValidationState === 'validating',
         'itdo-select--disabled': disabled,
         'itdo-select--full-width': fullWidth,
       },
@@ -37,9 +60,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <FormField
         label={label}
-        helpText={helpText}
-        error={error}
-        success={success}
+        helpText={resolvedHelpText}
+        validationState={resolvedValidationState}
+        validationMessage={resolvedValidationMessage}
         required={required}
         size={size}
         fullWidth={fullWidth}

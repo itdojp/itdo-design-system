@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { Input } from '../Input';
 import { Popover } from '../Popover';
 import { ComboboxItem, ComboboxProps } from './Combobox.types';
+import type { ValidationState } from '../FormField/FormField.types';
+import { resolveValidationMessage, resolveValidationState } from '../FormField/validation';
 import './Combobox.css';
 
 const highlightText = (text: string, query: string) => {
@@ -23,6 +25,9 @@ const highlightText = (text: string, query: string) => {
 
 export const Combobox: React.FC<ComboboxProps> = ({
   label,
+  helpText,
+  hint,
+  description,
   placeholder,
   value,
   defaultValue,
@@ -35,6 +40,13 @@ export const Combobox: React.FC<ComboboxProps> = ({
   emptyMessage = 'No results',
   errorMessage = 'Failed to load results',
   disabled = false,
+  required = false,
+  fullWidth = false,
+  error,
+  warning,
+  success,
+  validationState,
+  validationMessage,
   size = 'medium',
   className,
   inputProps,
@@ -56,6 +68,37 @@ export const Combobox: React.FC<ComboboxProps> = ({
   const displayItems = items ?? internalItems;
   const isLoading = loading ?? internalLoading;
   const wasControlled = useRef(isControlled);
+  const resolvedHelpText = hint ?? description ?? helpText;
+  const explicitValidationState = resolveValidationState({
+    validationState,
+    error,
+    warning,
+    success,
+  });
+  const explicitValidationMessage = resolveValidationMessage(explicitValidationState, {
+    validationMessage,
+    error,
+    warning,
+    success,
+  });
+  const hasExplicitValidation =
+    explicitValidationState !== 'none' || explicitValidationMessage !== undefined;
+
+  let resolvedValidationState: ValidationState = explicitValidationState;
+  let resolvedValidationMessage = explicitValidationMessage;
+
+  if (!hasExplicitValidation) {
+    if (open && loadError) {
+      resolvedValidationState = 'error';
+      resolvedValidationMessage = errorMessage;
+    } else if (open && isLoading) {
+      resolvedValidationState = 'validating';
+      resolvedValidationMessage = 'Validating...';
+    } else {
+      resolvedValidationState = 'none';
+      resolvedValidationMessage = undefined;
+    }
+  }
 
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production' && wasControlled.current !== isControlled) {
@@ -245,6 +288,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
       <Input
         ref={inputRef}
         label={label}
+        helpText={resolvedHelpText}
         placeholder={placeholder}
         value={query}
         onChange={(event) => {
@@ -254,6 +298,10 @@ export const Combobox: React.FC<ComboboxProps> = ({
         onFocus={() => setOpen(true)}
         onKeyDown={handleKeyDown}
         disabled={disabled}
+        required={required}
+        fullWidth={fullWidth}
+        validationState={resolvedValidationState}
+        validationMessage={resolvedValidationMessage}
         size={size}
         aria-autocomplete="list"
         aria-controls={listId}
