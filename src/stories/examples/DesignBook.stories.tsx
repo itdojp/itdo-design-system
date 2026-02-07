@@ -434,15 +434,16 @@ const designBookInvoiceColumns = [
   { key: 'updatedAt', header: 'Updated', sortable: true },
 ];
 
-const buildFilteredInvoices = (tab: string, search: string) => {
+const buildFilteredInvoices = (tab: string, search: string, statusFilter = '') => {
   const loweredSearch = search.trim().toLowerCase();
   return designBookInvoiceRows.filter((row) => {
     const tabMatch = tab === 'all' || row.status.toLowerCase() === tab;
+    const statusMatch = statusFilter === '' || row.status.toLowerCase() === statusFilter;
     const searchMatch =
       loweredSearch.length === 0 ||
       row.invoiceNo.toLowerCase().includes(loweredSearch) ||
       row.vendor.toLowerCase().includes(loweredSearch);
-    return tabMatch && searchMatch;
+    return tabMatch && statusMatch && searchMatch;
   });
 };
 
@@ -450,12 +451,13 @@ export const MasterListWorkspace: Story = {
   render: () => {
     const [activeTab, setActiveTab] = useState('all');
     const [search, setSearch] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
     const [queryUpdates, setQueryUpdates] = useState(0);
     const [panelRefresh, setPanelRefresh] = useState(0);
 
     const filteredRows = useMemo(
-      () => buildFilteredInvoices(activeTab, search),
-      [activeTab, search]
+      () => buildFilteredInvoices(activeTab, search, statusFilter),
+      [activeTab, search, statusFilter]
     );
     const query = useMemo(
       () => ({
@@ -516,7 +518,7 @@ export const MasterListWorkspace: Story = {
                         key: 'status',
                         label: 'Status',
                         control: (
-                          <select aria-label="Status filter">
+                          <select aria-label="Status filter" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
                             <option value="">All</option>
                             <option value="pending">Pending</option>
                             <option value="approved">Approved</option>
@@ -525,8 +527,14 @@ export const MasterListWorkspace: Story = {
                         ),
                       },
                     ]}
-                    chips={search ? [{ key: 'search', label: `Search: ${search}` }] : []}
-                    onClearAll={() => setSearch('')}
+                    chips={[
+                      ...(search ? [{ key: 'search', label: `Search: ${search}` }] : []),
+                      ...(statusFilter ? [{ key: 'status', label: `Status: ${statusFilter}` }] : []),
+                    ]}
+                    onClearAll={() => {
+                      setSearch('');
+                      setStatusFilter('');
+                    }}
                   />
                 }
                 table={
