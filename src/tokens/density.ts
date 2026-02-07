@@ -25,6 +25,21 @@ export const density = {
       cellPaddingX: '0.75rem',
       cellPaddingY: '0.5rem',
     },
+    table: {
+      rowHeight: '44px',
+      cellPaddingX: '0.75rem',
+      cellPaddingY: '0.5rem',
+    },
+    section: {
+      cardPadding: '2rem',
+      cardGap: '1.25rem',
+    },
+    filter: {
+      controlMinWidth: '180px',
+    },
+    touchTarget: {
+      minimum: '40px',
+    },
   },
   compact: {
     controlHeight: {
@@ -51,6 +66,21 @@ export const density = {
       rowHeight: '36px',
       cellPaddingX: '0.5rem',
       cellPaddingY: '0.375rem',
+    },
+    table: {
+      rowHeight: '36px',
+      cellPaddingX: '0.5rem',
+      cellPaddingY: '0.375rem',
+    },
+    section: {
+      cardPadding: '1.25rem',
+      cardGap: '0.75rem',
+    },
+    filter: {
+      controlMinWidth: '160px',
+    },
+    touchTarget: {
+      minimum: '36px',
     },
   },
 } as const;

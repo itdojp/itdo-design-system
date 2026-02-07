@@ -1,5 +1,28 @@
 import { colors } from './colors';
 
+const statusPalette = {
+  success: {
+    background: colors.success.light,
+    border: colors.success.default,
+    text: colors.success.dark,
+  },
+  warning: {
+    background: colors.warning.light,
+    border: colors.warning.default,
+    text: colors.warning.dark,
+  },
+  error: {
+    background: colors.error.light,
+    border: colors.error.default,
+    text: colors.error[700],
+  },
+  info: {
+    background: colors.info.light,
+    border: colors.info.default,
+    text: colors.info.dark,
+  },
+} as const;
+
 export const semantic = {
   text: {
     primary: colors.neutral[900],
@@ -16,22 +39,42 @@ export const semantic = {
     disabled: colors.neutral[100],
   },
   border: {
+    subtle: colors.neutral[100],
     default: colors.neutral[200],
     strong: colors.neutral[300],
+    interactive: colors.primary[600],
     focus: colors.primary[500],
     disabled: colors.neutral[200],
   },
   status: {
-    success: colors.success.default,
-    warning: colors.warning.default,
-    error: colors.error.default,
-    info: colors.info.default,
+    success: statusPalette.success.border,
+    warning: statusPalette.warning.border,
+    error: statusPalette.error.border,
+    info: statusPalette.info.border,
+    surface: {
+      success: statusPalette.success.background,
+      warning: statusPalette.warning.background,
+      error: statusPalette.error.background,
+      info: statusPalette.info.background,
+    },
+    border: {
+      success: statusPalette.success.border,
+      warning: statusPalette.warning.border,
+      error: statusPalette.error.border,
+      info: statusPalette.info.border,
+    },
+    text: {
+      success: statusPalette.success.text,
+      warning: statusPalette.warning.text,
+      error: statusPalette.error.text,
+      info: statusPalette.info.text,
+    },
   },
   statusText: {
-    success: colors.success.dark,
-    warning: colors.warning.dark,
-    error: colors.error[700],
-    info: colors.info.dark,
+    success: statusPalette.success.text,
+    warning: statusPalette.warning.text,
+    error: statusPalette.error.text,
+    info: statusPalette.info.text,
   },
   action: {
     primary: colors.primary[700],
@@ -49,8 +92,12 @@ export const semantic = {
   },
   focus: {
     ringColor: 'rgba(249, 115, 22, 0.35)',
+    ringInnerColor: colors.white,
     ringWidth: '3px',
     ringOffset: '2px',
+    outlineColor: colors.primary[500],
+    outlineWidth: '2px',
+    outlineStyle: 'solid',
   },
   datagrid: {
     headerBackground: colors.neutral[50],
