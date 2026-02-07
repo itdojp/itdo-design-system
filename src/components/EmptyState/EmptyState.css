@@ -29,3 +29,11 @@
 .itdo-empty-state__action {
   margin-top: var(--space-6);
 }
+
+.itdo-empty-state__actions {
+  margin-top: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+}

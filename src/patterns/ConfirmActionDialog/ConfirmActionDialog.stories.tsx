@@ -6,6 +6,14 @@ import { ConfirmActionDialog } from './ConfirmActionDialog';
 const meta: Meta<typeof ConfirmActionDialog> = {
   title: 'Patterns/ConfirmActionDialog',
   component: ConfirmActionDialog,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'destructive 規約: `tone="danger"` と `requireReason` を併用し、不可逆操作は理由入力を必須化します。',
+      },
+    },
+  },
 };
 
 export default meta;

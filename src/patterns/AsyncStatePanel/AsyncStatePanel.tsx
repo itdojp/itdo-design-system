@@ -6,6 +6,16 @@ import { Spinner } from '../../components/Spinner';
 import { AsyncStatePanelProps } from './AsyncStatePanel.types';
 import './AsyncStatePanel.css';
 
+const getButtonVariant = (tone: 'primary' | 'secondary' | 'ghost' = 'secondary') => {
+  if (tone === 'primary') {
+    return 'primary';
+  }
+  if (tone === 'ghost') {
+    return 'ghost';
+  }
+  return 'secondary';
+};
+
 export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
   state,
   loadingText = 'Loading...',
@@ -16,7 +26,11 @@ export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
 }) => {
   if (state === 'loading') {
     return (
-      <section className={clsx('itdo-async-state-panel itdo-async-state-panel--loading', className)}>
+      <section
+        className={clsx('itdo-async-state-panel itdo-async-state-panel--loading', className)}
+        role="status"
+        aria-live="polite"
+      >
         <Spinner label={loadingText} />
         <span className="itdo-async-state-panel__text">{loadingText}</span>
       </section>
@@ -30,16 +44,37 @@ export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
           title={empty?.title ?? 'No data'}
           description={empty?.description}
           action={empty?.action}
+          primaryAction={empty?.primaryAction}
+          secondaryAction={empty?.secondaryAction}
+          ghostAction={empty?.ghostAction}
         />
       </section>
     );
   }
 
   if (state === 'error') {
-    const retryLabel = error?.retryLabel ?? 'Retry';
+    const retryAction = error?.retryAction ?? (
+      error?.onRetry
+        ? {
+            label: error?.retryLabel ?? 'Retry',
+            onClick: error.onRetry,
+            tone: 'primary' as const,
+          }
+        : undefined
+    );
+    const actions = [
+      retryAction,
+      error?.secondaryAction,
+      error?.contactAction,
+      error?.backAction,
+    ].filter((value): value is NonNullable<typeof value> => Boolean(value));
 
     return (
-      <section className={clsx('itdo-async-state-panel itdo-async-state-panel--error', className)}>
+      <section
+        className={clsx('itdo-async-state-panel itdo-async-state-panel--error', className)}
+        role="status"
+        aria-live="assertive"
+      >
         <Alert variant="error" title={error?.title ?? 'Failed to load'}>
           <div className="itdo-async-state-panel__error-content">
             {error?.expandableDetail && error.detail ? (
@@ -50,10 +85,21 @@ export const AsyncStatePanel: React.FC<AsyncStatePanelProps> = ({
             ) : (
               error?.detail && <p className="itdo-async-state-panel__error-detail">{error.detail}</p>
             )}
-            {error?.onRetry && (
-              <Button size="small" variant="secondary" onClick={error.onRetry}>
-                {retryLabel}
-              </Button>
+            {actions.length > 0 && (
+              <div className="itdo-async-state-panel__actions">
+                {actions.map((action) => {
+                  return (
+                    <Button
+                      key={action.label}
+                      size="small"
+                      variant={getButtonVariant(action.tone)}
+                      onClick={action.onClick}
+                    >
+                      {action.label}
+                    </Button>
+                  );
+                })}
+              </div>
             )}
           </div>
         </Alert>

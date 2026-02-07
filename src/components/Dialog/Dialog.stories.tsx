@@ -8,6 +8,14 @@ import { Dialog } from './Dialog';
 const meta: Meta<typeof Dialog> = {
   title: 'Components/Dialog',
   component: Dialog,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '運用規約: Dialog は優先度の高い意思決定のみで使用し、destructive 操作は `ConfirmActionDialog` に集約します。',
+      },
+    },
+  },
 };
 
 export default meta;

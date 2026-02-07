@@ -10,6 +10,9 @@ import { Link } from '../../components/Link';
 import { MarkdownRenderer } from '../../components/MarkdownRenderer';
 import { Popover } from '../../components/Popover';
 import { Textarea } from '../../components/Textarea';
+import { ToastViewport } from '../../components/Toast';
+import { useToastQueue } from '../../hooks/useToastQueue';
+import { AsyncStatePanel } from '../../patterns/AsyncStatePanel';
 import { EventLog } from '../../patterns/EventLog';
 import type { ComboboxItem } from '../../components/Combobox/Combobox.types';
 import type { EventLogItem } from '../../patterns/EventLog/EventLog.types';
@@ -263,6 +266,100 @@ export const PatternGallery: Story = {
               </Link>
               <CopyButton text="https://example.com" label="Copy URL" />
             </div>
+          </div>
+        </Section>
+      </Wrapper>
+    );
+  },
+};
+
+export const ErrorRecoveryFlow: Story = {
+  render: () => {
+    const { toasts, enqueue, dismiss } = useToastQueue({ maxVisible: 4 });
+    const [state, setState] = useState<'loading' | 'error' | 'ready'>('loading');
+    const [attempts, setAttempts] = useState(0);
+
+    const simulateFail = () => {
+      setState('loading');
+      window.setTimeout(() => {
+        setState('error');
+        setAttempts((prev) => prev + 1);
+        enqueue({
+          severity: 'warning',
+          title: 'Load failed',
+          description: 'Please retry or contact support.',
+          dedupeKey: 'designbook-load-failed',
+        });
+      }, 300);
+    };
+
+    const simulateSuccess = () => {
+      setState('loading');
+      window.setTimeout(() => {
+        setState('ready');
+        enqueue({
+          severity: 'success',
+          title: 'Recovered',
+          description: 'Records reloaded successfully.',
+          dedupeKey: 'designbook-recovered',
+        });
+      }, 300);
+    };
+
+    return (
+      <Wrapper>
+        <Section title="Error Recovery Flow">
+          <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+              <Button size="small" variant="secondary" onClick={simulateFail}>
+                Simulate failure
+              </Button>
+              <Button size="small" variant="secondary" onClick={simulateSuccess}>
+                Simulate success
+              </Button>
+            </div>
+            <AsyncStatePanel
+              state={state}
+              loadingText="Loading ERP4 records..."
+              error={{
+                title: `Failed to load records (attempt ${attempts})`,
+                detail: 'API_TIMEOUT: request-id=erp4-2301',
+                retryAction: {
+                  label: 'Retry',
+                  tone: 'primary',
+                  onClick: simulateSuccess,
+                },
+                secondaryAction: {
+                  label: 'Adjust filters',
+                  onClick: () => undefined,
+                },
+                contactAction: {
+                  label: 'Contact support',
+                  tone: 'ghost',
+                  onClick: () =>
+                    enqueue({
+                      severity: 'info',
+                      title: 'Support contact',
+                      description: 'Please attach request id: erp4-2301',
+                      dedupeKey: 'support-contact',
+                    }),
+                },
+                backAction: {
+                  label: 'Back to list',
+                  tone: 'ghost',
+                  onClick: () => setState('ready'),
+                },
+              }}
+            >
+              <Card variant="outlined" padding="large">
+                <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                  <strong>Recovered dataset</strong>
+                  <span>Invoices: 24</span>
+                  <span>Pending approvals: 3</span>
+                </div>
+              </Card>
+            </AsyncStatePanel>
+            <ToastViewport toasts={toasts} onDismiss={dismiss} />
           </div>
         </Section>
       </Wrapper>
