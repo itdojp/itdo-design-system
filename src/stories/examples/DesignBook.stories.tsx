@@ -691,6 +691,152 @@ export const DetailTransitionWorkspace: Story = {
   },
 };
 
+type TelemetryCategory = 'view' | 'click' | 'error';
+
+interface TelemetryEventRecord {
+  id: string;
+  eventName: string;
+  category: TelemetryCategory;
+  target: string;
+  status: 'success' | 'error';
+  occurredAt: string;
+}
+
+const toEventLogItem = (record: TelemetryEventRecord): EventLogItem => ({
+  id: record.id,
+  title: `${record.category.toUpperCase()} · ${record.eventName}`,
+  description: `target=${record.target} status=${record.status}`,
+  timestamp: record.occurredAt,
+  status: record.category === 'error' ? 'error' : 'info',
+  meta: 'Telemetry sample payload',
+});
+
+export const TelemetryInstrumentation: Story = {
+  render: () => {
+    const [events, setEvents] = useState<TelemetryEventRecord[]>([]);
+    const initializedRef = useRef(false);
+    const sequenceRef = useRef(0);
+
+    const emit = useCallback(
+      (payload: Omit<TelemetryEventRecord, 'id' | 'occurredAt'>) => {
+        sequenceRef.current += 1;
+        const nextEvent: TelemetryEventRecord = {
+          ...payload,
+          id: `telemetry-${sequenceRef.current}`,
+          occurredAt: new Date().toISOString(),
+        };
+        setEvents((current) => [nextEvent, ...current].slice(0, 10));
+      },
+      []
+    );
+
+    useEffect(() => {
+      if (initializedRef.current) return;
+      initializedRef.current = true;
+      emit({
+        eventName: 'ds.designbook.telemetry_panel.view',
+        category: 'view',
+        target: 'telemetry-panel',
+        status: 'success',
+      });
+    }, [emit]);
+
+    const counters = useMemo(() => {
+      return events.reduce(
+        (acc, current) => {
+          acc[current.category] += 1;
+          return acc;
+        },
+        { view: 0, click: 0, error: 0 }
+      );
+    }, [events]);
+
+    return (
+      <Wrapper>
+        <Section title="Telemetry Instrumentation">
+          <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+            <PageHeader
+              title="Telemetry Playground"
+              description="Design-system event contract sample (view/click/error)."
+              breadcrumbs={[
+                { id: 'home', label: 'Home', href: '#' },
+                { id: 'observability', label: 'Observability', href: '#' },
+                { id: 'telemetry', label: 'Telemetry Playground' },
+              ]}
+            />
+
+            <h2 style={{ margin: 0, fontSize: 'var(--font-size-lg)' }}>Telemetry Controls</h2>
+
+            <SectionCard title="Emit Events" density="compact">
+              <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      emit({
+                        eventName: 'ds.designbook.datatable.open_detail.click',
+                        category: 'click',
+                        target: 'open-detail',
+                        status: 'success',
+                      })
+                    }
+                  >
+                    Emit click
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={() =>
+                      emit({
+                        eventName: 'ds.designbook.telemetry.simulate_error.error',
+                        category: 'error',
+                        target: 'simulate-error',
+                        status: 'error',
+                      })
+                    }
+                  >
+                    Emit error
+                  </Button>
+                </div>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-6)' }}>
+                  <span data-testid="telemetry-view-count">view: {counters.view}</span>
+                  <span data-testid="telemetry-click-count">click: {counters.click}</span>
+                  <span data-testid="telemetry-error-count">error: {counters.error}</span>
+                </div>
+              </div>
+            </SectionCard>
+
+            <EventLog
+              items={events.map(toEventLogItem)}
+              labels={{ changes: 'Payload changes', adminOverride: 'Admin override' }}
+            />
+          </div>
+        </Section>
+      </Wrapper>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitFor(() => {
+      expect(canvas.getByTestId('telemetry-view-count')).toHaveTextContent('view: 1');
+    });
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Emit click' }));
+    await userEvent.click(canvas.getByRole('button', { name: 'Emit error' }));
+
+    await waitFor(() => {
+      expect(canvas.getByTestId('telemetry-click-count')).toHaveTextContent('click: 1');
+      expect(canvas.getByTestId('telemetry-error-count')).toHaveTextContent('error: 1');
+    });
+
+    await expect(
+      canvas.getByText(/ds.designbook.telemetry.simulate_error.error/)
+    ).toBeInTheDocument();
+  },
+};
+
 const chipStyle: React.CSSProperties = {
   padding: '0.2rem 0.6rem',
   borderRadius: '999px',
