@@ -15,19 +15,52 @@ jobs:
           node-version: '20'
           cache: npm
       - name: Install dependencies
+        id: install
         run: npm ci
       - name: Lint
+        id: lint
         run: npm run lint
       - name: Type check
+        id: typecheck
         run: npm run type-check
       - name: Build library
+        id: build_lib
         run: npm run build:lib
       - name: Build Storybook
+        id: build_storybook
         run: npm run build-storybook
       - name: Install Playwright browsers
+        id: playwright
         run: npx playwright install --with-deps
       - name: Storybook a11y tests
+        id: storybook_tests
         timeout-minutes: 20
         run: npm run test-storybook:ci
       - name: Test
+        id: unit_tests
         run: npm test -- --runInBand
+      - name: Quality Gate Summary
+        if: always()
+        run: |
+          {
+            echo "## Quality Gate Summary"
+            echo ""
+            echo "| Gate | Outcome |"
+            echo "| --- | --- |"
+            echo "| install | ${{ steps.install.outcome }} |"
+            echo "| lint | ${{ steps.lint.outcome }} |"
+            echo "| typecheck | ${{ steps.typecheck.outcome }} |"
+            echo "| build_lib | ${{ steps.build_lib.outcome }} |"
+            echo "| build_storybook | ${{ steps.build_storybook.outcome }} |"
+            echo "| playwright | ${{ steps.playwright.outcome }} |"
+            echo "| storybook_tests | ${{ steps.storybook_tests.outcome }} |"
+            echo "| unit_tests | ${{ steps.unit_tests.outcome }} |"
+            echo ""
+            if [ "${{ job.status }}" != "success" ]; then
+              echo "### Failure Triage"
+              echo "1. Reproduce failing gate locally with the same npm command."
+              echo "2. If Storybook tests failed, run: npm run test-storybook:ci"
+              echo "3. If unit tests failed, run: npm test -- --runInBand"
+              echo "4. If build failed, run: npm run build:lib && npm run build-storybook"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

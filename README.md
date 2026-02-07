@@ -89,6 +89,8 @@ itdo-design-system/
 - `docs/wave-review-checklist.md`: wave completion review checklist.
 - `docs/token-system-wave3.md`: token inventory, naming policy, and migration notes for Wave3.
 - `docs/i18n-layout-guidelines.md`: text expansion/RTL implementation rules and regression checklist.
+- `docs/quality-gate-matrix.md`: minimum CI/local quality-gate matrix and triage flow.
+- `docs/telemetry-events.md`: baseline telemetry event naming and payload contract.
 
 ## Design Principles
 
