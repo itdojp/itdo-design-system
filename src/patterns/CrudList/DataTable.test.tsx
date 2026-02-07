@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { DataTable } from './DataTable';
 import { DataTableColumn, DataTableRow } from './CrudList.types';
+import * as dataTableUtils from './DataTable.utils';
 
 const columns: DataTableColumn[] = [
   { key: 'name', header: 'Name', sortable: true },
@@ -205,5 +206,29 @@ describe('DataTable', () => {
     expect(screen.getByRole('columnheader', { name: 'Status' })).not.toHaveClass('itdo-data-table__cell--pinned-left');
     expect(screen.getByRole('columnheader', { name: 'Kind' })).toHaveClass('itdo-data-table__cell--pinned-right');
     expect(screen.getByRole('columnheader', { name: 'Actions' })).not.toHaveClass('itdo-data-table__cell--pinned-right');
+  });
+
+  it('does not recompute sorted rows for selection-only updates', () => {
+    const sortRowsSpy = jest.spyOn(dataTableUtils, 'sortRows');
+
+    render(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        selectable="multiple"
+        pageSize={10}
+      />
+    );
+
+    expect(sortRowsSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByLabelText('Select row 2'));
+    fireEvent.click(screen.getByLabelText('Select row 1'));
+    expect(sortRowsSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole('button', { name: /Sort by Name/ }));
+    expect(sortRowsSpy).toHaveBeenCalledTimes(2);
+
+    sortRowsSpy.mockRestore();
   });
 });

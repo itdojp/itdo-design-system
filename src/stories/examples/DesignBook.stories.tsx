@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { Combobox } from '../../components/Combobox';
@@ -13,7 +14,14 @@ import { Textarea } from '../../components/Textarea';
 import { ToastViewport } from '../../components/Toast';
 import { useToastQueue } from '../../hooks/useToastQueue';
 import { AsyncStatePanel } from '../../patterns/AsyncStatePanel';
+import { Breadcrumb } from '../../patterns/Breadcrumb';
+import { CrudList } from '../../patterns/CrudList';
+import { DataTable } from '../../patterns/CrudList/DataTable';
+import { FilterBar } from '../../patterns/CrudList/FilterBar';
 import { EventLog } from '../../patterns/EventLog';
+import { PageHeader } from '../../patterns/PageHeader';
+import { SectionCard } from '../../patterns/SectionCard';
+import { Tabs } from '../../patterns/Tabs';
 import type { ComboboxItem } from '../../components/Combobox/Combobox.types';
 import type { EventLogItem } from '../../patterns/EventLog/EventLog.types';
 
@@ -380,6 +388,298 @@ export const ErrorRecoveryFlow: Story = {
         </Section>
       </Wrapper>
     );
+  },
+};
+
+const designBookInvoiceRows = [
+  {
+    id: 'INV-3001',
+    invoiceNo: 'INV-3001',
+    vendor: 'Acme Co.',
+    status: 'Pending',
+    amount: '$4,500',
+    updatedAt: '2026-02-06',
+  },
+  {
+    id: 'INV-3002',
+    invoiceNo: 'INV-3002',
+    vendor: 'Beta Ltd.',
+    status: 'Approved',
+    amount: '$2,800',
+    updatedAt: '2026-02-05',
+  },
+  {
+    id: 'INV-3003',
+    invoiceNo: 'INV-3003',
+    vendor: 'Gamma Inc.',
+    status: 'Pending',
+    amount: '$12,300',
+    updatedAt: '2026-02-04',
+  },
+  {
+    id: 'INV-3004',
+    invoiceNo: 'INV-3004',
+    vendor: 'Delta KK',
+    status: 'Draft',
+    amount: '$980',
+    updatedAt: '2026-02-03',
+  },
+];
+
+const designBookInvoiceColumns = [
+  { key: 'invoiceNo', header: 'Invoice No', sortable: true, pinned: 'left' as const, hideable: false },
+  { key: 'vendor', header: 'Vendor', sortable: true },
+  { key: 'status', header: 'Status', sortable: true },
+  { key: 'amount', header: 'Amount', sortable: true, align: 'right' as const },
+  { key: 'updatedAt', header: 'Updated', sortable: true },
+];
+
+const buildFilteredInvoices = (tab: string, search: string) => {
+  const loweredSearch = search.trim().toLowerCase();
+  return designBookInvoiceRows.filter((row) => {
+    const tabMatch = tab === 'all' || row.status.toLowerCase() === tab;
+    const searchMatch =
+      loweredSearch.length === 0 ||
+      row.invoiceNo.toLowerCase().includes(loweredSearch) ||
+      row.vendor.toLowerCase().includes(loweredSearch);
+    return tabMatch && searchMatch;
+  });
+};
+
+export const MasterListWorkspace: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('all');
+    const [search, setSearch] = useState('');
+    const [queryUpdates, setQueryUpdates] = useState(0);
+    const [panelRefresh, setPanelRefresh] = useState(0);
+
+    const filteredRows = useMemo(
+      () => buildFilteredInvoices(activeTab, search),
+      [activeTab, search]
+    );
+    const query = useMemo(
+      () => ({
+        search,
+        pagination: {
+          page: 1,
+          pageSize: 3,
+        },
+      }),
+      [search]
+    );
+    const handleQueryChange = useCallback(() => {
+      setQueryUpdates((previous) => previous + 1);
+    }, []);
+
+    return (
+      <Wrapper>
+        <Section title="Master List Workspace">
+          <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+            <PageHeader
+              title="Invoice Master"
+              description="Operational list for approval workflow."
+              breadcrumbs={[
+                { id: 'home', label: 'Home', href: '#' },
+                { id: 'finance', label: 'Finance', href: '#' },
+                { id: 'invoice-master', label: 'Invoice Master' },
+              ]}
+              primaryAction={<Button size="small">Create invoice</Button>}
+              secondaryActions={<Button variant="secondary" size="small">Export CSV</Button>}
+            />
+
+            <Tabs
+              ariaLabel="Invoice status tabs"
+              value={activeTab}
+              onValueChange={setActiveTab}
+              items={[
+                { id: 'all', label: 'All' },
+                { id: 'pending', label: 'Pending' },
+                { id: 'approved', label: 'Approved' },
+                { id: 'draft', label: 'Draft' },
+              ]}
+            />
+
+            <div style={{ display: 'grid', gap: 'var(--space-6)', gridTemplateColumns: 'minmax(0, 2fr) minmax(240px, 1fr)' }}>
+              <CrudList
+                title="Invoices"
+                description="Search and select invoices for review."
+                filters={
+                  <FilterBar
+                    search={{
+                      value: search,
+                      onChange: setSearch,
+                      ariaLabel: 'Invoice search',
+                      placeholder: 'Search invoice/vendor',
+                    }}
+                    filters={[
+                      {
+                        key: 'status',
+                        label: 'Status',
+                        control: (
+                          <select aria-label="Status filter">
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="draft">Draft</option>
+                          </select>
+                        ),
+                      },
+                    ]}
+                    chips={search ? [{ key: 'search', label: `Search: ${search}` }] : []}
+                    onClearAll={() => setSearch('')}
+                  />
+                }
+                table={
+                  <DataTable
+                    columns={designBookInvoiceColumns}
+                    rows={filteredRows}
+                    selectable="single"
+                    pageSize={3}
+                    query={query}
+                    onQueryChange={handleQueryChange}
+                    rowActions={[
+                      {
+                        key: 'open',
+                        label: 'Open detail',
+                        onSelect: () => undefined,
+                      },
+                    ]}
+                  />
+                }
+              />
+
+              <SectionCard title="Performance Probe" density="compact">
+                <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                  <span data-testid="query-updates">Query updates: {queryUpdates}</span>
+                  <span data-testid="panel-refresh">Panel refresh: {panelRefresh}</span>
+                  <Button size="small" variant="secondary" onClick={() => setPanelRefresh((previous) => previous + 1)}>
+                    Refresh side panel
+                  </Button>
+                </div>
+              </SectionCard>
+            </div>
+          </div>
+        </Section>
+      </Wrapper>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole('tab', { name: 'Pending' }));
+    await waitFor(() => {
+      expect(canvas.getByRole('tab', { name: 'Pending' })).toHaveAttribute('aria-selected', 'true');
+    });
+
+    const queryBeforeRefresh = canvas.getByTestId('query-updates').textContent;
+    await userEvent.click(canvas.getByRole('button', { name: 'Refresh side panel' }));
+    await waitFor(() => {
+      expect(canvas.getByTestId('panel-refresh')).toHaveTextContent('Panel refresh: 1');
+    });
+    expect(canvas.getByTestId('query-updates').textContent).toBe(queryBeforeRefresh);
+
+    await userEvent.click(canvas.getByLabelText('Invoice search'));
+    await userEvent.tab();
+    expect(canvas.getByLabelText('Status filter')).toHaveFocus();
+  },
+};
+
+export const DetailTransitionWorkspace: Story = {
+  render: () => {
+    const [activeTab, setActiveTab] = useState('pending');
+    const [search, setSearch] = useState('');
+    const [selectedInvoiceId, setSelectedInvoiceId] = useState('INV-3001');
+
+    const filteredRows = useMemo(
+      () => buildFilteredInvoices(activeTab, search),
+      [activeTab, search]
+    );
+    const selectedInvoice = useMemo(
+      () => designBookInvoiceRows.find((row) => row.id === selectedInvoiceId),
+      [selectedInvoiceId]
+    );
+
+    return (
+      <Wrapper>
+        <Section title="Detail Transition Workspace">
+          <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
+            <Breadcrumb
+              items={[
+                { id: 'home', label: 'Home', href: '#' },
+                { id: 'finance', label: 'Finance', href: '#' },
+                { id: 'invoices', label: 'Invoices', href: '#' },
+                { id: 'detail', label: selectedInvoice?.invoiceNo ?? 'Not selected' },
+              ]}
+            />
+
+            <Tabs
+              ariaLabel="Invoice detail tabs"
+              value={activeTab}
+              onValueChange={setActiveTab}
+              items={[
+                { id: 'pending', label: 'Pending' },
+                { id: 'approved', label: 'Approved' },
+                { id: 'draft', label: 'Draft' },
+              ]}
+            />
+
+            <CrudList
+              title="Invoices"
+              description="Move from master list to detail screen with keyboard."
+              filters={
+                <FilterBar
+                  search={{
+                    value: search,
+                    onChange: setSearch,
+                    ariaLabel: 'Invoice detail search',
+                    placeholder: 'Filter invoices',
+                  }}
+                />
+              }
+              table={
+                <DataTable
+                  columns={designBookInvoiceColumns}
+                  rows={filteredRows}
+                  pageSize={3}
+                  rowActions={[
+                    {
+                      key: 'open',
+                      label: 'Open detail',
+                      onSelect: (row) => setSelectedInvoiceId(row.id),
+                    },
+                  ]}
+                />
+              }
+            />
+
+            <SectionCard title="Selected Detail">
+              <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
+                <strong data-testid="selected-invoice-id">Selected invoice: {selectedInvoice?.invoiceNo ?? 'None'}</strong>
+                <span>Vendor: {selectedInvoice?.vendor ?? '-'}</span>
+                <span>Amount: {selectedInvoice?.amount ?? '-'}</span>
+                <span>Status: {selectedInvoice?.status ?? '-'}</span>
+              </div>
+            </SectionCard>
+          </div>
+        </Section>
+      </Wrapper>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const tableRows = canvas.getAllByRole('row');
+    const firstBodyRow = tableRows[1];
+
+    firstBodyRow.focus();
+    await userEvent.keyboard('{ArrowDown}');
+    await waitFor(() => {
+      expect(tableRows[2]).toHaveFocus();
+    });
+
+    await userEvent.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(canvas.getByTestId('selected-invoice-id')).toHaveTextContent('INV-3003');
+    });
   },
 };
 
