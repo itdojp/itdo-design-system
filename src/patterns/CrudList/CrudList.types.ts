@@ -22,6 +22,8 @@ export interface FilterBarProps {
     savedViewPlaceholder?: string;
     saveView?: string;
     clearAll?: string;
+    logicLabel?: string;
+    logicAriaLabel?: string;
     logicAnd?: string;
     logicOr?: string;
   };

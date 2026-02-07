@@ -141,4 +141,69 @@ describe('DataTable', () => {
       })
     );
   });
+
+  it('keeps current sort direction when query sort direction is omitted', () => {
+    const { rerender } = render(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        pageSize={10}
+        initialSort={{ key: 'name', direction: 'desc' }}
+        query={{ sort: { key: 'name', direction: 'desc' } }}
+      />
+    );
+
+    rerender(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        pageSize={10}
+        initialSort={{ key: 'name', direction: 'desc' }}
+        query={{ sort: { key: 'name' } as never }}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: /Sort by Name, current: descending/i })).toBeInTheDocument();
+  });
+
+  it('always renders non-hideable columns even when visibleColumnKeys omits them', () => {
+    const lockedColumns: DataTableColumn[] = [
+      { key: 'name', header: 'Name', hideable: false },
+      { key: 'status', header: 'Status', hideable: true },
+    ];
+
+    render(
+      <DataTable
+        columns={lockedColumns}
+        rows={rows}
+        pageSize={10}
+        visibleColumnKeys={['status']}
+      />
+    );
+
+    expect(screen.getByRole('columnheader', { name: 'Name' })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: 'Status' })).toBeInTheDocument();
+  });
+
+  it('pins at most one column per side and does not pin actions when right pinned column exists', () => {
+    const pinnedColumns: DataTableColumn[] = [
+      { key: 'name', header: 'Name', pinned: 'left' },
+      { key: 'status', header: 'Status', pinned: 'left' },
+      { key: 'kind', header: 'Kind', pinned: 'right' },
+    ];
+    const pinnedRows: DataTableRow[] = [{ id: '1', name: 'Alpha', status: 'Open', kind: 'Master' }];
+
+    render(
+      <DataTable
+        columns={pinnedColumns}
+        rows={pinnedRows}
+        rowActions={[{ key: 'open', label: 'Open', onSelect: () => undefined }]}
+      />
+    );
+
+    expect(screen.getByRole('columnheader', { name: 'Name' })).toHaveClass('itdo-data-table__cell--pinned-left');
+    expect(screen.getByRole('columnheader', { name: 'Status' })).not.toHaveClass('itdo-data-table__cell--pinned-left');
+    expect(screen.getByRole('columnheader', { name: 'Kind' })).toHaveClass('itdo-data-table__cell--pinned-right');
+    expect(screen.getByRole('columnheader', { name: 'Actions' })).not.toHaveClass('itdo-data-table__cell--pinned-right');
+  });
 });

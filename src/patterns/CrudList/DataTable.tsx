@@ -107,6 +107,7 @@ export const DataTable: React.FC<DataTableProps> = ({
   const selectAllRef = useRef<HTMLInputElement | null>(null);
   const columnSettingsRef = useRef<HTMLDivElement | null>(null);
   const selectionGroupName = radioGroupName ?? `itdo-data-table-selection-${tableId}`;
+  const columnSettingsMenuId = `itdo-data-table-column-settings-${tableId}`;
 
   const resolvedLabels = {
     noRecords: labels?.noRecords ?? 'No records found.',
@@ -134,7 +135,9 @@ export const DataTable: React.FC<DataTableProps> = ({
   useEffect(() => {
     if (query?.sort?.key !== undefined) {
       setSortKey(query.sort.key);
-      setSortDirection(query.sort.direction ?? 'asc');
+      if (query.sort.direction !== undefined) {
+        setSortDirection(query.sort.direction);
+      }
     }
   }, [query?.sort?.direction, query?.sort?.key]);
 
@@ -166,7 +169,19 @@ export const DataTable: React.FC<DataTableProps> = ({
     };
   }, [isColumnMenuOpen]);
 
-  const resolvedVisibleColumnKeys = visibleColumnKeys ?? internalVisibleColumnKeys;
+  const alwaysVisibleColumnKeys = useMemo(
+    () => columns.filter((column) => column.hideable === false).map((column) => column.key),
+    [columns]
+  );
+
+  const resolvedVisibleColumnKeys = useMemo(() => {
+    const requestedKeys = visibleColumnKeys ?? internalVisibleColumnKeys;
+    const requestedSet = new Set(requestedKeys);
+    for (const columnKey of alwaysVisibleColumnKeys) {
+      requestedSet.add(columnKey);
+    }
+    return columns.map((column) => column.key).filter((columnKey) => requestedSet.has(columnKey));
+  }, [alwaysVisibleColumnKeys, columns, internalVisibleColumnKeys, visibleColumnKeys]);
 
   const visibleColumns = useMemo(
     () => columns.filter((column) => resolvedVisibleColumnKeys.includes(column.key)),
@@ -318,13 +333,25 @@ export const DataTable: React.FC<DataTableProps> = ({
 
   const hasRowActions = (rowActions?.length ?? 0) > 0 || !!rowActionSlot;
   const hasBulkActions = selectable === 'multiple' && (bulkActions?.length ?? 0) > 0;
+  const leftPinnedColumnKey = useMemo(
+    () => visibleColumns.find((column) => column.pinned === 'left')?.key,
+    [visibleColumns]
+  );
+  const rightPinnedColumnKey = useMemo(
+    () => visibleColumns.find((column) => column.pinned === 'right')?.key,
+    [visibleColumns]
+  );
+  const shouldPinActionsColumn = hasRowActions && rightPinnedColumnKey === undefined;
 
-  const getPinnedCellClassName = (column: DataTableColumn) =>
-    column.pinned === 'left'
-      ? 'itdo-data-table__cell--pinned-left'
-      : column.pinned === 'right'
-        ? 'itdo-data-table__cell--pinned-right'
-        : undefined;
+  const getPinnedCellClassName = (column: DataTableColumn) => {
+    if (column.pinned === 'left' && column.key === leftPinnedColumnKey) {
+      return 'itdo-data-table__cell--pinned-left';
+    }
+    if (column.pinned === 'right' && column.key === rightPinnedColumnKey) {
+      return 'itdo-data-table__cell--pinned-right';
+    }
+    return undefined;
+  };
 
   if (loading) {
     return (
@@ -353,12 +380,12 @@ export const DataTable: React.FC<DataTableProps> = ({
               className="itdo-data-table__column-settings-trigger"
               onClick={() => setIsColumnMenuOpen((previous) => !previous)}
               aria-expanded={isColumnMenuOpen}
-              aria-haspopup="menu"
+              aria-controls={isColumnMenuOpen ? columnSettingsMenuId : undefined}
             >
               {resolvedLabels.columnSettings}
             </button>
             {isColumnMenuOpen && (
-              <div className="itdo-data-table__column-settings-menu" role="menu">
+              <div className="itdo-data-table__column-settings-menu" id={columnSettingsMenuId}>
                 {hideableColumns.map((column) => (
                   <label key={column.key} className="itdo-data-table__column-settings-item">
                     <input
@@ -460,7 +487,11 @@ export const DataTable: React.FC<DataTableProps> = ({
                 </th>
               );
             })}
-            {hasRowActions && <th className="itdo-data-table__cell--pinned-right">Actions</th>}
+            {hasRowActions && (
+              <th className={clsx({ 'itdo-data-table__cell--pinned-right': shouldPinActionsColumn })}>
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -535,7 +566,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                   </td>
                 ))}
                 {hasRowActions && (
-                  <td className="itdo-data-table__cell--pinned-right">
+                  <td className={clsx({ 'itdo-data-table__cell--pinned-right': shouldPinActionsColumn })}>
                     {rowActionSlot ? (
                       rowActionSlot(row)
                     ) : (

@@ -22,6 +22,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     savedViewPlaceholder: labels?.savedViewPlaceholder ?? 'Select view',
     saveView: labels?.saveView ?? 'Save',
     clearAll: labels?.clearAll ?? 'Clear all',
+    logicLabel: labels?.logicLabel ?? 'Logic',
+    logicAriaLabel: labels?.logicAriaLabel ?? 'Filter logic',
     logicAnd: labels?.logicAnd ?? 'AND',
     logicOr: labels?.logicOr ?? 'OR',
   };
@@ -76,8 +78,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             )}
 
             {logic && (
-              <div className="itdo-filter-bar__logic" role="group" aria-label={logic.ariaLabel ?? 'Filter logic'}>
-                <span className="itdo-filter-bar__label">Logic</span>
+              <div
+                className="itdo-filter-bar__logic"
+                role="group"
+                aria-label={logic.ariaLabel ?? resolvedLabels.logicAriaLabel}
+              >
+                <span className="itdo-filter-bar__label">{resolvedLabels.logicLabel}</span>
                 <div className="itdo-filter-bar__logic-controls">
                   <button
                     type="button"
