@@ -61,4 +61,20 @@ describe('FilterBar', () => {
     expect(onSelect).toHaveBeenCalledWith('pending');
     expect(onSave).toHaveBeenCalledTimes(1);
   });
+
+  it('switches logical operator in structured filters', () => {
+    const onChange = jest.fn();
+
+    render(
+      <FilterBar
+        logic={{
+          value: 'and',
+          onChange,
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'OR' }));
+    expect(onChange).toHaveBeenCalledWith('or');
+  });
 });

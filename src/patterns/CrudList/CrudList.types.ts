@@ -22,6 +22,8 @@ export interface FilterBarProps {
     savedViewPlaceholder?: string;
     saveView?: string;
     clearAll?: string;
+    logicAnd?: string;
+    logicOr?: string;
   };
   search?: {
     value: string;
@@ -39,6 +41,11 @@ export interface FilterBarProps {
     label: string;
     onRemove?: () => void;
   }>;
+  logic?: {
+    value: ListLogicalOperator;
+    onChange: (value: ListLogicalOperator) => void;
+    ariaLabel?: string;
+  };
   onClearAll?: () => void;
   savedViews?: {
     items: { id: string; name: string }[];
@@ -62,12 +69,66 @@ export interface PaginationBarProps {
 
 export type DataTableSortDirection = 'asc' | 'desc';
 
+export type ListLogicalOperator = 'and' | 'or';
+
+export type ListFilterOperator =
+  | 'eq'
+  | 'ne'
+  | 'contains'
+  | 'startsWith'
+  | 'endsWith'
+  | 'in'
+  | 'gt'
+  | 'gte'
+  | 'lt'
+  | 'lte'
+  | 'between'
+  | 'isNull'
+  | 'isNotNull';
+
+export type ListFilterValuePrimitive = string | number | boolean;
+
+export type ListFilterValue = ListFilterValuePrimitive | ListFilterValuePrimitive[];
+
+export interface ListFilterCondition {
+  id?: string;
+  field: string;
+  operator: ListFilterOperator;
+  value?: ListFilterValue;
+  valueTo?: ListFilterValuePrimitive;
+}
+
+export interface ListFilterGroup {
+  logicalOperator: ListLogicalOperator;
+  conditions: ListFilterCondition[];
+}
+
+export interface ListQuerySort {
+  key: string;
+  direction: DataTableSortDirection;
+}
+
+export interface ListQueryPagination {
+  page: number;
+  pageSize: number;
+  totalItems?: number;
+}
+
+export interface ListQueryContract {
+  search?: string;
+  filters?: ListFilterGroup;
+  sort?: ListQuerySort;
+  pagination: ListQueryPagination;
+}
+
 export interface DataTableColumn {
   key: string;
   header: string | ReactNode;
   align?: 'left' | 'center' | 'right';
   width?: string;
   sortable?: boolean;
+  pinned?: 'left' | 'right';
+  hideable?: boolean;
   cell?: (row: DataTableRow) => ReactNode;
 }
 
@@ -79,7 +140,15 @@ export interface DataTableRow {
 export interface DataTableRowAction {
   key: string;
   label: string;
+  disabled?: boolean;
   onSelect: (row: DataTableRow) => void;
+}
+
+export interface DataTableBulkAction {
+  key: string;
+  label: string;
+  disabled?: boolean;
+  onSelect: (rows: DataTableRow[]) => void;
 }
 
 export interface DataTableProps {
@@ -92,6 +161,13 @@ export interface DataTableProps {
   loadingLabel?: string;
   selectable?: 'none' | 'single' | 'multiple';
   rowActions?: DataTableRowAction[];
+  rowActionSlot?: (row: DataTableRow) => ReactNode;
+  bulkActions?: DataTableBulkAction[];
+  visibleColumnKeys?: string[];
+  onVisibleColumnKeysChange?: (keys: string[]) => void;
+  enableColumnVisibilityControl?: boolean;
+  query?: Partial<ListQueryContract>;
+  onQueryChange?: (query: ListQueryContract) => void;
   pageSize?: number;
   pageSizeOptions?: number[];
   initialSort?: {
@@ -106,6 +182,11 @@ export interface DataTableProps {
     prevPage?: string;
     nextPage?: string;
     page?: (currentPage: number, totalPages: number) => string;
+    columnSettings?: string;
+    selectedRows?: (selectedRows: number) => string;
+    clearSelection?: string;
+    selectAllRows?: string;
+    deselectAllRows?: string;
   };
 }
 

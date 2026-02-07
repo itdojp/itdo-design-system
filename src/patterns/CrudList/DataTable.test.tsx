@@ -71,4 +71,74 @@ describe('DataTable', () => {
 
     expect(onSelect).toHaveBeenCalledWith(rows[0]);
   });
+
+  it('supports bulk action after page-level select all', () => {
+    const onBulkArchive = jest.fn();
+
+    render(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        selectable="multiple"
+        pageSize={10}
+        bulkActions={[
+          {
+            key: 'archive',
+            label: 'Archive',
+            onSelect: onBulkArchive,
+          },
+        ]}
+      />
+    );
+
+    fireEvent.click(screen.getByLabelText('Select all rows in page'));
+    fireEvent.click(screen.getByRole('button', { name: 'Archive' }));
+
+    expect(onBulkArchive).toHaveBeenCalledWith(rows);
+  });
+
+  it('toggles column visibility from settings menu', () => {
+    render(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        pageSize={10}
+        enableColumnVisibilityControl
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Columns' }));
+    fireEvent.click(screen.getByLabelText('Status'));
+
+    expect(screen.queryByRole('columnheader', { name: 'Status' })).not.toBeInTheDocument();
+  });
+
+  it('emits query contract when sort is changed', () => {
+    const onQueryChange = jest.fn();
+
+    render(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        pageSize={1}
+        onQueryChange={onQueryChange}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Sort by Name/ }));
+
+    expect(onQueryChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        sort: {
+          key: 'name',
+          direction: 'asc',
+        },
+        pagination: expect.objectContaining({
+          page: 1,
+          pageSize: 1,
+          totalItems: 2,
+        }),
+      })
+    );
+  });
 });

@@ -104,3 +104,12 @@
 .itdo-datagrid-state__text {
   font-size: var(--font-size-sm);
 }
+
+.itdo-datagrid-state__error {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.itdo-datagrid-state__error-action {
+  display: inline-flex;
+}
