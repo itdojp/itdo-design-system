@@ -82,6 +82,11 @@ itdo-design-system/
 ## Component Guides
 
 - `docs/priority-a-components-guide.md`: operational guidance for `PageHeader`, `SectionCard`, `StatusBadge`, `AsyncStatePanel`, `ConfirmActionDialog`, `FilterBar`, and `DataTable`.
+- `docs/storybook-docs-template.md`: standard Storybook documentation template for new components.
+- `docs/component-adoption-criteria.md`: criteria for reuse vs new component creation.
+- `docs/deprecation-policy.md`: API deprecation lifecycle and npm operation policy.
+- `docs/changelog-template.md`: release note template (Breaking/Non-breaking).
+- `docs/wave-review-checklist.md`: wave completion review checklist.
 
 ## Design Principles
 
