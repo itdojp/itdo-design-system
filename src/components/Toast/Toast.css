@@ -8,6 +8,8 @@
   background-color: var(--color-bg-base);
   box-shadow: var(--shadow-sm);
   color: var(--color-text-primary);
+  transition: border-color var(--motion-duration-fast) var(--motion-easing-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-toast__indicator {
@@ -45,6 +47,7 @@
   cursor: pointer;
   font-size: var(--font-size-sm);
   padding: 0;
+  transition: color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .itdo-toast__close:hover {
@@ -52,35 +55,39 @@
 }
 
 .itdo-toast--success {
-  border-color: var(--color-success-500);
+  border-color: var(--color-status-success-border);
+  background-color: var(--color-status-success-bg);
 }
 
 .itdo-toast--success .itdo-toast__indicator {
-  background-color: var(--color-success-500);
+  background-color: var(--color-status-success-border);
 }
 
 .itdo-toast--warning {
-  border-color: var(--color-warning-500);
+  border-color: var(--color-status-warning-border);
+  background-color: var(--color-status-warning-bg);
 }
 
 .itdo-toast--warning .itdo-toast__indicator {
-  background-color: var(--color-warning-500);
+  background-color: var(--color-status-warning-border);
 }
 
 .itdo-toast--error {
-  border-color: var(--color-error-500);
+  border-color: var(--color-status-error-border);
+  background-color: var(--color-status-error-bg);
 }
 
 .itdo-toast--error .itdo-toast__indicator {
-  background-color: var(--color-error-500);
+  background-color: var(--color-status-error-border);
 }
 
 .itdo-toast--info {
-  border-color: var(--color-info-500);
+  border-color: var(--color-status-info-border);
+  background-color: var(--color-status-info-bg);
 }
 
 .itdo-toast--info .itdo-toast__indicator {
-  background-color: var(--color-info-500);
+  background-color: var(--color-status-info-border);
 }
 
 .itdo-toast-viewport {

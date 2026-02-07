@@ -82,6 +82,7 @@ itdo-design-system/
 ## Component Guides
 
 - `docs/priority-a-components-guide.md`: operational guidance for `PageHeader`, `SectionCard`, `StatusBadge`, `AsyncStatePanel`, `ConfirmActionDialog`, `FilterBar`, and `DataTable`.
+- `docs/token-system-wave3.md`: token inventory, naming policy, and migration notes for Wave3.
 
 ## Design Principles
 
@@ -93,14 +94,15 @@ itdo-design-system/
 
 ## Token Structure
 
-Tokens are organized into two layers.
+Tokens are organized into two layers plus density mode.
 
-- **Primitive**: Raw values such as `colors`, `spacing`, `typography`, `shadows`, `radius`
+- **Primitive**: Raw values such as `colors`, `spacing`, `typography`, `shadows`, `radius`, `motion`
 - **Semantic**: UI meaning such as `text`, `background`, `border`, `status`, `action`, `focus`
+- **Density**: layout and control scale for `compact|comfortable`
 
-CSS variables follow the same naming scheme, for example `--color-primary-500` (primitive) and
-`--color-text-primary` (semantic). Density can be adjusted via `data-density="compact|comfortable"`
-on `:root`.
+CSS variables follow the same naming scheme. New status tokens use
+`--color-status-{kind}-{bg|border|fg}` and keep legacy aliases for compatibility.
+Density can be switched via `data-density="compact|comfortable"` on `:root`.
 
 ## Primary Color
 

@@ -8,14 +8,14 @@
 
 .itdo-section-card--comfortable,
 .itdo-list-card--comfortable {
-  --itdo-card-padding: var(--space-16);
-  --itdo-card-gap: var(--space-10);
+  --itdo-card-padding: var(--density-section-card-padding-comfortable);
+  --itdo-card-gap: var(--density-section-card-gap-comfortable);
 }
 
 .itdo-section-card--compact,
 .itdo-list-card--compact {
-  --itdo-card-padding: var(--space-10);
-  --itdo-card-gap: var(--space-6);
+  --itdo-card-padding: var(--density-section-card-padding-compact);
+  --itdo-card-gap: var(--density-section-card-gap-compact);
 }
 
 .itdo-section-card__header {
