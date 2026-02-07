@@ -90,14 +90,12 @@ export const Combobox: React.FC<ComboboxProps> = ({
   if (!hasExplicitValidation) {
     if (open && loadError) {
       resolvedValidationState = 'error';
-      resolvedValidationMessage = errorMessage;
     } else if (open && isLoading) {
       resolvedValidationState = 'validating';
-      resolvedValidationMessage = 'Validating...';
     } else {
       resolvedValidationState = 'none';
-      resolvedValidationMessage = undefined;
     }
+    resolvedValidationMessage = undefined;
   }
 
   useEffect(() => {

@@ -2,6 +2,7 @@ export interface Erp4TimesheetFormValues {
   project: string;
   workDate: string;
   hours: string;
+  workType: string;
   approver: string;
   note: string;
 }

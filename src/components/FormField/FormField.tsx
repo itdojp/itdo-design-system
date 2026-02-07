@@ -40,15 +40,19 @@ export const FormField: React.FC<FormFieldProps> = ({
     warning,
     success,
   });
+  const childDescribedBy = React.isValidElement(children)
+    ? children.props['aria-describedby']
+    : undefined;
+  const hasFooter = footer !== null && footer !== undefined;
   const helpId = resolvedHelpText ? `${controlId}-help` : undefined;
   const messageId = resolvedValidationMessage ? `${controlId}-validation` : undefined;
-  const footerId = footer ? `${controlId}-footer` : undefined;
+  const footerId = hasFooter ? `${controlId}-footer` : undefined;
 
   const describedBy = [
-    React.isValidElement(children) ? children.props['aria-describedby'] : undefined,
     messageId,
     helpId,
     footerId,
+    childDescribedBy,
   ]
     .filter(Boolean)
     .join(' ') || undefined;
@@ -107,7 +111,7 @@ export const FormField: React.FC<FormFieldProps> = ({
           {resolvedValidationMessage}
         </p>
       )}
-      {footer && (
+      {hasFooter && (
         <div className="itdo-form-field__footer" id={footerId}>
           {footer}
         </div>

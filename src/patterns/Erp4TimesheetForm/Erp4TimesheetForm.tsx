@@ -24,6 +24,7 @@ const createInitialValues = (): Erp4TimesheetFormValues => ({
   project: '',
   workDate: '',
   hours: '',
+  workType: '',
   approver: '',
   note: '',
 });
@@ -38,29 +39,47 @@ export const Erp4TimesheetForm: React.FC<Erp4TimesheetFormProps> = ({
   const hourState =
     values.hours.length === 0
       ? 'none'
-      : hourNumber > 10
-        ? 'warning'
-        : Number.isNaN(hourNumber)
+      : Number.isNaN(hourNumber) || hourNumber < 0
           ? 'error'
+        : hourNumber > 10
+          ? 'warning'
           : 'success';
   const hourMessage =
     hourState === 'warning'
       ? '10時間を超える工数です。理由を備考に記載してください。'
       : hourState === 'error'
-        ? '数値形式で入力してください。'
+        ? '0以上の数値形式で入力してください。'
         : hourState === 'success'
           ? '入力値は有効です。'
           : undefined;
 
   const canSubmit = useMemo(
     () =>
-      Boolean(values.project && values.workDate && values.hours && values.approver) &&
+      Boolean(
+        values.project &&
+          values.workDate &&
+          values.hours &&
+          values.workType &&
+          values.approver
+      ) &&
       hourState !== 'error',
-    [hourState, values.approver, values.hours, values.project, values.workDate]
+    [
+      hourState,
+      values.approver,
+      values.hours,
+      values.project,
+      values.workDate,
+      values.workType,
+    ]
   );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
     if (!canSubmit) return;
     onSubmit?.(values);
   };
@@ -113,8 +132,13 @@ export const Erp4TimesheetForm: React.FC<Erp4TimesheetFormProps> = ({
         <Select
           label="Work type"
           required
-          defaultValue=""
+          value={values.workType}
+          onChange={(event) =>
+            setValues((prev) => ({ ...prev, workType: event.currentTarget.value }))
+          }
           placeholder="Select work type"
+          validationState={values.workType ? 'success' : 'none'}
+          validationMessage={values.workType ? 'Work type selected' : undefined}
           fullWidth
         >
           <option value="development">Development</option>
