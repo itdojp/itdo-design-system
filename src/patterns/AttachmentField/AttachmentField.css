@@ -1,0 +1,199 @@
+.itdo-attachment-field {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.itdo-attachment-field__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.itdo-attachment-field__header h3 {
+  margin: 0;
+  margin-right: auto;
+}
+
+.itdo-attachment-field__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.itdo-attachment-field__upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height-sm);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  background: var(--color-bg-base);
+  cursor: pointer;
+}
+
+.itdo-attachment-field__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.itdo-attachment-field__list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.itdo-attachment-field__item {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-bg-base);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.itdo-attachment-field__item.is-selected {
+  border-color: var(--color-border-focus);
+}
+
+.itdo-attachment-field__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.itdo-attachment-field__meta p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.itdo-attachment-field__name {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.itdo-attachment-field__name:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.itdo-attachment-field__status {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+}
+
+.itdo-attachment-field__status.is-uploading {
+  background: color-mix(in srgb, var(--color-info-100) 80%, white);
+  color: var(--color-info-700);
+}
+
+.itdo-attachment-field__status.is-virus_scanning {
+  background: color-mix(in srgb, var(--color-warning-100) 85%, white);
+  color: var(--color-warning-700);
+}
+
+.itdo-attachment-field__status.is-uploaded {
+  background: color-mix(in srgb, var(--color-success-100) 85%, white);
+  color: var(--color-success-700);
+}
+
+.itdo-attachment-field__status.is-failed {
+  background: color-mix(in srgb, var(--color-danger-100) 85%, white);
+  color: var(--color-danger-700);
+}
+
+.itdo-attachment-field__progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.itdo-attachment-field__progress-bar {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-info-500);
+}
+
+.itdo-attachment-field__warning,
+.itdo-attachment-field__error {
+  margin: 0;
+  font-size: var(--font-size-xs);
+}
+
+.itdo-attachment-field__warning {
+  color: var(--color-warning-700);
+}
+
+.itdo-attachment-field__error {
+  color: var(--color-danger-700);
+}
+
+.itdo-attachment-field__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.itdo-attachment-field__preview {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-bg-base);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.itdo-attachment-field__preview h4,
+.itdo-attachment-field__preview p {
+  margin: 0;
+}
+
+.itdo-attachment-field__preview-image,
+.itdo-attachment-field__preview-frame {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+}
+
+.itdo-attachment-field__preview-frame {
+  border: 0;
+}
+
+.itdo-attachment-field__preview-generic {
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.itdo-attachment-field__empty {
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 960px) {
+  .itdo-attachment-field__body {
+    grid-template-columns: 1fr;
+  }
+}

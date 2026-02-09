@@ -95,6 +95,7 @@ itdo-design-system/
 - `docs/saved-view-guidelines.md`: saved view UX contract and persistence integration notes.
 - `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
 - `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
+- `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
 
 ## Design Principles
 
