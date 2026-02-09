@@ -113,3 +113,86 @@
 .itdo-datagrid-state__error-action {
   display: inline-flex;
 }
+
+.itdo-editable-grid__actions-header {
+  width: 220px;
+}
+
+.itdo-editable-grid__cell {
+  vertical-align: top;
+}
+
+.itdo-editable-grid__editor-wrap {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.itdo-editable-grid__editor {
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-sm);
+  background: var(--color-bg-base);
+  color: var(--color-text-primary);
+}
+
+.itdo-editable-grid__editor:focus-visible {
+  outline: var(--datagrid-focus-ring-width) solid var(--datagrid-focus-ring);
+  outline-offset: var(--datagrid-focus-ring-offset);
+}
+
+.itdo-editable-grid__cell-error {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger-500);
+}
+
+.itdo-editable-grid__actions-cell {
+  min-width: 220px;
+}
+
+.itdo-editable-grid__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.itdo-editable-grid__row-state {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.itdo-editable-grid__row--dirty {
+  background: color-mix(in srgb, var(--datagrid-row-selected-bg) 55%, var(--color-bg-base));
+}
+
+.itdo-editable-grid__error-summary {
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-danger-300);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-danger-50) 80%, white);
+}
+
+.itdo-editable-grid__error-summary-title {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-danger-700);
+}
+
+.itdo-editable-grid__error-summary-list {
+  margin: var(--space-2) 0 0;
+  padding-left: 1rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger-700);
+}
+
+.itdo-editable-grid__save-error {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger-700);
+}
