@@ -5,4 +5,5 @@ export type ColorScheme = 'light' | 'dark';
 export * from './saved-view';
 export * from './editable-grid';
 export * from './command';
+export * from './attachment';
 export * from './draft-autosave';

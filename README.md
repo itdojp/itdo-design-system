@@ -96,6 +96,7 @@ itdo-design-system/
 - `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
 - `docs/form-wizard-guidelines.md`: step navigation, autosave, and leave-guard rules for wizard flows.
 - `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
+- `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
 
 ## Design Principles
 
