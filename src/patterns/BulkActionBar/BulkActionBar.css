@@ -1,0 +1,35 @@
+.itdo-bulk-action-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  padding: var(--space-4) var(--space-6);
+}
+
+.itdo-bulk-action-bar__count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.itdo-bulk-action-bar__actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.itdo-bulk-action-bar__clear {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: var(--color-text-link);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: 0;
+}
+
+.itdo-bulk-action-bar__clear:hover {
+  text-decoration: underline;
+}
