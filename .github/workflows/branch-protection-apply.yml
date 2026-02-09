@@ -1,0 +1,64 @@
+name: Admin - Apply Branch Protection Preset
+
+on:
+  workflow_dispatch:
+    inputs:
+      preset:
+        description: Preset JSON under .github (for example, branch-protection.main.require-review-gate.json)
+        required: true
+        default: branch-protection.main.require-review-gate.json
+      branch:
+        description: Target branch
+        required: true
+        default: main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.inputs.branch }}-${{ github.event.inputs.preset }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check inputs
+        run: |
+          echo "Preset: ${{ github.event.inputs.preset }}"
+          echo "Branch: ${{ github.event.inputs.branch }}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show current protection
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "ADMIN_TOKEN secret is required (token with repository administration permission)." >&2
+            exit 1
+          fi
+          gh api \
+            repos/${{ github.repository }}/branches/${{ github.event.inputs.branch }}/protection \
+            --jq '.required_pull_request_reviews, .required_status_checks' || true
+
+      - name: Apply preset
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          FILE=".github/${{ github.event.inputs.preset }}"
+          test -f "$FILE" || { echo "Preset file not found: $FILE" >&2; exit 1; }
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            repos/${{ github.repository }}/branches/${{ github.event.inputs.branch }}/protection \
+            --input "$FILE"
+
+      - name: Show updated protection
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          gh api \
+            repos/${{ github.repository }}/branches/${{ github.event.inputs.branch }}/protection \
+            --jq '.required_pull_request_reviews, .required_status_checks'

@@ -1,0 +1,116 @@
+name: Review Gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to check (manual run only)
+        required: true
+        type: number
+
+concurrency:
+  group: review-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require approvals and no active change requests
+        uses: actions/github-script@v7
+        env:
+          REQUIRED_APPROVALS: "1"
+          IGNORE_BOT_REVIEWS: "true"
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const inputPrNumber = core.getInput('pr_number') || context.payload.inputs?.pr_number;
+            const parsedInput = inputPrNumber ? Number(inputPrNumber) : null;
+            const number = context.payload.pull_request?.number ?? parsedInput;
+            const isValidNumber = typeof number === 'number' && Number.isFinite(number) && number > 0;
+            if (!isValidNumber) {
+              core.setFailed('No PR context or valid pr_number provided.');
+              return;
+            }
+
+            const requiredApprovalsRaw = Number(process.env.REQUIRED_APPROVALS || '1');
+            const requiredApprovals =
+              Number.isFinite(requiredApprovalsRaw) && requiredApprovalsRaw > 0
+                ? requiredApprovalsRaw
+                : 1;
+            const ignoreBots = (process.env.IGNORE_BOT_REVIEWS || 'true').toLowerCase() === 'true';
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: number
+            });
+            if (pr.draft) {
+              core.notice('Draft PR detected. Review gate is skipped until ready_for_review.');
+              return;
+            }
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner,
+              repo,
+              pull_number: number,
+              per_page: 100
+            });
+
+            const latestStateByUser = new Map();
+            for (const review of reviews) {
+              const login = review.user?.login;
+              if (!login) {
+                continue;
+              }
+              if (ignoreBots && login.endsWith('[bot]')) {
+                continue;
+              }
+              latestStateByUser.set(login, review.state);
+            }
+
+            const approvedBy = [];
+            const changesRequestedBy = [];
+            for (const [login, state] of latestStateByUser.entries()) {
+              if (state === 'APPROVED') {
+                approvedBy.push(login);
+              }
+              if (state === 'CHANGES_REQUESTED') {
+                changesRequestedBy.push(login);
+              }
+            }
+
+            const summary = [
+              '## Review Gate',
+              '',
+              `- Required approvals: ${requiredApprovals}`,
+              `- Current approvals: ${approvedBy.length}`,
+              `- Active change requests: ${changesRequestedBy.length}`,
+              approvedBy.length > 0 ? `- Approved by: ${approvedBy.join(', ')}` : '- Approved by: (none)',
+              changesRequestedBy.length > 0
+                ? `- Changes requested by: ${changesRequestedBy.join(', ')}`
+                : '- Changes requested by: (none)'
+            ].join('\n');
+            await core.summary.addRaw(summary).write();
+
+            if (changesRequestedBy.length > 0) {
+              core.setFailed(
+                `Review gate failed: active changes requested by ${changesRequestedBy.join(', ')}`
+              );
+              return;
+            }
+
+            if (approvedBy.length < requiredApprovals) {
+              core.setFailed(
+                `Review gate failed: requires ${requiredApprovals} approval(s), found ${approvedBy.length}`
+              );
+            }
