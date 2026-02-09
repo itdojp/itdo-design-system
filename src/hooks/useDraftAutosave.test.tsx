@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
-import { useDraftAutosave } from './useDraftAutosave';
+import { createLocalStorageDraftAutosaveAdapter, useDraftAutosave } from './useDraftAutosave';
 import type { DraftAutosaveAdapter, DraftSnapshot } from '../types';
 
 interface DraftForm {
@@ -142,5 +142,56 @@ describe('useDraftAutosave', () => {
       expect(screen.getByTestId('status')).toHaveTextContent('conflict');
     });
     expect(screen.getByTestId('conflict')).toHaveTextContent('yes');
+  });
+
+  it('pauses interval autosave while conflict status is active', async () => {
+    jest.useFakeTimers();
+    const initial: DraftSnapshot<DraftForm> = {
+      payload: { name: 'Initial', amount: 1 },
+      hash: JSON.stringify({ name: 'Initial', amount: 1 }),
+      revision: 1,
+      savedAt: '2026-02-08T10:00:00.000Z',
+    };
+    const memory = createMemoryAdapter(initial);
+
+    render(<Harness adapter={memory.adapter} intervalMs={1000} />);
+    await flushPromises();
+
+    fireEvent.click(screen.getByText('change'));
+    memory.setSnapshot({
+      payload: { name: 'Remote change', amount: 9 },
+      hash: JSON.stringify({ name: 'Remote change', amount: 9 }),
+      revision: 2,
+      savedAt: '2026-02-09T01:00:00.000Z',
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('status')).toHaveTextContent('conflict');
+    });
+
+    const loadCallsAtConflict = (memory.adapter.load as jest.Mock).mock.calls.length;
+
+    await act(async () => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect((memory.adapter.load as jest.Mock).mock.calls.length).toBe(loadCallsAtConflict);
+    jest.useRealTimers();
+  });
+
+  it('returns null for corrupted local storage snapshot shape', async () => {
+    window.localStorage.setItem(
+      'itdo-draft-autosave-corrupted',
+      JSON.stringify({ revision: 'invalid', savedAt: 123, hash: null })
+    );
+    const adapter = createLocalStorageDraftAutosaveAdapter('itdo-draft-autosave-corrupted');
+
+    const loaded = await adapter.load();
+
+    expect(loaded).toBeNull();
+    window.localStorage.removeItem('itdo-draft-autosave-corrupted');
   });
 });

@@ -77,7 +77,9 @@ describe('EditableDataGrid', () => {
   });
 
   it('cancels row edit and restores read mode', () => {
-    render(<EditableDataGrid<TestRow> columns={columns} rows={rows} />);
+    const onSaveRow = jest.fn().mockResolvedValue(undefined);
+
+    render(<EditableDataGrid<TestRow> columns={columns} rows={rows} onSaveRow={onSaveRow} />);
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0]);
     fireEvent.change(screen.getByLabelText('Member for row TS-001'), { target: { value: 'Updated' } });
@@ -85,5 +87,28 @@ describe('EditableDataGrid', () => {
 
     expect(screen.getByText('Sato')).toBeInTheDocument();
     expect(screen.queryByLabelText('Member for row TS-001')).not.toBeInTheDocument();
+  });
+
+  it('shows save failure and keeps edit mode when save rejects', async () => {
+    const onSaveRow = jest.fn().mockRejectedValue(new Error('Backend unavailable'));
+
+    render(<EditableDataGrid<TestRow> columns={columns} rows={rows} onSaveRow={onSaveRow} />);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0]);
+    fireEvent.change(screen.getByLabelText('Hours for row TS-001'), { target: { value: '8.5' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Save failed: Backend unavailable')).toBeInTheDocument();
+    });
+    expect(screen.getByLabelText('Hours for row TS-001')).toBeInTheDocument();
+  });
+
+  it('disables row editing when onSaveRow is not provided', () => {
+    render(<EditableDataGrid<TestRow> columns={columns} rows={rows} />);
+
+    const editButtons = screen.getAllByRole('button', { name: 'Edit' });
+    expect(editButtons[0]).toBeDisabled();
+    expect(editButtons[1]).toBeDisabled();
   });
 });

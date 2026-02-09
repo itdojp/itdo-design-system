@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react';
+import { useId, useMemo, useRef } from 'react';
 import clsx from 'clsx';
 import { Button } from '../../components/Button';
 import type { AttachmentRecord } from '../../types';
@@ -11,7 +11,7 @@ const formatBytes = (size: number) => {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const statusLabel = (status: AttachmentRecord['status']) => {
+const defaultStatusLabel = (status: AttachmentRecord['status']) => {
   switch (status) {
     case 'queued':
       return 'Queued';
@@ -29,7 +29,13 @@ const statusLabel = (status: AttachmentRecord['status']) => {
 };
 
 const isPreviewable = (attachment: AttachmentRecord) =>
-  attachment.status === 'uploaded' && Boolean(attachment.previewUrl);
+  attachment.status === 'uploaded' &&
+  (attachment.kind === 'file' || Boolean(attachment.previewUrl));
+
+const clampProgress = (progress: number | undefined) => {
+  const normalized = Number.isFinite(progress) ? Number(progress) : 0;
+  return Math.max(0, Math.min(100, normalized));
+};
 
 export const AttachmentField = ({
   attachments,
@@ -44,6 +50,7 @@ export const AttachmentField = ({
   onSelectPreview,
 }: AttachmentFieldProps) => {
   const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
   const resolvedLabels = {
     title: labels?.title ?? 'Attachments',
     addFiles: labels?.addFiles ?? 'Add files',
@@ -51,10 +58,13 @@ export const AttachmentField = ({
     remove: labels?.remove ?? 'Remove',
     selectPreview: labels?.selectPreview ?? 'Preview',
     previewTitle: labels?.previewTitle ?? 'Preview',
+    previewUploadPending:
+      labels?.previewUploadPending ?? 'Preview is available after upload is completed.',
     empty: labels?.empty ?? 'No files attached.',
     maxSizeWarning:
       labels?.maxSizeWarning ??
       ((fileName: string) => `${fileName} exceeds maximum file size.`),
+    statusLabel: labels?.statusLabel ?? defaultStatusLabel,
   };
 
   const selectedAttachment = useMemo(() => {
@@ -68,13 +78,20 @@ export const AttachmentField = ({
     <section className={clsx('itdo-attachment-field', className)}>
       <header className="itdo-attachment-field__header">
         <h3>{resolvedLabels.title}</h3>
-        <label className="itdo-attachment-field__upload-button" htmlFor={inputId}>
+        <button
+          type="button"
+          className="itdo-attachment-field__upload-button"
+          onClick={() => inputRef.current?.click()}
+          disabled={!onAddFiles}
+        >
           {resolvedLabels.addFiles}
-        </label>
+        </button>
         <input
           id={inputId}
+          ref={inputRef}
           className="itdo-attachment-field__input"
           type="file"
+          aria-label={resolvedLabels.addFiles}
           multiple
           onChange={(event) => {
             const files = Array.from(event.target.files ?? []);
@@ -98,6 +115,7 @@ export const AttachmentField = ({
             const showMaxSizeWarning =
               maxFileSizeBytes !== undefined && attachment.size > maxFileSizeBytes;
             const isSelected = selectedAttachment?.id === attachment.id;
+            const uploadProgress = clampProgress(attachment.progress);
 
             return (
               <li
@@ -111,13 +129,13 @@ export const AttachmentField = ({
                     type="button"
                     className="itdo-attachment-field__name"
                     onClick={() => onSelectPreview?.(attachment.id)}
-                    disabled={!isPreviewable(attachment)}
+                    disabled={!isPreviewable(attachment) || !onSelectPreview}
                   >
                     {attachment.name}
                   </button>
                   <p>{formatBytes(attachment.size)}</p>
                   <span className={clsx('itdo-attachment-field__status', `is-${attachment.status}`)}>
-                    {statusLabel(attachment.status)}
+                    {resolvedLabels.statusLabel(attachment.status)}
                   </span>
                 </div>
 
@@ -125,9 +143,9 @@ export const AttachmentField = ({
                   <div className="itdo-attachment-field__progress">
                     <div
                       className="itdo-attachment-field__progress-bar"
-                      style={{ width: `${attachment.progress ?? 0}%` }}
+                      style={{ width: `${uploadProgress}%` }}
                     />
-                    <span>{Math.round(attachment.progress ?? 0)}%</span>
+                    <span>{Math.round(uploadProgress)}%</span>
                   </div>
                 )}
 
@@ -149,6 +167,7 @@ export const AttachmentField = ({
                       size="small"
                       variant="secondary"
                       onClick={() => onRetryAttachment?.(attachment.id)}
+                      disabled={!onRetryAttachment}
                     >
                       {resolvedLabels.retry}
                     </Button>
@@ -158,6 +177,7 @@ export const AttachmentField = ({
                       size="small"
                       variant="secondary"
                       onClick={() => onSelectPreview?.(attachment.id)}
+                      disabled={!onSelectPreview}
                     >
                       {resolvedLabels.selectPreview}
                     </Button>
@@ -166,6 +186,7 @@ export const AttachmentField = ({
                     size="small"
                     variant="secondary"
                     onClick={() => onRemoveAttachment?.(attachment.id)}
+                    disabled={!onRemoveAttachment}
                   >
                     {resolvedLabels.remove}
                   </Button>
@@ -179,7 +200,7 @@ export const AttachmentField = ({
           <h4>{resolvedLabels.previewTitle}</h4>
           {!selectedAttachment && <p>{resolvedLabels.empty}</p>}
           {selectedAttachment && !isPreviewable(selectedAttachment) && (
-            <p>Preview is available after upload is completed.</p>
+            <p>{resolvedLabels.previewUploadPending}</p>
           )}
 
           {selectedAttachment && isPreviewable(selectedAttachment) && selectedAttachment.kind === 'image' && (
@@ -195,6 +216,8 @@ export const AttachmentField = ({
               src={selectedAttachment.previewUrl}
               title={`${selectedAttachment.name} preview`}
               className="itdo-attachment-field__preview-frame"
+              sandbox=""
+              referrerPolicy="no-referrer"
             />
           )}
 

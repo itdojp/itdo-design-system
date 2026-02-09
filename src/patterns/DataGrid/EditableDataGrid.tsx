@@ -106,6 +106,8 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
     editRow: labels?.editRow ?? 'Edit',
     saveRow: labels?.saveRow ?? 'Save',
     cancelRow: labels?.cancelRow ?? 'Cancel',
+    actionsHeader: labels?.actionsHeader ?? 'Actions',
+    selectPlaceholder: labels?.selectPlaceholder ?? 'Select...',
     unsavedState: labels?.unsavedState ?? 'Unsaved changes',
     validationSummaryTitle:
       labels?.validationSummaryTitle ?? ((count: number) => `${count} validation error(s)`),
@@ -121,7 +123,7 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
     [columns]
   );
 
-  const canEditRows = editableColumns.length > 0;
+  const canEditRows = editableColumns.length > 0 && typeof onSaveRow === 'function';
 
   const updateDraftCell = (rowId: string, column: EditableDataGridColumnContract<TRow>, rawValue: string) => {
     const editorType = getEditorType(column);
@@ -197,6 +199,10 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
       return;
     }
 
+    if (!onSaveRow) {
+      return;
+    }
+
     setSavingRowIds((previous) => [...previous, row.id]);
     setSaveFailures((previous) => removeMapEntry(previous, row.id));
 
@@ -207,7 +213,7 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
         nextRow: draftRow,
         changedKeys,
       };
-      await onSaveRow?.(payload);
+      await onSaveRow(payload);
 
       setLocalRows((previous) =>
         previous.map((currentRow) => (currentRow.id === row.id ? draftRow : currentRow))
@@ -231,7 +237,7 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
       <div className={clsx('itdo-datagrid', 'itdo-editable-grid', className)}>
         <div className="itdo-datagrid-state">
           <span className="itdo-datagrid-state__loading">
-            <Spinner size="small" />
+            <Spinner size="small" label={loadingLabel} />
             <span className="itdo-datagrid-state__text">{loadingLabel}</span>
           </span>
         </div>
@@ -268,7 +274,7 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
               </th>
             ))}
             <th className="itdo-datagrid__header-cell itdo-editable-grid__actions-header" scope="col">
-              Actions
+              {resolvedLabels.actionsHeader}
             </th>
           </tr>
         </thead>
@@ -291,6 +297,7 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
                   'itdo-editable-grid__row--dirty': isDirty,
                 })}
                 data-state={isDirty ? 'dirty' : undefined}
+                aria-busy={isSaving ? true : undefined}
               >
                 {columns.map((column) => {
                   const cellValue = rowModel[column.key];
@@ -315,9 +322,10 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
                               aria-invalid={cellError ? true : undefined}
                               aria-describedby={cellError ? errorId : undefined}
                               value={toInputValue(cellValue)}
+                              disabled={isSaving}
                               onChange={(event) => updateDraftCell(row.id, column, event.target.value)}
                             >
-                              <option value="">Select...</option>
+                              <option value="">{column.editor?.placeholder ?? resolvedLabels.selectPlaceholder}</option>
                               {(column.editor?.options ?? []).map((option) => (
                                 <option key={`${column.key}-${option.value}`} value={option.value}>
                                   {option.label}
@@ -337,11 +345,12 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
                               step={column.editor?.step}
                               placeholder={column.editor?.placeholder}
                               value={toInputValue(cellValue)}
+                              disabled={isSaving}
                               onChange={(event) => updateDraftCell(row.id, column, event.target.value)}
                             />
                           )}
                           {cellError && (
-                            <p id={errorId} className="itdo-editable-grid__cell-error" role="alert">
+                            <p id={errorId} className="itdo-editable-grid__cell-error">
                               {cellError}
                             </p>
                           )}
@@ -387,7 +396,7 @@ export const EditableDataGrid = <TRow extends EditableGridRowRecord = EditableGr
                   </div>
                   {isDirty && <p className="itdo-editable-grid__row-state">{resolvedLabels.unsavedState}</p>}
                   {errorMessages.length > 0 && (
-                    <div className="itdo-editable-grid__error-summary" role="alert">
+                    <div className="itdo-editable-grid__error-summary" aria-live="polite" aria-atomic="true">
                       <p className="itdo-editable-grid__error-summary-title">
                         {resolvedLabels.validationSummaryTitle(errorMessages.length)}
                       </p>

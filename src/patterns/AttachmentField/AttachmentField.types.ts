@@ -8,8 +8,10 @@ export interface AttachmentFieldLabels {
   remove?: string;
   selectPreview?: string;
   previewTitle?: string;
+  previewUploadPending?: string;
   empty?: string;
   maxSizeWarning?: (fileName: string) => string;
+  statusLabel?: (status: AttachmentRecord['status']) => string;
 }
 
 export interface AttachmentFieldProps {
