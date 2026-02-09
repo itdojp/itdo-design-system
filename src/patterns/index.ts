@@ -9,3 +9,4 @@ export * from './ConfirmActionDialog';
 export * from './Erp4TimesheetForm';
 export * from './Breadcrumb';
 export * from './Tabs';
+export * from './CommandPalette';
