@@ -1,0 +1,96 @@
+.itdo-saved-view-bar {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-base);
+  padding: var(--space-8);
+  display: grid;
+  gap: var(--space-8);
+}
+
+.itdo-saved-view-bar__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.itdo-saved-view-bar__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.itdo-saved-view-bar__save-as {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.itdo-saved-view-bar__input {
+  min-width: 220px;
+  height: var(--control-height-sm);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-bg-base);
+}
+
+.itdo-saved-view-bar__input:focus-visible {
+  outline: var(--focus-outline-width) var(--focus-outline-style) var(--color-focus-outline);
+  outline-offset: 1px;
+}
+
+.itdo-saved-view-bar__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.itdo-saved-view-bar__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.itdo-saved-view-bar__chip {
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-8);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-easing-standard),
+    background var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.itdo-saved-view-bar__chip.is-active {
+  border-color: var(--color-border-interactive);
+  background: var(--color-bg-accent);
+  color: var(--color-text-primary);
+}
+
+.itdo-saved-view-bar__chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.itdo-saved-view-bar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (max-width: 640px) {
+  .itdo-saved-view-bar__input {
+    min-width: 160px;
+  }
+}
