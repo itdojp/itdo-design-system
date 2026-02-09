@@ -13,3 +13,4 @@ export * from './BulkActionBar';
 export * from './SavedViewBar';
 export * from './CommandPalette';
 export * from './AttachmentField';
+export * from './FormWizard';
