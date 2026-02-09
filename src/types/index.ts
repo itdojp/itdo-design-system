@@ -4,3 +4,4 @@ export type ColorScheme = 'light' | 'dark';
 
 export * from './saved-view';
 export * from './command';
+export * from './draft-autosave';
