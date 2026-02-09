@@ -94,6 +94,7 @@ itdo-design-system/
 - `docs/bulk-action-guidelines.md`: multi-selection action contract and adapter usage.
 - `docs/saved-view-guidelines.md`: saved view UX contract and persistence integration notes.
 - `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
+- `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
 
 ## Design Principles
 
