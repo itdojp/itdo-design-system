@@ -1,6 +1,7 @@
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Spinner } from '../../components/Spinner';
+import { BulkActionBar, createDataTableBulkActionBarProps } from '../BulkActionBar';
 import { DataTableColumn, DataTableProps, DataTableSortDirection } from './CrudList.types';
 import { sortRows } from './DataTable.utils';
 import './CrudList.css';
@@ -228,10 +229,13 @@ export const DataTable: React.FC<DataTableProps> = ({
     sortedRows.length,
   ]);
 
-  const updateSelection = (nextSelection: string[]) => {
-    setSelectedIds(nextSelection);
-    onSelectionChange?.(nextSelection);
-  };
+  const updateSelection = useCallback(
+    (nextSelection: string[]) => {
+      setSelectedIds(nextSelection);
+      onSelectionChange?.(nextSelection);
+    },
+    [onSelectionChange]
+  );
 
   const toggleSelection = (rowId: string) => {
     if (selectable === 'none') {
@@ -294,6 +298,17 @@ export const DataTable: React.FC<DataTableProps> = ({
 
   const hasRowActions = (rowActions?.length ?? 0) > 0 || !!rowActionSlot;
   const hasBulkActions = selectable === 'multiple' && (bulkActions?.length ?? 0) > 0;
+  const bulkActionBarProps = useMemo(
+    () =>
+      createDataTableBulkActionBarProps({
+        selectedRows,
+        bulkActions,
+        selectedRowsLabel: resolvedLabels.selectedRows,
+        clearSelectionLabel: resolvedLabels.clearSelection,
+        onClearSelection: () => updateSelection([]),
+      }),
+    [bulkActions, resolvedLabels.clearSelection, resolvedLabels.selectedRows, selectedRows, updateSelection]
+  );
   const leftPinnedColumnKey = useMemo(
     () => visibleColumns.find((column) => column.pinned === 'left')?.key,
     [visibleColumns]
@@ -364,31 +379,10 @@ export const DataTable: React.FC<DataTableProps> = ({
       )}
 
       {hasBulkActions && selectedRows.length > 0 && (
-        <div className="itdo-data-table__bulk-bar" role="status" aria-live="polite">
-          <span className="itdo-data-table__bulk-count">
-            {resolvedLabels.selectedRows(selectedRows.length)}
-          </span>
-          <div className="itdo-data-table__bulk-actions">
-            {bulkActions?.map((action) => (
-              <button
-                key={action.key}
-                type="button"
-                className="itdo-data-table__bulk-action"
-                onClick={() => action.onSelect(selectedRows)}
-                disabled={action.disabled}
-              >
-                {action.label}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            className="itdo-data-table__clear-selection"
-            onClick={() => updateSelection([])}
-          >
-            {resolvedLabels.clearSelection}
-          </button>
-        </div>
+        <BulkActionBar
+          {...bulkActionBarProps}
+          className="itdo-data-table__bulk-bar"
+        />
       )}
 
       <table role="grid" aria-rowcount={sortedRows.length + 1}>

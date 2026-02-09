@@ -9,5 +9,6 @@ export * from './ConfirmActionDialog';
 export * from './Erp4TimesheetForm';
 export * from './Breadcrumb';
 export * from './Tabs';
+export * from './BulkActionBar';
 export * from './SavedViewBar';
 export * from './CommandPalette';

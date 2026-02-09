@@ -10,6 +10,7 @@ import {
   DataGridLoadingState,
   DataGridErrorState,
 } from './';
+import { BulkActionBar, createDataGridBulkActionBarProps } from '../BulkActionBar';
 
 const meta: Meta<typeof DataGridSurface> = {
   title: 'Patterns/DataGrid',
@@ -135,4 +136,38 @@ export const Error: Story = {
       />
     </DataGridSurface>
   ),
+};
+
+export const WithBulkActions: Story = {
+  render: () => {
+    const selectedRows = [rows[1], rows[2]];
+    const bulkActionProps = createDataGridBulkActionBarProps({
+      selectedItems: selectedRows,
+      actions: [
+        {
+          key: 'approve',
+          label: 'Approve selected',
+          onSelect: () => undefined,
+        },
+        {
+          key: 'delete',
+          label: 'Delete selected',
+          tone: 'danger',
+          onSelect: () => undefined,
+        },
+      ],
+      selectedRowsLabel: (count) => `${count} rows selected`,
+      clearSelectionLabel: 'Clear',
+      onClearSelection: () => undefined,
+    });
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+        <BulkActionBar {...bulkActionProps} />
+        <DataGridSurface className="itdo-datagrid--zebra">
+          <DataGridTable />
+        </DataGridSurface>
+      </div>
+    );
+  },
 };
