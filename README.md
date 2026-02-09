@@ -92,6 +92,7 @@ itdo-design-system/
 - `docs/quality-gate-matrix.md`: minimum CI/local quality-gate matrix and triage flow.
 - `docs/telemetry-events.md`: baseline telemetry event naming and payload contract.
 - `docs/bulk-action-guidelines.md`: multi-selection action contract and adapter usage.
+- `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
 
 ## Design Principles
 
