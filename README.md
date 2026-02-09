@@ -91,6 +91,7 @@ itdo-design-system/
 - `docs/i18n-layout-guidelines.md`: text expansion/RTL implementation rules and regression checklist.
 - `docs/quality-gate-matrix.md`: minimum CI/local quality-gate matrix and triage flow.
 - `docs/telemetry-events.md`: baseline telemetry event naming and payload contract.
+- `docs/saved-view-guidelines.md`: saved view UX contract and persistence integration notes.
 - `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
 
 ## Design Principles
