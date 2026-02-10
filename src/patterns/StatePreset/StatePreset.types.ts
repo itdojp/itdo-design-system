@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { EmptyStateActionConfig } from '../../components/EmptyState/EmptyState.types';
 
 export type StatePresetMode = 'loading' | 'empty' | 'error' | 'success';
 
@@ -19,9 +20,9 @@ export interface StatePresetEmptyConfig {
   title?: string;
   description?: string;
   action?: ReactNode;
-  primaryAction?: StatePresetAction;
-  secondaryAction?: StatePresetAction;
-  ghostAction?: StatePresetAction;
+  primaryAction?: EmptyStateActionConfig;
+  secondaryAction?: EmptyStateActionConfig;
+  ghostAction?: EmptyStateActionConfig;
 }
 
 export interface StatePresetErrorConfig {

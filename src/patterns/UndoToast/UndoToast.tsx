@@ -5,7 +5,7 @@ import { Toast } from '../../components/Toast';
 import type { UndoToastProps } from './UndoToast.types';
 import './UndoToast.css';
 
-type UndoToastPhase = 'pending' | 'undone' | 'committed';
+type UndoToastPhase = 'pending' | 'undone' | 'committed' | 'dismissed';
 
 const MIN_DURATION_MS = 200;
 const TICK_INTERVAL_MS = 250;
@@ -32,7 +32,10 @@ export const UndoToast = ({
   const timeoutRef = useRef<number | undefined>(undefined);
   const intervalRef = useRef<number | undefined>(undefined);
   const startedAtRef = useRef<number | undefined>(undefined);
-  const commitCalledRef = useRef(false);
+  const terminalRef = useRef(false);
+  const onUndoRef = useRef(onUndo);
+  const onCommitRef = useRef(onCommit);
+  const onDismissRef = useRef(onDismiss);
 
   const resolvedLabels = {
     undo: labels?.undo ?? 'Undo',
@@ -59,51 +62,76 @@ export const UndoToast = ({
   };
 
   useEffect(() => {
+    onUndoRef.current = onUndo;
+  }, [onUndo]);
+
+  useEffect(() => {
+    onCommitRef.current = onCommit;
+  }, [onCommit]);
+
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  useEffect(() => {
     if (phase !== 'pending') {
       clearTimers();
       return () => undefined;
     }
 
+    terminalRef.current = false;
     const resolvedDuration = toDuration(durationMs);
     startedAtRef.current = Date.now();
     setRemainingMs(resolvedDuration);
 
     timeoutRef.current = window.setTimeout(() => {
       clearTimers();
-      if (commitCalledRef.current) {
+      if (terminalRef.current) {
         return;
       }
-      commitCalledRef.current = true;
+      terminalRef.current = true;
       setPhase('committed');
-      onCommit?.();
+      onCommitRef.current?.();
       if (autoDismissOnCommit) {
-        onDismiss?.();
+        onDismissRef.current?.();
       }
     }, resolvedDuration);
 
-    intervalRef.current = window.setInterval(() => {
-      if (startedAtRef.current === undefined) {
-        return;
-      }
-      const elapsedMs = Date.now() - startedAtRef.current;
-      setRemainingMs(Math.max(0, resolvedDuration - elapsedMs));
-    }, TICK_INTERVAL_MS);
+    if (showCountdown) {
+      intervalRef.current = window.setInterval(() => {
+        if (startedAtRef.current === undefined) {
+          return;
+        }
+        const elapsedMs = Date.now() - startedAtRef.current;
+        setRemainingMs(Math.max(0, resolvedDuration - elapsedMs));
+      }, TICK_INTERVAL_MS);
+    }
 
     return () => {
       clearTimers();
     };
-  }, [autoDismissOnCommit, durationMs, onCommit, onDismiss, phase]);
+  }, [autoDismissOnCommit, durationMs, phase, showCountdown]);
 
   const handleUndo = () => {
-    if (phase !== 'pending') {
+    if (phase !== 'pending' || terminalRef.current) {
       return;
     }
+    terminalRef.current = true;
     clearTimers();
     setPhase('undone');
-    onUndo?.();
+    onUndoRef.current?.();
     if (autoDismissOnUndo) {
-      onDismiss?.();
+      onDismissRef.current?.();
     }
+  };
+
+  const handleClose = () => {
+    if (!terminalRef.current) {
+      terminalRef.current = true;
+      clearTimers();
+      setPhase('dismissed');
+    }
+    onDismissRef.current?.();
   };
 
   const phaseStatusText =
@@ -146,7 +174,7 @@ export const UndoToast = ({
         action={action}
         dismissible
         ttl={phase === 'pending' ? toDuration(durationMs) : null}
-        onClose={onDismiss}
+        onClose={handleClose}
       />
     </div>
   );
