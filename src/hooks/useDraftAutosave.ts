@@ -223,15 +223,11 @@ export const useDraftAutosave = <TData = Record<string, unknown>>({
   }, [adapter, enabled, isReady, now, onConflict]);
 
   useEffect(() => {
-    if (!enabled || !isReady) {
+    if (!enabled || !isReady || status === 'conflict' || status === 'error') {
       return;
     }
 
     const timer = setInterval(() => {
-      if (status === 'conflict' || status === 'error') {
-        return;
-      }
-
       const nextHash = hashDraftValue(valueRef.current);
       if (nextHash === persistedHashRef.current) {
         return;

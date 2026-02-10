@@ -93,6 +93,8 @@ export const AttachmentField = ({
           type="file"
           aria-label={resolvedLabels.addFiles}
           multiple
+          disabled={!onAddFiles}
+          tabIndex={onAddFiles ? 0 : -1}
           onChange={(event) => {
             const files = Array.from(event.target.files ?? []);
             if (files.length > 0) {
