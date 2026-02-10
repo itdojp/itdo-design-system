@@ -36,6 +36,9 @@ jobs:
         id: storybook_tests
         timeout-minutes: 20
         run: npm run test-storybook:ci
+      - name: Visual regression tests
+        id: visual_tests
+        run: npm run test:visual
       - name: Test
         id: unit_tests
         run: npm test -- --runInBand
@@ -54,13 +57,15 @@ jobs:
             echo "| build_storybook | ${{ steps.build_storybook.outcome }} |"
             echo "| playwright | ${{ steps.playwright.outcome }} |"
             echo "| storybook_tests | ${{ steps.storybook_tests.outcome }} |"
+            echo "| visual_tests | ${{ steps.visual_tests.outcome }} |"
             echo "| unit_tests | ${{ steps.unit_tests.outcome }} |"
             echo ""
             if [ "${{ job.status }}" != "success" ]; then
               echo "### Failure Triage"
               echo "1. Reproduce failing gate locally with the same npm command."
               echo "2. If Storybook tests failed, run: npm run test-storybook:ci"
-              echo "3. If unit tests failed, run: npm test -- --runInBand"
-              echo "4. If build failed, run: npm run build:lib && npm run build-storybook"
+              echo "3. If visual tests failed, run: npm run test:visual"
+              echo "4. If unit tests failed, run: npm test -- --runInBand"
+              echo "5. If build failed, run: npm run build:lib && npm run build-storybook"
             fi
           } >> "$GITHUB_STEP_SUMMARY"

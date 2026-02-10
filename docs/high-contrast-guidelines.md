@@ -26,3 +26,7 @@ This guide defines `data-theme="high-contrast"` operation rules.
 - Validate key workflows with Storybook a11y checks.
 - Verify keyboard focus visibility on primary actions and form controls.
 - Review table/header/border visibility in dense data layouts.
+- Keep visual snapshots for high-contrast surfaces in `src/visual/__screenshots__/`.
+- Recommended commands:
+  - `npm run test-storybook:ci`
+  - `npm run test:visual`

@@ -32,6 +32,14 @@ This document defines implementation rules to keep layouts stable under multilin
   - `Examples/I18n Resilience/RtlWorkspace`
 - Keep mismatch threshold conservative (`allowedMismatchedPixelRatio <= 0.01`).
 
+## Visual Baseline Management
+- Keep baseline images under `src/visual/__screenshots__/`.
+- Review screenshot diffs in PRs before updating baselines.
+- Additive baseline updates are allowed only when UX intent is documented in PR summary.
+- For RTL checks, maintain at least these snapshots:
+  - `i18n-resilience-rtl`
+  - `i18n-resilience-rtl-navigation`
+
 ## Release Checklist
 - Storybook tests pass in CI (`npm run test-storybook:ci`).
 - New locale labels do not overlap action buttons at `320px` width.

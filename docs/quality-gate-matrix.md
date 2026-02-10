@@ -6,6 +6,7 @@ This document defines the minimum quality gate set for pull requests.
 - `lint`: static lint checks for TypeScript/React patterns.
 - `type-check`: TypeScript compile-time contract validation.
 - `test-storybook:ci`: interaction + a11y checks on Storybook stories.
+- `test:visual`: screenshot-based visual regression checks.
 - `test`: component/unit behavior regression checks.
 - `build:lib`: package output build verification.
 - `build-storybook`: documentation artifact build verification.
@@ -14,6 +15,7 @@ This document defines the minimum quality gate set for pull requests.
 - `lint` prevents style and unsafe-pattern drift.
 - `type-check` prevents broken public or internal contracts.
 - `test-storybook:ci` validates usage scenarios and accessibility regressions.
+- `test:visual` detects visual drift for key UX surfaces (RTL/high-contrast/list interactions).
 - `test` validates pure component behavior and hooks logic.
 - `build:lib` ensures distributable package integrity.
 - `build-storybook` ensures docs can be published without breakage.

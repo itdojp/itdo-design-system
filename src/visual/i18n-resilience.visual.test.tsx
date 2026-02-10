@@ -4,6 +4,7 @@ import { PageHeader } from '../patterns/PageHeader';
 import { SectionCard } from '../patterns/SectionCard';
 import { DataTable } from '../patterns/CrudList/DataTable';
 import { Breadcrumb } from '../patterns/Breadcrumb';
+import { Tabs } from '../patterns/Tabs';
 
 const columns = [
   { key: 'id', header: 'ID', sortable: true, hideable: false },
@@ -110,6 +111,51 @@ describe('visual regression: i18n resilience', () => {
 
     await browserExpect.element(screen.getByTestId('rtl-surface')).toMatchScreenshot(
       'i18n-resilience-rtl',
+      {
+        comparatorOptions: {
+          allowedMismatchedPixelRatio: 0.01,
+        },
+      }
+    );
+  });
+
+  test('rtl navigation spacing and icon orientation', async () => {
+    const browserExpect = expect as BrowserExpect;
+
+    render(
+      <div
+        dir="rtl"
+        data-testid="rtl-navigation-surface"
+        style={{
+          width: '920px',
+          padding: '16px',
+          display: 'grid',
+          gap: '16px',
+          background: 'var(--color-bg-base)',
+        }}
+      >
+        <Breadcrumb
+          items={[
+            { id: 'home', label: 'الرئيسية', href: '#' },
+            { id: 'finance', label: 'المالية', href: '#' },
+            { id: 'approvals', label: 'سجل الموافقات' },
+          ]}
+        />
+        <Tabs
+          ariaLabel="RTL tabs"
+          value="pending"
+          onValueChange={() => undefined}
+          items={[
+            { id: 'all', label: 'الكل' },
+            { id: 'pending', label: 'قيد الانتظار' },
+            { id: 'approved', label: 'تمت الموافقة' },
+          ]}
+        />
+      </div>
+    );
+
+    await browserExpect.element(screen.getByTestId('rtl-navigation-surface')).toMatchScreenshot(
+      'i18n-resilience-rtl-navigation',
       {
         comparatorOptions: {
           allowedMismatchedPixelRatio: 0.01,
