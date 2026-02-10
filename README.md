@@ -97,6 +97,7 @@ itdo-design-system/
 - `docs/form-wizard-guidelines.md`: step navigation, autosave, and leave-guard rules for wizard flows.
 - `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
 - `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
+- `docs/governance/review-gate.md`: merge blocking policy for required PR review + required status checks.
 
 ## Design Principles
 

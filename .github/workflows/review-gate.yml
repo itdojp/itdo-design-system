@@ -1,0 +1,123 @@
+name: Review Gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to check (manual run only)
+        required: true
+        type: number
+
+concurrency:
+  group: review-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Copilot review and resolved Copilot threads
+        uses: actions/github-script@v7
+        env:
+          COPILOT_ACTORS: "copilot-pull-request-reviewer,github-copilot,github-copilot[bot],copilot,copilot[bot]"
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const inputPrNumber = context.payload.inputs?.pr_number;
+            const parsedInput = inputPrNumber ? Number(inputPrNumber) : null;
+            const number = context.payload.pull_request?.number ?? parsedInput;
+            const isValidNumber = typeof number === 'number' && Number.isFinite(number) && number > 0;
+            if (!isValidNumber) {
+              core.setFailed('No PR context or valid pr_number provided.');
+              return;
+            }
+
+            const actors = (process.env.COPILOT_ACTORS || '')
+              .split(',')
+              .map((value) => value.trim())
+              .filter(Boolean);
+            if (actors.length === 0) {
+              core.setFailed('COPILOT_ACTORS is empty.');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: number
+            });
+            if (pr.draft) {
+              core.notice('Draft PR detected. Review gate is skipped until ready_for_review.');
+              return;
+            }
+
+            const query = `query($owner:String!, $repo:String!, $number:Int!) {
+              repository(owner:$owner, name:$repo) {
+                pullRequest(number:$number) {
+                  reviews(last: 100) {
+                    nodes {
+                      author { login }
+                      state
+                    }
+                  }
+                  reviewThreads(first: 100) {
+                    nodes {
+                      isResolved
+                      comments(first: 30) {
+                        nodes {
+                          author { login }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }`;
+            const data = await github.graphql(query, { owner, repo, number });
+            const prData = data.repository.pullRequest;
+            if (!prData) {
+              core.setFailed('Cannot load pull request review data.');
+              return;
+            }
+
+            const reviewAuthors = prData.reviews.nodes
+              .map((review) => review.author?.login)
+              .filter(Boolean);
+            const hasCopilotReview = reviewAuthors.some((login) => actors.includes(login));
+
+            const copilotThreads = prData.reviewThreads.nodes.filter((thread) =>
+              thread.comments.nodes.some((comment) => actors.includes(comment.author?.login))
+            );
+            const unresolvedCopilotThreads = copilotThreads.filter((thread) => !thread.isResolved);
+
+            const summary = [
+              '## Review Gate',
+              '',
+              `- Copilot actors: ${actors.join(', ')}`,
+              `- Copilot review found: ${hasCopilotReview ? 'yes' : 'no'}`,
+              `- Copilot review threads: ${copilotThreads.length}`,
+              `- Unresolved Copilot threads: ${unresolvedCopilotThreads.length}`
+            ].join('\n');
+            await core.summary.addRaw(summary).write();
+
+            if (!hasCopilotReview) {
+              core.setFailed(
+                `Review gate failed: no Copilot review found. Expected actors: ${actors.join(', ')}`
+              );
+              return;
+            }
+
+            if (unresolvedCopilotThreads.length > 0) {
+              core.setFailed(
+                `Review gate failed: unresolved Copilot review threads = ${unresolvedCopilotThreads.length}`
+              );
+            }
