@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 import { Button } from '../../components/Button';
 import { PermissionGate } from './PermissionGate';
 
@@ -52,5 +53,37 @@ export const DisabledWithReason: Story = {
     const button = canvas.getByRole('button', { name: 'Approve payment' });
     await expect(button).toBeDisabled();
     await expect(canvas.getByRole('note')).toHaveTextContent('Requires finance:approve permission.');
+  },
+};
+
+export const PermissionSwitch: Story = {
+  render: () => {
+    const [allowed, setAllowed] = useState(false);
+
+    return (
+      <div style={{ display: 'grid', gap: 'var(--space-4)', maxWidth: '420px' }}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => setAllowed((previous) => !previous)}
+        >
+          {allowed ? 'Revoke permission' : 'Grant permission'}
+        </Button>
+
+        <PermissionGate
+          allowed={allowed}
+          mode="disable"
+          reason="Requires finance:approve permission."
+        >
+          <Button type="button">Approve payment</Button>
+        </PermissionGate>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('button', { name: 'Approve payment' })).toBeDisabled();
+    await userEvent.click(canvas.getByRole('button', { name: 'Grant permission' }));
+    await expect(canvas.getByRole('button', { name: 'Approve payment' })).not.toBeDisabled();
   },
 };
