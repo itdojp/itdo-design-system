@@ -91,6 +91,7 @@ itdo-design-system/
 - `docs/wave-review-checklist.md`: wave completion review checklist.
 - `docs/token-system-wave3.md`: token inventory, naming policy, and migration notes for Wave3.
 - `docs/i18n-layout-guidelines.md`: text expansion/RTL implementation rules and regression checklist.
+- `docs/high-contrast-guidelines.md`: high contrast theme activation and contrast verification rules.
 - `docs/quality-gate-matrix.md`: minimum CI/local quality-gate matrix and triage flow.
 - `docs/telemetry-events.md`: baseline telemetry event naming and payload contract.
 - `docs/telemetry-hook-points.md`: recommended telemetry insertion points by component.
@@ -100,6 +101,7 @@ itdo-design-system/
 - `docs/form-wizard-guidelines.md`: step navigation, autosave, and leave-guard rules for wizard flows.
 - `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
 - `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
+- `docs/reliability-ux-guidelines.md`: undo notification and state preset recovery contracts.
 - `docs/governance/review-gate.md`: merge blocking policy for required PR review + required status checks.
 
 ## Design Principles
