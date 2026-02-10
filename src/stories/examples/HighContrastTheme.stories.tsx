@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 import { Button } from '../../components/Button';
 import { Dialog } from '../../components/Dialog';
 import { FormField } from '../../components/FormField';
@@ -113,14 +113,17 @@ export const Default: Story = {
   render: () => <HighContrastSurface />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(document.documentElement).toHaveAttribute('data-theme', 'high-contrast');
+    await waitFor(() => {
+      expect(document.documentElement).toHaveAttribute('data-theme', 'high-contrast');
+
+      const borderStrong = getComputedStyle(document.documentElement)
+        .getPropertyValue('--color-border-strong')
+        .trim();
+      expect(borderStrong).toBe('#000000');
+    });
+
     await expect(canvas.getByRole('heading', { name: 'High Contrast Preview' })).toBeInTheDocument();
     await expect(canvas.getByRole('cell', { name: 'AP-3001' })).toBeInTheDocument();
     await expect(canvas.getByRole('dialog', { name: 'Approval review' })).toBeInTheDocument();
-
-    const borderStrong = getComputedStyle(document.documentElement)
-      .getPropertyValue('--color-border-strong')
-      .trim();
-    await expect(borderStrong).toBe('#000000');
   },
 };
