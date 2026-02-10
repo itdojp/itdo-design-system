@@ -99,6 +99,7 @@ itdo-design-system/
 - `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
 - `docs/reliability-ux-guidelines.md`: undo notification and state preset recovery contracts.
 - `docs/permission-gate-guidelines.md`: permission-aware rendering contract for hide/disable/reason behaviors.
+- `docs/audit-timeline-guidelines.md`: audit trail rendering, diff, filter, and telemetry contract.
 - `docs/governance/review-gate.md`: merge blocking policy for required PR review + required status checks.
 
 ## Design Principles

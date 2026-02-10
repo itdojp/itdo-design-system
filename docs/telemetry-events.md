@@ -22,11 +22,23 @@ This document defines baseline telemetry events for design-system adoption track
 - `occurredAt`: ISO8601 timestamp
 - `metadata`: optional object for domain attributes
 
+## Extended Payload (WaveC+)
+- `event`: canonical event key (ex: `ds.audit_timeline.filter.change`)
+- `action`: normalized action key (ex: `filter_change`)
+- `context`: object for filter state and target identifiers
+- `result`: `success | error`
+- `occurredAt`: ISO8601 timestamp
+
 ## Baseline Event Set
 - `ds.designbook.master_list.view`
 - `ds.designbook.telemetry_panel.view`
 - `ds.designbook.datatable.open_detail.click`
 - `ds.designbook.telemetry.simulate_error.error`
+
+## Audit Timeline Event Set
+- `ds.audit_timeline.filter.change`
+- `ds.audit_timeline.entry.expand`
+- `ds.audit_timeline.entry.collapse`
 
 ## Operational Notes
 - Events must not contain PII.

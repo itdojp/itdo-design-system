@@ -2,6 +2,7 @@ export * from './PageHeader';
 export * from './CrudList';
 export * from './ActionFlow';
 export * from './EventLog';
+export * from './AuditTimeline';
 export * from './DataGrid';
 export * from './SectionCard';
 export * from './AsyncStatePanel';

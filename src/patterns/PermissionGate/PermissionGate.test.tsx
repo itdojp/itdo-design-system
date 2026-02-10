@@ -54,6 +54,25 @@ describe('PermissionGate', () => {
 
     expect(screen.queryByRole('note')).not.toBeInTheDocument();
   });
+  it('reflects permission changes when allowed state toggles', () => {
+    const { rerender } = render(
+      <PermissionGate allowed={false} mode="disable" reason="Requires finance:write permission.">
+        <button type="button">Delete row</button>
+      </PermissionGate>
+    );
+
+    expect(screen.getByRole('button', { name: 'Delete row' })).toBeDisabled();
+    expect(screen.getByRole('note')).toHaveTextContent('Requires finance:write permission.');
+
+    rerender(
+      <PermissionGate allowed>
+        <button type="button">Delete row</button>
+      </PermissionGate>
+    );
+
+    expect(screen.getByRole('button', { name: 'Delete row' })).not.toBeDisabled();
+    expect(screen.queryByRole('note')).not.toBeInTheDocument();
+  });
 
   it('blocks anchor click and keyboard activation in disable mode', () => {
     const onClick = jest.fn();
