@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 import { Button } from '../../components/Button';
+import { Dialog } from '../../components/Dialog';
+import { FormField } from '../../components/FormField';
 import { Input } from '../../components/Input';
 import { SectionCard } from '../../patterns/SectionCard';
 import { DataTable } from '../../patterns/CrudList/DataTable';
@@ -55,10 +57,16 @@ const HighContrastSurface = () => {
 
       <SectionCard
         title="Input and actions"
-        description="確認対象: 境界線、フォーカスリング、テキスト可読性"
+        description="確認対象: Button / FormField / Input の境界線、フォーカスリング、テキスト可読性"
       >
         <div style={{ display: 'grid', gap: 'var(--space-4)', maxWidth: '360px' }}>
-          <Input label="Approval title" placeholder="Enter approval title" />
+          <FormField
+            label="Approval title"
+            description="Apply semantic text and border tokens under high contrast mode."
+            required
+          >
+            <Input placeholder="Enter approval title" />
+          </FormField>
           <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
             <Button type="button">Primary action</Button>
             <Button type="button" variant="secondary">
@@ -74,6 +82,29 @@ const HighContrastSurface = () => {
       >
         <DataTable columns={columns} rows={rows} pageSize={3} />
       </SectionCard>
+
+      <SectionCard
+        title="Dialog"
+        description="確認対象: オーバーレイ、タイトル、説明文、アクションの視認性"
+      >
+        <Dialog
+          open
+          onClose={() => undefined}
+          portal={false}
+          title="Approval review"
+          description="Confirm this request before final approval."
+          confirmAction={<Button type="button">Approve</Button>}
+          cancelAction={
+            <Button type="button" variant="secondary">
+              Cancel
+            </Button>
+          }
+        >
+          <p style={{ margin: 0 }}>
+            Review all supporting records and ensure policy compliance before submitting.
+          </p>
+        </Dialog>
+      </SectionCard>
     </div>
   );
 };
@@ -85,6 +116,7 @@ export const Default: Story = {
     await expect(document.documentElement).toHaveAttribute('data-theme', 'high-contrast');
     await expect(canvas.getByRole('heading', { name: 'High Contrast Preview' })).toBeInTheDocument();
     await expect(canvas.getByRole('cell', { name: 'AP-3001' })).toBeInTheDocument();
+    await expect(canvas.getByRole('dialog', { name: 'Approval review' })).toBeInTheDocument();
 
     const borderStrong = getComputedStyle(document.documentElement)
       .getPropertyValue('--color-border-strong')

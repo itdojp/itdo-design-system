@@ -153,6 +153,7 @@
   --focus-ring-offset: 2px;
   --focus-outline-width: 2px;
   --focus-outline-style: solid;
+  --color-overlay-backdrop: rgb(15 23 42 / 0.5);
 
   /* Motion */
   --motion-duration-fast: 120ms;
@@ -254,6 +255,7 @@
   --color-focus-outline: #000000;
   --focus-ring-width: 4px;
   --focus-ring-offset: 2px;
+  --color-overlay-backdrop: rgb(0 0 0 / 0.72);
 
   --datagrid-header-bg: #ffffff;
   --datagrid-header-border: #000000;
