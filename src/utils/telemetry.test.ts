@@ -41,6 +41,19 @@ describe('telemetry utils', () => {
     );
   });
 
+  it('rejects parseable but non-ISO datetime strings', () => {
+    const result = validateTelemetryEvent({
+      event: 'ds.sample.view',
+      action: 'view',
+      context: {},
+      result: 'success',
+      occurredAt: '2026/02/10 00:00:00',
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain('occurredAt must be an ISO8601 datetime string');
+  });
+
   it('emits payload via transport', async () => {
     const transport = jest.fn();
 
@@ -62,8 +75,9 @@ describe('telemetry utils', () => {
 
   it('swallows transport errors via onError callback', async () => {
     const onError = jest.fn();
+    const expectedError = new Error('network');
 
-    await emitTelemetryEvent(
+    const payload = await emitTelemetryEvent(
       {
         event: 'ds.sample.error',
         action: 'submit',
@@ -71,13 +85,23 @@ describe('telemetry utils', () => {
       },
       {
         transport: async () => {
-          throw new Error('network');
+          throw expectedError;
         },
         onError,
       }
     );
 
     expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'network' }),
+      expect.objectContaining({
+        event: payload.event,
+        action: payload.action,
+        context: payload.context,
+        result: payload.result,
+        occurredAt: payload.occurredAt,
+      })
+    );
   });
 
   it('exposes hook points for major components', () => {

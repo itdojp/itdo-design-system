@@ -68,6 +68,14 @@ const isIsoDateTime = (value: string) => {
   if (value.length === 0) {
     return false;
   }
+
+  const iso8601DateTimePattern =
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
+
+  if (!iso8601DateTimePattern.test(value)) {
+    return false;
+  }
+
   return !Number.isNaN(Date.parse(value));
 };
 
