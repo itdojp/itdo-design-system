@@ -13,6 +13,16 @@ Use this template for every release PR.
 ### Fixed
 - [component-or-package]: bug fix summary and impact.
 
+### Telemetry
+- Event additions:
+- Event removals/deprecations:
+- Dashboard impact:
+
+### Deprecation
+- Deprecated APIs introduced:
+- Migration deadline/version:
+- Current scan findings (`npm run deprecation:scan`):
+
 ### Migration Notes
 - Before:
 - After:
