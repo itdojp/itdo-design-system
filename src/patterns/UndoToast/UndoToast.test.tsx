@@ -61,10 +61,48 @@ describe('UndoToast', () => {
   });
 
   it('supports manual dismiss via close button', () => {
+    jest.useFakeTimers();
     const onDismiss = jest.fn();
-    render(<UndoToast title="Row deleted" onDismiss={onDismiss} />);
+    const onCommit = jest.fn();
+    render(<UndoToast title="Row deleted" onDismiss={onDismiss} onCommit={onCommit} durationMs={800} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
     expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(onCommit).not.toHaveBeenCalled();
+  });
+
+  it('does not reset timeout when callback identity changes across rerenders', () => {
+    jest.useFakeTimers();
+    const onCommitA = jest.fn();
+    const onCommitB = jest.fn();
+    const onDismiss = jest.fn();
+
+    const { rerender } = render(
+      <UndoToast title="Row deleted" durationMs={1000} onCommit={onCommitA} onDismiss={onDismiss} />
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(700);
+    });
+
+    rerender(
+      <UndoToast
+        title="Row deleted"
+        durationMs={1000}
+        onCommit={() => onCommitB()}
+        onDismiss={onDismiss}
+      />
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(350);
+    });
+
+    expect(onCommitB).toHaveBeenCalledTimes(1);
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(onCommitA).not.toHaveBeenCalled();
   });
 });
