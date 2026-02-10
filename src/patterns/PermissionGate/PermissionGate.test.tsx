@@ -54,4 +54,43 @@ describe('PermissionGate', () => {
 
     expect(screen.queryByRole('note')).not.toBeInTheDocument();
   });
+
+  it('blocks anchor click and keyboard activation in disable mode', () => {
+    const onClick = jest.fn();
+    render(
+      <PermissionGate allowed={false} mode="disable" reason="Requires finance:write permission.">
+        <a href="/billing" onClick={onClick}>
+          Open billing
+        </a>
+      </PermissionGate>
+    );
+
+    const anchor = screen.getByText('Open billing');
+    expect(anchor).toHaveAttribute('aria-disabled', 'true');
+    expect(anchor).toHaveAttribute('tabindex', '-1');
+    expect(anchor).not.toHaveAttribute('href');
+
+    fireEvent.click(anchor);
+    fireEvent.keyDown(anchor, { key: 'Enter' });
+    fireEvent.keyDown(anchor, { key: ' ' });
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('applies disabled hints for fragment children', () => {
+    render(
+      <PermissionGate allowed={false} mode="disable" reason="Requires finance:write permission.">
+        <>
+          <button type="button">Delete row</button>
+          <a href="/audit">Open audit</a>
+        </>
+      </PermissionGate>
+    );
+
+    const button = screen.getByRole('button', { name: 'Delete row' });
+    const link = screen.getByText('Open audit');
+    expect(button).toBeDisabled();
+    expect(link).toHaveAttribute('aria-disabled', 'true');
+    expect(link).toHaveAttribute('tabindex', '-1');
+    expect(link).not.toHaveAttribute('href');
+  });
 });

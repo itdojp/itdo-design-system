@@ -4,8 +4,11 @@
 }
 
 .itdo-permission-gate__blocked {
-  pointer-events: none;
   opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.itdo-permission-gate__blocked * {
   cursor: not-allowed;
 }
 
