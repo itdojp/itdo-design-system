@@ -1,0 +1,28 @@
+.itdo-undo-toast {
+  max-width: 560px;
+}
+
+.itdo-undo-toast .itdo-toast__action {
+  display: inline-flex;
+}
+
+.itdo-undo-toast__description {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.itdo-undo-toast__description-main {
+  color: inherit;
+}
+
+.itdo-undo-toast__phase-state {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.itdo-undo-toast__countdown {
+  margin-left: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: currentColor;
+}
