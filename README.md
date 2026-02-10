@@ -98,6 +98,7 @@ itdo-design-system/
 - `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
 - `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
 - `docs/reliability-ux-guidelines.md`: undo notification and state preset recovery contracts.
+- `docs/permission-gate-guidelines.md`: permission-aware rendering contract for hide/disable/reason behaviors.
 - `docs/governance/review-gate.md`: merge blocking policy for required PR review + required status checks.
 
 ## Design Principles

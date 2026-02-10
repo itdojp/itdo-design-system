@@ -14,5 +14,6 @@ export * from './SavedViewBar';
 export * from './CommandPalette';
 export * from './AttachmentField';
 export * from './FormWizard';
+export * from './PermissionGate';
 export * from './UndoToast';
 export * from './StatePreset';
