@@ -12,7 +12,7 @@ This repository blocks merge to `main` unless review requirements are satisfied.
   - Existing quality gate workflow.
 - Branch protection preset
   - `.github/branch-protection.main.require-review-gate.json`
-  - Enforces strict status checks and required approving reviews.
+  - Enforces strict status checks, required approving reviews, and admin enforcement.
 
 ## How to apply branch protection
 
@@ -27,3 +27,4 @@ This repository blocks merge to `main` unless review requirements are satisfied.
 
 - Draft PRs are skipped by Review Gate until marked ready for review.
 - Bot reviews are ignored by default in Review Gate (`IGNORE_BOT_REVIEWS=true`).
+- Admin bypass is disabled in the preset (`enforce_admins: true`).

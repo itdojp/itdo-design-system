@@ -33,7 +33,7 @@ jobs:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const inputPrNumber = core.getInput('pr_number') || context.payload.inputs?.pr_number;
+            const inputPrNumber = context.payload.inputs?.pr_number;
             const parsedInput = inputPrNumber ? Number(inputPrNumber) : null;
             const number = context.payload.pull_request?.number ?? parsedInput;
             const isValidNumber = typeof number === 'number' && Number.isFinite(number) && number > 0;
@@ -69,10 +69,11 @@ jobs:
             const latestStateByUser = new Map();
             for (const review of reviews) {
               const login = review.user?.login;
+              const isBot = review.user?.type === 'Bot';
               if (!login) {
                 continue;
               }
-              if (ignoreBots && login.endsWith('[bot]')) {
+              if (ignoreBots && (isBot || login.endsWith('[bot]'))) {
                 continue;
               }
               latestStateByUser.set(login, review.state);

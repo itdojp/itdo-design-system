@@ -6,6 +6,9 @@ on:
       preset:
         description: Preset JSON under .github (for example, branch-protection.main.require-review-gate.json)
         required: true
+        type: choice
+        options:
+          - branch-protection.main.require-review-gate.json
         default: branch-protection.main.require-review-gate.json
       branch:
         description: Target branch
@@ -47,7 +50,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
-          FILE=".github/${{ github.event.inputs.preset }}"
+          PRESET="${{ github.event.inputs.preset }}"
+          case "$PRESET" in
+            /*|*..*|*/*)
+              echo "Invalid preset input: path traversal and nested paths are not allowed." >&2
+              exit 1
+              ;;
+            *.json)
+              ;;
+            *)
+              echo "Invalid preset input: only .json file names are allowed." >&2
+              exit 1
+              ;;
+          esac
+
+          FILE=".github/$PRESET"
           test -f "$FILE" || { echo "Preset file not found: $FILE" >&2; exit 1; }
           gh api \
             --method PUT \
