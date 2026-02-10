@@ -34,6 +34,20 @@ export const hashDraftValue = (value: unknown): string => {
   }
 };
 
+const isDraftSnapshot = <TData,>(value: unknown): value is DraftSnapshot<TData> => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const record = value as Partial<DraftSnapshot<TData>>;
+  return (
+    Number.isFinite(record.revision) &&
+    typeof record.savedAt === 'string' &&
+    typeof record.hash === 'string' &&
+    Object.prototype.hasOwnProperty.call(record, 'payload')
+  );
+};
+
 export const createLocalStorageDraftAutosaveAdapter = <TData = Record<string, unknown>>(
   storageKey = 'itdo-draft-autosave'
 ): DraftAutosaveAdapter<TData> => ({
@@ -47,7 +61,11 @@ export const createLocalStorageDraftAutosaveAdapter = <TData = Record<string, un
       if (!raw) {
         return null;
       }
-      return JSON.parse(raw) as DraftSnapshot<TData>;
+      const parsed = JSON.parse(raw);
+      if (!isDraftSnapshot<TData>(parsed)) {
+        return null;
+      }
+      return parsed;
     } catch {
       return null;
     }
@@ -205,7 +223,7 @@ export const useDraftAutosave = <TData = Record<string, unknown>>({
   }, [adapter, enabled, isReady, now, onConflict]);
 
   useEffect(() => {
-    if (!enabled || !isReady) {
+    if (!enabled || !isReady || status === 'conflict' || status === 'error') {
       return;
     }
 
@@ -220,7 +238,7 @@ export const useDraftAutosave = <TData = Record<string, unknown>>({
     return () => {
       clearInterval(timer);
     };
-  }, [enabled, intervalMs, isReady, saveNow]);
+  }, [enabled, intervalMs, isReady, saveNow, status]);
 
   const restoreDraft = useCallback(() => {
     if (!restorableDraft) {

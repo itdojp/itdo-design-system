@@ -10,15 +10,15 @@ const isStepSatisfied = (isComplete: boolean | undefined, optional: boolean | un
 const autosaveStatusLabel = (status: FormWizardProps['autosave'] extends undefined ? never : NonNullable<FormWizardProps['autosave']>['status']) => {
   switch (status) {
     case 'saving':
-      return 'Saving draft';
+      return 'Saving';
     case 'saved':
-      return 'Draft saved';
+      return 'Saved';
     case 'error':
-      return 'Draft save failed';
+      return 'Save failed';
     case 'conflict':
-      return 'Draft conflict detected';
+      return 'Conflict detected';
     default:
-      return 'Autosave idle';
+      return 'Idle';
   }
 };
 
@@ -51,10 +51,11 @@ export const FormWizard = ({
   };
 
   const activeIndex = useMemo(
-    () => Math.max(0, steps.findIndex((step) => step.id === activeStepId)),
+    () => steps.findIndex((step) => step.id === activeStepId),
     [activeStepId, steps]
   );
-  const activeStep = steps[activeIndex];
+  const resolvedActiveIndex = activeIndex >= 0 ? activeIndex : 0;
+  const activeStep = steps[resolvedActiveIndex];
 
   const canMoveToIndex = (targetIndex: number) => {
     if (targetIndex < 0 || targetIndex >= steps.length) {
@@ -81,10 +82,10 @@ export const FormWizard = ({
   );
 
   useEffect(() => {
-    if (!activeStep && firstStepId) {
+    if (activeIndex === -1 && firstStepId) {
       selectStep(firstStepId);
     }
-  }, [activeStep, firstStepId, selectStep]);
+  }, [activeIndex, firstStepId, selectStep]);
 
   useEffect(() => {
     if (!protectUnsavedChanges || !isDirty) {
@@ -106,8 +107,8 @@ export const FormWizard = ({
     return null;
   }
 
-  const canGoBack = activeIndex > 0;
-  const canGoNext = activeIndex < steps.length - 1;
+  const canGoBack = resolvedActiveIndex > 0;
+  const canGoNext = resolvedActiveIndex < steps.length - 1;
   const currentSatisfied = isStepSatisfied(activeStep.isComplete, activeStep.optional);
   const nextDisabled = canGoNext && !currentSatisfied;
 
@@ -122,7 +123,7 @@ export const FormWizard = ({
         <ol className="itdo-form-wizard__steps">
           {steps.map((step, index) => {
             const unlocked = canMoveToIndex(index);
-            const isCurrent = index === activeIndex;
+            const isCurrent = index === resolvedActiveIndex;
 
             return (
               <li
@@ -158,12 +159,12 @@ export const FormWizard = ({
           {autosave.lastSavedAt && <span>Last: {autosave.lastSavedAt}</span>}
           {autosave.message && <span>{autosave.message}</span>}
           {autosave.onRestoreDraft && (
-            <Button size="small" variant="secondary" onClick={autosave.onRestoreDraft}>
+            <Button size="small" variant="secondary" type="button" onClick={autosave.onRestoreDraft}>
               Restore draft
             </Button>
           )}
           {autosave.onRetrySave && (autosave.status === 'error' || autosave.status === 'conflict') && (
-            <Button size="small" onClick={autosave.onRetrySave}>
+            <Button size="small" type="button" onClick={autosave.onRetrySave}>
               Retry save
             </Button>
           )}
@@ -180,18 +181,19 @@ export const FormWizard = ({
 
       <footer className="itdo-form-wizard__actions">
         {onCancel && (
-          <Button variant="secondary" onClick={onCancel}>
+          <Button variant="secondary" type="button" onClick={onCancel}>
             {resolvedLabels.cancel}
           </Button>
         )}
         <div className="itdo-form-wizard__actions-right">
           <Button
             variant="secondary"
+            type="button"
             onClick={() => {
               if (!canGoBack) {
                 return;
               }
-              selectStep(steps[activeIndex - 1].id);
+              selectStep(steps[resolvedActiveIndex - 1].id);
             }}
             disabled={!canGoBack}
           >
@@ -199,11 +201,12 @@ export const FormWizard = ({
           </Button>
           {canGoNext ? (
             <Button
+              type="button"
               onClick={() => {
                 if (nextDisabled) {
                   return;
                 }
-                selectStep(steps[activeIndex + 1].id);
+                selectStep(steps[resolvedActiveIndex + 1].id);
               }}
               disabled={nextDisabled}
             >
@@ -211,6 +214,7 @@ export const FormWizard = ({
             </Button>
           ) : (
             <Button
+              type="button"
               onClick={() => {
                 void onSubmit?.();
               }}

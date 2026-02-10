@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { expect, fireEvent, within } from 'storybook/test';
 import type { AttachmentRecord, EditableDataGridColumnContract, EditableGridRowRecord } from '../../types';
 import { AttachmentField } from '../../patterns/AttachmentField';
@@ -64,6 +64,9 @@ const columns: EditableDataGridColumnContract<TimesheetRow>[] = [
       if (value <= 0) {
         return 'Hours must be greater than 0.';
       }
+      if (value > 24) {
+        return 'Hours must be 24 or less.';
+      }
       return null;
     },
     formatter: (value) => (typeof value === 'number' ? value.toFixed(1) : String(value ?? '')),
@@ -125,6 +128,17 @@ export const Default: Story = {
     const [selectedPreviewId, setSelectedPreviewId] = useState<string | undefined>('att-receipt');
     const [confirmed, setConfirmed] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('Not submitted');
+    const timeoutIdsRef = useRef<number[]>([]);
+
+    useEffect(
+      () => () => {
+        timeoutIdsRef.current.forEach((timeoutId) => {
+          window.clearTimeout(timeoutId);
+        });
+        timeoutIdsRef.current = [];
+      },
+      []
+    );
 
     const draftValue = useMemo(
       () => ({ rows, attachments, confirmed }),
@@ -188,7 +202,7 @@ export const Default: Story = {
                 )
               );
 
-              setTimeout(() => {
+              const retryTimeoutId = window.setTimeout(() => {
                 setAttachments((previous) =>
                   previous.map((attachment) =>
                     attachment.id === attachmentId
@@ -196,12 +210,18 @@ export const Default: Story = {
                           ...attachment,
                           status: 'uploaded',
                           progress: 100,
-                          previewUrl: attachment.kind === 'pdf' ? pdfPreview : imagePreview,
+                          previewUrl:
+                            attachment.kind === 'pdf'
+                              ? pdfPreview
+                              : attachment.kind === 'image'
+                                ? imagePreview
+                                : undefined,
                         }
                       : attachment
                   )
                 );
               }, 500);
+              timeoutIdsRef.current.push(retryTimeoutId);
             }}
             onRemoveAttachment={(attachmentId) =>
               setAttachments((previous) =>
@@ -223,7 +243,7 @@ export const Default: Story = {
               });
 
               setAttachments((previous) => [...previous, ...created]);
-              setTimeout(() => {
+              const uploadTimeoutId = window.setTimeout(() => {
                 setAttachments((previous) =>
                   previous.map((attachment) =>
                     created.some((createdAttachment) => createdAttachment.id === attachment.id)
@@ -236,12 +256,13 @@ export const Default: Story = {
                               ? pdfPreview
                               : attachment.kind === 'image'
                                 ? imagePreview
-                                : 'data:text/plain;base64,SGVsbG8=',
+                                : undefined,
                         }
                       : attachment
                   )
                 );
               }, 700);
+              timeoutIdsRef.current.push(uploadTimeoutId);
             }}
           />
         ),

@@ -91,4 +91,78 @@ describe('FormWizard', () => {
     window.dispatchEvent(beforeUnload);
     expect(beforeUnload.defaultPrevented).toBe(true);
   });
+
+  it('normalizes invalid controlled step value to first step', () => {
+    const onValueChange = jest.fn();
+
+    render(
+      <FormWizard
+        value="unknown-step"
+        onValueChange={onValueChange}
+        steps={[
+          {
+            id: 'first',
+            title: 'First',
+            isComplete: true,
+            content: <div>first-content</div>,
+          },
+          {
+            id: 'second',
+            title: 'Second',
+            isComplete: true,
+            content: <div>second-content</div>,
+          },
+        ]}
+      />
+    );
+
+    expect(onValueChange).toHaveBeenCalledWith('first');
+    expect(screen.getByText('first-content')).toBeInTheDocument();
+  });
+
+  it('renders navigation actions with button type to avoid implicit form submit', () => {
+    render(
+      <form>
+        <FormWizard
+          onCancel={() => undefined}
+          steps={[
+            {
+              id: 'first',
+              title: 'First',
+              isComplete: true,
+              content: <div>first-content</div>,
+            },
+            {
+              id: 'second',
+              title: 'Second',
+              isComplete: true,
+              content: <div>second-content</div>,
+            },
+          ]}
+        />
+      </form>
+    );
+
+    expect(screen.getByRole('button', { name: 'Cancel' })).toHaveAttribute('type', 'button');
+    expect(screen.getByRole('button', { name: 'Back' })).toHaveAttribute('type', 'button');
+    expect(screen.getByRole('button', { name: 'Next' })).toHaveAttribute('type', 'button');
+  });
+
+  it('formats autosave status without duplicate prefix text', () => {
+    render(
+      <FormWizard
+        autosave={{ status: 'saved' }}
+        steps={[
+          {
+            id: 'single',
+            title: 'Single',
+            isComplete: true,
+            content: <div>single-content</div>,
+          },
+        ]}
+      />
+    );
+
+    expect(screen.getByText('Draft: Saved')).toBeInTheDocument();
+  });
 });

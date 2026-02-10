@@ -10,6 +10,8 @@ export interface EditableDataGridLabels {
   editRow?: string;
   saveRow?: string;
   cancelRow?: string;
+  actionsHeader?: string;
+  selectPlaceholder?: string;
   unsavedState?: string;
   validationSummaryTitle?: (count: number) => string;
   saveErrorPrefix?: string;
