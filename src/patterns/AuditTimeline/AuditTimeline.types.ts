@@ -34,12 +34,15 @@ export interface AuditTimelineTelemetryEvent {
     surface: string;
     component: 'audit_timeline';
     typeFilter: AuditTimelineFilterType;
-    actorFilter: string;
-    query: string;
+    actorFilterState: 'all' | 'filtered';
+    hasQuery: boolean;
+    queryLength: number;
     visibleCount: number;
     entryId?: string;
   };
-  result: 'success';
+  result: 'success' | 'error';
+  errorCode?: string;
+  errorMessage?: string;
   occurredAt: string;
 }
 

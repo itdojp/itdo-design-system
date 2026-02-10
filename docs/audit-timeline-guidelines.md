@@ -26,8 +26,9 @@ This guide defines implementation rules for audit tracking UI.
 - Emit `ds.audit_timeline.entry.expand` and `ds.audit_timeline.entry.collapse` for diff toggles.
 - Payload fields:
   - `event`, `action`, `context`, `result`, `occurredAt`
-  - `context.surface`, `context.component`, `context.typeFilter`, `context.actorFilter`
-  - `context.query`, `context.visibleCount`, `context.entryId` (for entry actions)
+  - `context.surface`, `context.component`, `context.typeFilter`, `context.actorFilterState`
+  - `context.hasQuery`, `context.queryLength`, `context.visibleCount`, `context.entryId` (for entry actions)
+  - Never send raw actor names or free-text query strings to telemetry payloads.
 
 ## ERP4 usage notes
 

@@ -72,10 +72,26 @@ describe('AuditTimeline', () => {
         context: expect.objectContaining({
           surface: 'unit-test',
           typeFilter: 'updated',
+          actorFilterState: 'all',
+          hasQuery: false,
+          queryLength: 0,
           visibleCount: 1,
         }),
       })
     );
+
+    const piiLikeQuery = 'john.doe@example.com';
+    fireEvent.change(screen.getByLabelText('Search'), { target: { value: piiLikeQuery } });
+    const latestFilterEvent = onTelemetry.mock.calls.at(-1)?.[0];
+    expect(latestFilterEvent.context).toMatchObject({
+      actorFilterState: 'all',
+      hasQuery: true,
+      queryLength: piiLikeQuery.length,
+    });
+    expect(latestFilterEvent.context).not.toHaveProperty('query');
+    expect(latestFilterEvent.context).not.toHaveProperty('actorFilter');
+
+    fireEvent.change(screen.getByLabelText('Search'), { target: { value: '' } });
 
     fireEvent.click(screen.getByRole('button', { name: 'Show diff' }));
     expect(screen.getByTestId('audit-diff-ap-1002')).toBeInTheDocument();

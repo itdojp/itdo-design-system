@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { EmptyState } from '../../components/EmptyState';
 import { Button } from '../../components/Button';
@@ -42,6 +42,9 @@ const hasDiff = (entry: AuditTimelineEntry) =>
 
 const includesQuery = (value: string | undefined, query: string) =>
   Boolean(value && value.toLowerCase().includes(query));
+
+const toActorFilterState = (actorFilter: string): 'all' | 'filtered' =>
+  actorFilter === 'all' ? 'all' : 'filtered';
 
 const filterEntries = (
   entries: AuditTimelineEntry[],
@@ -102,6 +105,11 @@ export const AuditTimeline = ({
   const [actorFilter, setActorFilter] = useState(defaultActorFilter);
   const [query, setQuery] = useState(defaultQuery);
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
+  const expandedIdsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    expandedIdsRef.current = expandedIds;
+  }, [expandedIds]);
 
   const actorOptions = useMemo(() => {
     const uniqueActors = Array.from(new Set(entries.map((entry) => entry.actor)));
@@ -135,8 +143,9 @@ export const AuditTimeline = ({
         surface: telemetrySurface,
         component: 'audit_timeline',
         typeFilter: nextTypeFilter,
-        actorFilter: nextActorFilter,
-        query: nextQuery,
+        actorFilterState: toActorFilterState(nextActorFilter),
+        hasQuery: nextQuery.length > 0,
+        queryLength: nextQuery.length,
         visibleCount,
         entryId,
       },
@@ -178,15 +187,18 @@ export const AuditTimeline = ({
   };
 
   const onToggleDiff = (entryId: string) => {
-    const isExpanded = expandedIds.includes(entryId);
-    const nextExpandedIds = isExpanded
-      ? expandedIds.filter((id) => id !== entryId)
-      : [...expandedIds, entryId];
+    const previousExpandedIds = expandedIdsRef.current;
+    const wasExpanded = previousExpandedIds.includes(entryId);
+    const nextExpandedIds = wasExpanded
+      ? previousExpandedIds.filter((id) => id !== entryId)
+      : [...previousExpandedIds, entryId];
+
+    expandedIdsRef.current = nextExpandedIds;
     setExpandedIds(nextExpandedIds);
 
     emitTelemetry(
-      isExpanded ? 'ds.audit_timeline.entry.collapse' : 'ds.audit_timeline.entry.expand',
-      isExpanded ? 'entry_collapse' : 'entry_expand',
+      wasExpanded ? 'ds.audit_timeline.entry.collapse' : 'ds.audit_timeline.entry.expand',
+      wasExpanded ? 'entry_collapse' : 'entry_expand',
       typeFilter,
       actorFilter,
       normalizedQuery,
@@ -291,8 +303,11 @@ export const AuditTimeline = ({
                         <div className="itdo-audit-timeline__diff-panel" data-testid={`audit-diff-${entry.id}`}>
                           <div className="itdo-audit-timeline__diff-title">{resolvedLabels.diffLabel}</div>
                           <ul className="itdo-audit-timeline__changes">
-                            {entry.changes?.map((change) => (
-                              <li key={change.field} className="itdo-audit-timeline__change-item">
+                            {entry.changes?.map((change, index) => (
+                              <li
+                                key={`${entry.id}-${change.field}-${index}`}
+                                className="itdo-audit-timeline__change-item"
+                              >
                                 <span className="itdo-audit-timeline__field">{change.field}</span>
                                 <span className="itdo-audit-timeline__value itdo-audit-timeline__value--before">
                                   <strong>{resolvedLabels.beforeLabel}:</strong> {change.before ?? '-'}
