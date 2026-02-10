@@ -1,0 +1,16 @@
+{
+  "color": {
+    "text": {
+      "primary": {
+        "light": "#000000",
+        "dark": "#ffffff"
+      },
+      "legacy": {
+        "light": "#777777"
+      }
+    }
+  },
+  "space": {
+    "4": "0.25rem"
+  }
+}
