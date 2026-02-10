@@ -30,6 +30,7 @@ storybook-static
 # Testing
 coverage
 *.lcov
+reports/deprecation
 
 # Production
 build

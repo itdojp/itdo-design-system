@@ -85,6 +85,7 @@ itdo-design-system/
 - `docs/storybook-docs-template.md`: standard Storybook documentation template for new components.
 - `docs/component-adoption-criteria.md`: criteria for reuse vs new component creation.
 - `docs/deprecation-policy.md`: API deprecation lifecycle and npm operation policy.
+- `docs/deprecation-dashboard.md`: static scan report format for deprecated API usage tracking.
 - `docs/changelog-template.md`: release note template (Breaking/Non-breaking).
 - `docs/wave-review-checklist.md`: wave completion review checklist.
 - `docs/token-system-wave3.md`: token inventory, naming policy, and migration notes for Wave3.
