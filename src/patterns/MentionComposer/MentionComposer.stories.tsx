@@ -70,9 +70,7 @@ export const ChatPost: Story = {
     const canvas = within(canvasElement);
     const message = canvas.getByLabelText('Message');
     await userEvent.type(message, 'Daily sync completed');
-    await userEvent.tab();
-    await userEvent.tab();
-    await userEvent.keyboard('{Enter}');
+    await userEvent.click(canvas.getByRole('button', { name: 'Send' }));
     await expect(args.onSubmit).toHaveBeenCalled();
   },
 };

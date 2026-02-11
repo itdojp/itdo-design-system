@@ -191,9 +191,9 @@
 }
 
 .itdo-mention-composer__submit {
-  background: var(--color-primary-500, #f97316);
-  border-color: var(--color-primary-500, #f97316);
-  color: #ffffff;
+  background: var(--color-action-primary, #c2410c);
+  border-color: var(--color-action-primary, #c2410c);
+  color: var(--color-text-inverse, #ffffff);
 }
 
 .itdo-mention-composer__submit:disabled {
