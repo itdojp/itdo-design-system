@@ -137,8 +137,10 @@ export const EntityReferencePicker = ({
   const helperMessage = resolvedError ?? (maxReached ? `Up to ${maxItems} items can be selected.` : hint);
   const canInteract = !(disabled || readOnly);
   const showList = canInteract && query.trim().length > 0;
+  const showOptions = showList && !isLoading && visibleCandidates.length > 0;
+  const showStatus = showList && (isLoading || visibleCandidates.length === 0);
   const activeOptionId =
-    showList && visibleCandidates.length > 0 ? `${listId}-option-${clampedActiveIndex}` : undefined;
+    showOptions ? `${listId}-option-${clampedActiveIndex}` : undefined;
 
   const emitNextValue = (nextItems: EntityReferenceItem[]) => {
     onChange(toValueShape(nextItems, multiple));
@@ -201,7 +203,7 @@ export const EntityReferencePicker = ({
         placeholder={placeholder}
         value={query}
         aria-expanded={showList}
-        aria-controls={`${listId}-listbox`}
+        aria-controls={showOptions ? `${listId}-listbox` : undefined}
         aria-activedescendant={activeOptionId}
         aria-invalid={Boolean(resolvedError) || undefined}
         disabled={disabled}
@@ -252,51 +254,47 @@ export const EntityReferencePicker = ({
         }}
       />
 
-      {showList && (
+      {showOptions && (
         <ul
           id={`${listId}-listbox`}
           className="itdo-entity-reference-picker__listbox"
           role="listbox"
           aria-label={`${label} candidates`}
         >
-          {isLoading && (
-            <li className="itdo-entity-reference-picker__status" role="status">
-              {loadingText}
-            </li>
-          )}
-          {!isLoading && visibleCandidates.length === 0 && (
-            <li className="itdo-entity-reference-picker__status" role="status">
-              {noResultsText}
-            </li>
-          )}
-          {!isLoading &&
-            visibleCandidates.map((candidate, index) => {
-              const candidateLabel = renderLabel(candidate);
-              const isActive = index === clampedActiveIndex;
-              return (
-                <li key={toItemKey(candidate)} className="itdo-entity-reference-picker__option-item">
-                  <button
-                    id={`${listId}-option-${index}`}
-                    type="button"
-                    role="option"
-                    aria-selected={isActive}
-                    className={clsx('itdo-entity-reference-picker__option', {
-                      'is-active': isActive,
-                    })}
-                    disabled={maxReached}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onClick={() => selectCandidate(candidate)}
-                  >
-                    <span className="itdo-entity-reference-picker__option-main">
-                      <span className="itdo-entity-reference-picker__option-label">{candidateLabel}</span>
-                      <span className="itdo-entity-reference-picker__option-id">{candidate.id}</span>
-                    </span>
-                    <span className="itdo-entity-reference-picker__kind">{candidate.kind}</span>
-                  </button>
-                </li>
-              );
-            })}
+          {visibleCandidates.map((candidate, index) => {
+            const candidateLabel = renderLabel(candidate);
+            const isActive = index === clampedActiveIndex;
+            return (
+              <li
+                key={toItemKey(candidate)}
+                id={`${listId}-option-${index}`}
+                className={clsx(
+                  'itdo-entity-reference-picker__option-item',
+                  'itdo-entity-reference-picker__option',
+                  { 'is-active': isActive }
+                )}
+                role="option"
+                aria-selected={isActive}
+                aria-disabled={maxReached || undefined}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => selectCandidate(candidate)}
+              >
+                <span className="itdo-entity-reference-picker__option-main">
+                  <span className="itdo-entity-reference-picker__option-label">{candidateLabel}</span>
+                  <span className="itdo-entity-reference-picker__option-id">{candidate.id}</span>
+                </span>
+                <span className="itdo-entity-reference-picker__kind">{candidate.kind}</span>
+              </li>
+            );
+          })}
         </ul>
+      )}
+      {showStatus && (
+        <div className="itdo-entity-reference-picker__status-surface">
+          <p className="itdo-entity-reference-picker__status" role="status">
+            {isLoading ? loadingText : noResultsText}
+          </p>
+        </div>
       )}
 
       {selectedItems.length > 0 && (

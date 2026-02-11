@@ -90,7 +90,7 @@ describe('EntityReferencePicker', () => {
     });
 
     const option = await screen.findByRole('option', { name: /Policy/i });
-    expect(option).toBeDisabled();
+    expect(option).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByText('Up to 1 items can be selected.')).toBeInTheDocument();
   });
 
@@ -212,9 +212,11 @@ describe('EntityReferencePicker', () => {
     ]);
     const onChange = jest.fn();
 
+    const kinds = ['project'];
+
     const { rerender } = render(
       <EntityReferencePicker
-        kinds={['project']}
+        kinds={kinds}
         scope="global"
         fetchCandidates={fetchCandidates}
         value={[]}
@@ -234,7 +236,7 @@ describe('EntityReferencePicker', () => {
 
     rerender(
       <EntityReferencePicker
-        kinds={['project']}
+        kinds={kinds}
         scope="global"
         fetchCandidates={fetchCandidates}
         value={[{ id: 'PJ-3001', kind: 'project', label: 'Ops Revamp' }]}
