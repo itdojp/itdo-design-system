@@ -221,7 +221,7 @@ export const Drawer = ({
         }
       }}
     >
-      <aside
+      <div
         ref={panelRef}
         className={clsx(
           'itdo-drawer',
@@ -267,7 +267,7 @@ export const Drawer = ({
         {footer
           ? (isValidElement(footer) && footer.type === DrawerFooter ? footer : <DrawerFooter>{footer}</DrawerFooter>)
           : parsedChildren.customFooter}
-      </aside>
+      </div>
     </div>
   );
 
