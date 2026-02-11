@@ -1,0 +1,85 @@
+.itdo-policy-form-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.itdo-policy-form-builder__errors {
+  border: 1px solid var(--color-status-error-border, #fca5a5);
+  border-radius: var(--radius-sm, 0.375rem);
+  background: #fff5f5;
+  padding: 0.75rem;
+}
+
+.itdo-policy-form-builder__errors h3 {
+  margin: 0 0 0.5rem;
+  color: var(--color-status-error-fg, #b91c1c);
+  font-size: 0.875rem;
+}
+
+.itdo-policy-form-builder__errors ul {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.25rem;
+  color: var(--color-status-error-fg, #b91c1c);
+  font-size: 0.8125rem;
+}
+
+.itdo-policy-form-builder__grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.itdo-policy-form-builder__grid--two-column {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.itdo-policy-form-builder__field--span-2 {
+  grid-column: span 2;
+}
+
+.itdo-policy-form-builder__field.is-changed {
+  border-left: 3px solid var(--color-primary-500, #f97316);
+  padding-left: 0.5rem;
+}
+
+.itdo-policy-form-builder__sections {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.itdo-policy-form-builder__section {
+  border: 1px solid var(--color-border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.375rem);
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.itdo-policy-form-builder__section-header h3 {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.itdo-policy-form-builder__section-header p {
+  margin: 0.25rem 0 0;
+  color: var(--color-neutral-600, #4b5563);
+  font-size: 0.8125rem;
+}
+
+.itdo-policy-form-builder__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .itdo-policy-form-builder__grid--two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .itdo-policy-form-builder__field--span-2 {
+    grid-column: auto;
+  }
+}
