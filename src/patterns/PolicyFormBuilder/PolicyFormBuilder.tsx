@@ -1,3 +1,4 @@
+import type { FormEvent } from 'react';
 import clsx from 'clsx';
 import { Button } from '../../components/Button';
 import { FormField } from '../../components/FormField';
@@ -88,13 +89,19 @@ const isFieldDisabled = (
   disabled: boolean,
   readOnly: boolean
 ) => {
-  if (disabled || readOnly) {
+  if (disabled) {
     return true;
   }
   if (typeof field.disabled === 'function') {
     return field.disabled(value);
   }
-  return Boolean(field.disabled);
+  if (field.disabled) {
+    return true;
+  }
+  if (readOnly && (field.type === 'checkbox' || field.type === 'select')) {
+    return true;
+  }
+  return false;
 };
 
 const formatJsonFieldValue = (value: unknown) => {
@@ -185,7 +192,13 @@ export const PolicyFormBuilder = ({
             disabled={isDisabled}
             fullWidth
             value={String(currentValue ?? '')}
-            onChange={(event) => updateValue(field.name, event.currentTarget.value)}
+            onChange={(event) => {
+              const selectedValue = event.currentTarget.value;
+              const selectedOption = field.options?.find(
+                (option) => String(option.value) === selectedValue
+              );
+              updateValue(field.name, selectedOption ? selectedOption.value : selectedValue);
+            }}
           >
             <option value="" disabled hidden>
               {field.placeholder ?? 'Select an option'}
@@ -209,6 +222,7 @@ export const PolicyFormBuilder = ({
             error={error}
             required={field.required}
             disabled={isDisabled}
+            readOnly={readOnly}
             fullWidth
             rows={field.rows ?? (field.type === 'json' ? 8 : 4)}
             placeholder={field.placeholder}
@@ -230,6 +244,7 @@ export const PolicyFormBuilder = ({
           error={error}
           required={field.required}
           disabled={isDisabled}
+          readOnly={readOnly}
           fullWidth
           type={inputType}
           placeholder={field.placeholder}
@@ -260,9 +275,9 @@ export const PolicyFormBuilder = ({
     </div>
   );
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (aggregateErrors.length > 0) {
+    if (disabled || readOnly || aggregateErrors.length > 0) {
       return;
     }
     onSubmit(normalizeSubmitValue(value, visibleFields));
@@ -307,11 +322,11 @@ export const PolicyFormBuilder = ({
 
       <div className="itdo-policy-form-builder__actions">
         {onReset && (
-          <Button type="button" variant="secondary" onClick={onReset} disabled={disabled}>
+          <Button type="button" variant="secondary" onClick={onReset} disabled={disabled || readOnly}>
             {resetLabel}
           </Button>
         )}
-        <Button type="submit" disabled={disabled || aggregateErrors.length > 0}>
+        <Button type="submit" disabled={disabled || readOnly || aggregateErrors.length > 0}>
           {submitLabel}
         </Button>
       </div>

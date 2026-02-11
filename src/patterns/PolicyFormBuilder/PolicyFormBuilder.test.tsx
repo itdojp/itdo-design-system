@@ -123,4 +123,63 @@ describe('PolicyFormBuilder', () => {
       })
     );
   });
+
+  it('preserves numeric value type for select fields', () => {
+    const onChange = jest.fn();
+    const schema: PolicyFormSchema = {
+      fields: [
+        {
+          name: 'level',
+          label: 'Level',
+          type: 'select',
+          options: [
+            { label: 'One', value: 1 },
+            { label: 'Two', value: 2 },
+          ],
+        },
+      ],
+    };
+
+    render(
+      <PolicyFormBuilder
+        schema={schema}
+        value={{ level: 1 }}
+        onChange={onChange}
+        onSubmit={jest.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Level' }), {
+      target: { value: '2' },
+    });
+
+    expect(onChange).toHaveBeenCalledWith({ level: 2 });
+  });
+
+  it('keeps text fields readable in readOnly mode and disables actions', () => {
+    const onReset = jest.fn();
+    const onSubmit = jest.fn();
+
+    const { container } = render(
+      <PolicyFormBuilder
+        schema={baseSchema}
+        value={{ name: 'Policy A', mode: 'standard', enabled: true, ruleJson: '{"ok":true}' }}
+        onChange={jest.fn()}
+        onSubmit={onSubmit}
+        onReset={onReset}
+        readOnly
+      />
+    );
+
+    expect(screen.getByRole('textbox', { name: /Name/ })).toHaveAttribute('readonly');
+    expect(screen.getByRole('textbox', { name: 'Rule JSON' })).toHaveAttribute('readonly');
+    expect(screen.getByRole('combobox', { name: /Mode/ })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: 'Enabled' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Save policy' })).toBeDisabled();
+
+    fireEvent.submit(container.querySelector('form') as HTMLFormElement);
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(onReset).not.toHaveBeenCalled();
+  });
 });
