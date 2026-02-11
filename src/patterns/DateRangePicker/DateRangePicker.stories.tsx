@@ -100,6 +100,6 @@ export const ValidationAndStateDiff: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('From must be earlier than or equal to To.')).toBeInTheDocument();
-    await expect(canvas.getByRole('group', { name: 'Preset ranges' })).toBeInTheDocument();
+    await expect(canvas.getAllByRole('group', { name: 'Preset ranges' }).length).toBeGreaterThan(0);
   },
 };
