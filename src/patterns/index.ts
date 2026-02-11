@@ -17,3 +17,6 @@ export * from './FormWizard';
 export * from './UndoToast';
 export * from './StatePreset';
 export * from './Drawer';
+export * from './MentionComposer';
+export * from './EntityReferencePicker';
+export * from './DateRangePicker';
