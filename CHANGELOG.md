@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 - `Drawer` pattern for context-preserving detail and edit flows from list screens.
 - `PolicyFormBuilder` pattern for declarative admin policy forms.
 - `AuditTimeline` / `DiffViewer` patterns for investigation-oriented history and change inspection UX.
-- New usage guidelines for the above patterns under `docs/*-guidelines.md`.
+- New usage guidelines for `DateRangePicker`, `EntityReferencePicker`, `Drawer`, `PolicyFormBuilder`, and `AuditTimeline` under `docs/*-guidelines.md`.
 
 ## 1.0.3 - 2026-02-06
 
