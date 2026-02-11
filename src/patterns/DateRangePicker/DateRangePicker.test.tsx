@@ -63,6 +63,8 @@ describe('DateRangePicker', () => {
     );
 
     expect(screen.getByText('From is required.')).toBeInTheDocument();
+    expect(screen.getByLabelText('From')).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByLabelText('To')).not.toHaveAttribute('aria-invalid');
 
     rerender(
       <DateRangePicker
@@ -74,6 +76,21 @@ describe('DateRangePicker', () => {
     );
 
     expect(screen.getByText('To is required.')).toBeInTheDocument();
+    expect(screen.getByLabelText('From')).not.toHaveAttribute('aria-invalid');
+    expect(screen.getByLabelText('To')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('uses configured labels in validation messages', () => {
+    render(
+      <DateRangePicker
+        value={{}}
+        onChange={jest.fn()}
+        allowEmptyFrom={false}
+        fromLabel="Start"
+      />
+    );
+
+    expect(screen.getByText('Start is required.')).toBeInTheDocument();
   });
 
   it('separates disabled and readOnly states', () => {

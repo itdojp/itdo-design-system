@@ -11,6 +11,7 @@ import { DEFAULT_DATE_RANGE_PRESETS, DEFAULT_DATE_TIME_RANGE_PRESETS } from './D
 import './DateRangePicker.css';
 
 type PickerMode = 'date' | 'datetime-local';
+type InternalValidationIssue = 'missing_from' | 'missing_to' | 'range_order' | undefined;
 
 const normalizeRangeValue = (value: DateRangeValue): DateRangeValue => {
   const next: DateRangeValue = {};
@@ -37,19 +38,36 @@ const pickLater = (left?: string, right?: string) => {
   return left >= right ? left : right;
 };
 
-const resolveInternalError = (
+const resolveInternalIssue = (
   value: DateRangeValue,
   allowEmptyFrom: boolean,
   allowEmptyTo: boolean
-) => {
+) : InternalValidationIssue => {
   if (!allowEmptyFrom && !value.from) {
-    return 'From is required.';
+    return 'missing_from';
   }
   if (!allowEmptyTo && !value.to) {
-    return 'To is required.';
+    return 'missing_to';
   }
   if (value.from && value.to && value.from > value.to) {
-    return 'From must be earlier than or equal to To.';
+    return 'range_order';
+  }
+  return undefined;
+};
+
+const resolveInternalError = (
+  issue: InternalValidationIssue,
+  fromLabel: string,
+  toLabel: string
+) => {
+  if (issue === 'missing_from') {
+    return `${fromLabel} is required.`;
+  }
+  if (issue === 'missing_to') {
+    return `${toLabel} is required.`;
+  }
+  if (issue === 'range_order') {
+    return `${fromLabel} must be earlier than or equal to ${toLabel}.`;
   }
   return undefined;
 };
@@ -98,10 +116,17 @@ const InternalRangePicker = ({
   const timezoneId = timezoneLabel ? `${baseId}-timezone` : undefined;
   const messageId = `${baseId}-message`;
 
-  const internalError = resolveInternalError(value, allowEmptyFrom, allowEmptyTo);
+  const internalIssue = resolveInternalIssue(value, allowEmptyFrom, allowEmptyTo);
+  const internalError = resolveInternalError(internalIssue, fromLabel, toLabel);
   const resolvedError = internalError ?? error;
   const resolvedMessage = resolvedError ?? warning ?? hint;
   const messageTone = resolvedError ? 'error' : warning ? 'warning' : hint ? 'hint' : 'none';
+  const isAnyRequired = required || !allowEmptyFrom || !allowEmptyTo;
+  const hasExternalError = Boolean(error) && !internalIssue;
+  const isFromInvalid =
+    internalIssue === 'missing_from' || internalIssue === 'range_order' || hasExternalError;
+  const isToInvalid =
+    internalIssue === 'missing_to' || internalIssue === 'range_order' || hasExternalError;
 
   const describedBy = [timezoneId, resolvedMessage ? messageId : undefined].filter(Boolean).join(' ');
   const isError = Boolean(resolvedError);
@@ -144,7 +169,7 @@ const InternalRangePicker = ({
       >
         <legend className="itdo-date-range-picker__legend">
           {resolvedLabel}
-          {required && <span aria-hidden="true"> *</span>}
+          {isAnyRequired && <span aria-hidden="true"> *</span>}
         </legend>
 
         <div className="itdo-date-range-picker__inputs">
@@ -161,8 +186,9 @@ const InternalRangePicker = ({
               max={fromMax}
               disabled={disabled}
               readOnly={readOnly}
-              aria-invalid={isError || undefined}
-              required={required && !allowEmptyFrom}
+              aria-describedby={describedBy || undefined}
+              aria-invalid={isFromInvalid || undefined}
+              required={!allowEmptyFrom}
               onChange={(event) => onInputChange('from', event.currentTarget.value)}
             />
           </div>
@@ -179,8 +205,9 @@ const InternalRangePicker = ({
               max={max}
               disabled={disabled}
               readOnly={readOnly}
-              aria-invalid={isError || undefined}
-              required={required && !allowEmptyTo}
+              aria-describedby={describedBy || undefined}
+              aria-invalid={isToInvalid || undefined}
+              required={!allowEmptyTo}
               onChange={(event) => onInputChange('to', event.currentTarget.value)}
             />
           </div>
