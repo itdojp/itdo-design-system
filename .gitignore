@@ -30,6 +30,8 @@ storybook-static
 # Testing
 coverage
 *.lcov
+reports/deprecation
+reports/figma
 
 # Production
 build

@@ -12,7 +12,15 @@ This document defines baseline telemetry events for design-system adoption track
 - Use `<surface>.<component>.<action>` naming:
   - Example: `ds.designbook.datatable.open_detail.click`
 
-## Minimum Payload
+## Minimum Payload (Current)
+- `event`: canonical event key (`ds.<surface>.<component>.<action>`)
+- `action`: normalized action key
+- `context`: object with surface/component/target metadata
+- `result`: `success | error`
+- `occurredAt`: ISO8601 timestamp
+- `metadata`: optional object
+
+## Legacy Payload (Deprecated)
 - `eventName`: string
 - `category`: `view | click | error`
 - `surface`: screen or story identifier
@@ -21,6 +29,12 @@ This document defines baseline telemetry events for design-system adoption track
 - `status`: `success | error` (for click/error)
 - `occurredAt`: ISO8601 timestamp
 - `metadata`: optional object for domain attributes
+
+## Utility API
+- `createTelemetryEvent(input)`: normalize payload and apply defaults.
+- `validateTelemetryEvent(payload)`: validate required attributes and types.
+- `emitTelemetryEvent(input, { transport, onError })`: validate and send payload safely.
+- `telemetryHookPoints`: component hook-point map for instrumentation planning.
 
 ## Baseline Event Set
 - `ds.designbook.master_list.view`
@@ -32,3 +46,4 @@ This document defines baseline telemetry events for design-system adoption track
 - Events must not contain PII.
 - Keep payload keys stable for dashboard compatibility.
 - Add new events as additive changes in minor versions.
+- Keep hook-point definitions in `docs/telemetry-hook-points.md`.

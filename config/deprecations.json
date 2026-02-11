@@ -1,0 +1,20 @@
+{
+  "include": ["src"],
+  "extensions": [".ts", ".tsx"],
+  "rules": [
+    {
+      "id": "page-header-subtitle-prop",
+      "description": "Deprecated `subtitle` prop usage on `PageHeader`",
+      "pattern": "<PageHeader[^>]*\\bsubtitle\\s*=",
+      "replacement": "Use `meta` instead.",
+      "severity": "warning"
+    },
+    {
+      "id": "page-header-actions-prop",
+      "description": "Deprecated `actions` prop usage on `PageHeader`",
+      "pattern": "<PageHeader[^>]*\\bactions\\s*=",
+      "replacement": "Use `primaryAction` and `secondaryActions` instead.",
+      "severity": "warning"
+    }
+  ]
+}

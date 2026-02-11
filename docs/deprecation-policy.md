@@ -18,8 +18,10 @@
 - Use `npm deprecate` for problematic versions.
 - Keep package installable; communicate replacement version in deprecate message.
 - Never rely on `unpublish` for incident response.
+- Maintain machine-readable usage reports via `npm run deprecation:scan`.
 
 ## Required Documentation
 - Changelog entry with `Breaking` or `Non-breaking`.
 - Migration guide section with before/after snippet.
 - PR description must include impact scope and rollback strategy.
+- Update `docs/deprecation-dashboard.md` when report schema changes.

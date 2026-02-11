@@ -85,6 +85,8 @@ itdo-design-system/
 - `docs/storybook-docs-template.md`: standard Storybook documentation template for new components.
 - `docs/component-adoption-criteria.md`: criteria for reuse vs new component creation.
 - `docs/deprecation-policy.md`: API deprecation lifecycle and npm operation policy.
+- `docs/deprecation-dashboard.md`: static scan report format for deprecated API usage tracking.
+- `docs/figma-variables-sync.md`: Figma Variables import/sync I/O and diff workflow.
 - `docs/changelog-template.md`: release note template (Breaking/Non-breaking).
 - `docs/wave-review-checklist.md`: wave completion review checklist.
 - `docs/token-system-wave3.md`: token inventory, naming policy, and migration notes for Wave3.
@@ -92,6 +94,7 @@ itdo-design-system/
 - `docs/high-contrast-guidelines.md`: high contrast theme activation and contrast verification rules.
 - `docs/quality-gate-matrix.md`: minimum CI/local quality-gate matrix and triage flow.
 - `docs/telemetry-events.md`: baseline telemetry event naming and payload contract.
+- `docs/telemetry-hook-points.md`: recommended telemetry insertion points by component.
 - `docs/bulk-action-guidelines.md`: multi-selection action contract and adapter usage.
 - `docs/saved-view-guidelines.md`: saved view UX contract and persistence integration notes.
 - `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
