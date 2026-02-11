@@ -134,4 +134,118 @@ describe('EntityReferencePicker', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Remove Current project' }));
     expect(onChange).toHaveBeenCalledWith([]);
   });
+
+  it('supports keyboard navigation, selection, and escape close', async () => {
+    const fetchCandidates = jest.fn(async (): Promise<EntityReferenceCandidate[]> => [
+      { id: 'PJ-1001', kind: 'project', label: 'ERP Migration' },
+      { id: 'PJ-2003', kind: 'project', label: 'Billing Revamp' },
+    ]);
+    const onChange = jest.fn();
+
+    render(
+      <EntityReferencePicker
+        kinds={['project']}
+        scope="global"
+        fetchCandidates={fetchCandidates}
+        value={null}
+        onChange={onChange}
+        searchDebounceMs={0}
+      />
+    );
+
+    const input = screen.getByRole('combobox', { name: 'Reference' });
+    fireEvent.change(input, { target: { value: 'p' } });
+
+    await screen.findByRole('option', { name: /ERP Migration/i });
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(input.getAttribute('aria-activedescendant')?.endsWith('-option-1')).toBe(true);
+
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+    expect(input.getAttribute('aria-activedescendant')?.endsWith('-option-0')).toBe(true);
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onChange).toHaveBeenCalledWith({
+      id: 'PJ-2003',
+      kind: 'project',
+      label: 'Billing Revamp',
+      deepLink: undefined,
+    });
+
+    fireEvent.change(input, { target: { value: 'erp' } });
+    await screen.findByRole('option', { name: /ERP Migration/i });
+    fireEvent.keyDown(input, { key: 'Escape' });
+    expect(input).toHaveValue('');
+    expect(screen.queryByRole('option', { name: /ERP Migration/i })).not.toBeInTheDocument();
+  });
+
+  it('removes last selected item by backspace in multiple mode', () => {
+    const onChange = jest.fn();
+
+    render(
+      <EntityReferencePicker
+        kinds={['project']}
+        scope="global"
+        fetchCandidates={jest.fn()}
+        value={[
+          { id: 'PJ-1', kind: 'project', label: 'Current project' },
+          { id: 'PJ-2', kind: 'project', label: 'Next project' },
+        ]}
+        onChange={onChange}
+        multiple
+        searchDebounceMs={0}
+      />
+    );
+
+    const input = screen.getByRole('combobox', { name: 'Reference' });
+    fireEvent.keyDown(input, { key: 'Backspace' });
+
+    expect(onChange).toHaveBeenCalledWith([{ id: 'PJ-1', kind: 'project', label: 'Current project' }]);
+  });
+
+  it('clamps active option when visible candidate count decreases', async () => {
+    const fetchCandidates = jest.fn(async (): Promise<EntityReferenceCandidate[]> => [
+      { id: 'PJ-1001', kind: 'project', label: 'ERP Migration' },
+      { id: 'PJ-2003', kind: 'project', label: 'Billing Revamp' },
+      { id: 'PJ-3001', kind: 'project', label: 'Ops Revamp' },
+    ]);
+    const onChange = jest.fn();
+
+    const { rerender } = render(
+      <EntityReferencePicker
+        kinds={['project']}
+        scope="global"
+        fetchCandidates={fetchCandidates}
+        value={[]}
+        onChange={onChange}
+        multiple
+        searchDebounceMs={0}
+      />
+    );
+
+    const input = screen.getByRole('combobox', { name: 'Reference' });
+    fireEvent.change(input, { target: { value: 'p' } });
+    await screen.findByRole('option', { name: /Ops Revamp/i });
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(input.getAttribute('aria-activedescendant')?.endsWith('-option-2')).toBe(true);
+
+    rerender(
+      <EntityReferencePicker
+        kinds={['project']}
+        scope="global"
+        fetchCandidates={fetchCandidates}
+        value={[{ id: 'PJ-3001', kind: 'project', label: 'Ops Revamp' }]}
+        onChange={onChange}
+        multiple
+        searchDebounceMs={0}
+      />
+    );
+
+    await waitFor(() => {
+      expect(input.getAttribute('aria-activedescendant')?.endsWith('-option-1')).toBe(true);
+    });
+  });
 });

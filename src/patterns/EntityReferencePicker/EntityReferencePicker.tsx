@@ -121,13 +121,24 @@ export const EntityReferencePicker = ({
     () => candidates.filter((candidate) => !selectedKeys.has(toItemKey(candidate))),
     [candidates, selectedKeys]
   );
+  const clampedActiveIndex =
+    visibleCandidates.length > 0 ? Math.min(activeIndex, visibleCandidates.length - 1) : 0;
+
+  useEffect(() => {
+    setActiveIndex((previous) => {
+      if (visibleCandidates.length === 0) {
+        return 0;
+      }
+      return Math.min(previous, visibleCandidates.length - 1);
+    });
+  }, [visibleCandidates.length]);
 
   const resolvedError = error ?? fetchError;
   const helperMessage = resolvedError ?? (maxReached ? `Up to ${maxItems} items can be selected.` : hint);
   const canInteract = !(disabled || readOnly);
   const showList = canInteract && query.trim().length > 0;
   const activeOptionId =
-    showList && visibleCandidates.length > 0 ? `${listId}-option-${activeIndex}` : undefined;
+    showList && visibleCandidates.length > 0 ? `${listId}-option-${clampedActiveIndex}` : undefined;
 
   const emitNextValue = (nextItems: EntityReferenceItem[]) => {
     onChange(toValueShape(nextItems, multiple));
@@ -226,7 +237,7 @@ export const EntityReferencePicker = ({
 
           if (event.key === 'Enter') {
             event.preventDefault();
-            const selectedCandidate = visibleCandidates[activeIndex];
+            const selectedCandidate = visibleCandidates[clampedActiveIndex];
             if (selectedCandidate) {
               selectCandidate(selectedCandidate);
             }
@@ -254,12 +265,14 @@ export const EntityReferencePicker = ({
             </li>
           )}
           {!isLoading && visibleCandidates.length === 0 && (
-            <li className="itdo-entity-reference-picker__status">{noResultsText}</li>
+            <li className="itdo-entity-reference-picker__status" role="status">
+              {noResultsText}
+            </li>
           )}
           {!isLoading &&
             visibleCandidates.map((candidate, index) => {
               const candidateLabel = renderLabel(candidate);
-              const isActive = index === activeIndex;
+              const isActive = index === clampedActiveIndex;
               return (
                 <li key={toItemKey(candidate)} className="itdo-entity-reference-picker__option-item">
                   <button
@@ -295,7 +308,7 @@ export const EntityReferencePicker = ({
                   className="itdo-entity-reference-picker__link"
                   href={item.deepLink}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   {item.label}
                 </a>

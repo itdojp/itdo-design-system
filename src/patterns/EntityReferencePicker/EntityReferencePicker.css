@@ -1,7 +1,7 @@
 .itdo-entity-reference-picker {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-4);
 }
 
 .itdo-entity-reference-picker__label {
@@ -12,10 +12,10 @@
 
 .itdo-entity-reference-picker__input {
   width: 100%;
-  min-height: 2.25rem;
+  min-height: calc(var(--space-8) + var(--space-8) + var(--space-2));
   border: 1px solid var(--color-neutral-300, #d1d5db);
   border-radius: var(--radius-sm, 0.375rem);
-  padding: 0.5rem 0.625rem;
+  padding: var(--space-4) var(--space-6);
   font-size: 0.875rem;
   color: var(--color-neutral-900, #111827);
   background: var(--color-neutral-0, #ffffff);
@@ -33,17 +33,17 @@
 
 .itdo-entity-reference-picker__listbox {
   margin: 0;
-  padding: 0.25rem;
+  padding: var(--space-2);
   list-style: none;
   border: 1px solid var(--color-neutral-300, #d1d5db);
   border-radius: var(--radius-sm, 0.375rem);
   background: var(--color-neutral-0, #ffffff);
-  max-height: 14rem;
+  max-height: calc(var(--space-8) * 14);
   overflow: auto;
 }
 
 .itdo-entity-reference-picker__status {
-  padding: 0.5rem 0.625rem;
+  padding: var(--space-4) var(--space-6);
   font-size: 0.8125rem;
   color: var(--color-neutral-600, #4b5563);
 }
@@ -57,11 +57,11 @@
   border: 0;
   background: transparent;
   border-radius: 0.25rem;
-  padding: 0.5rem 0.625rem;
+  padding: var(--space-4) var(--space-6);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--space-4);
   text-align: left;
   cursor: pointer;
 }
@@ -109,16 +109,16 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-4);
 }
 
 .itdo-entity-reference-picker__pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: var(--space-3);
   border: 1px solid var(--color-neutral-300, #d1d5db);
   border-radius: 999px;
-  padding: 0.25rem 0.5rem;
+  padding: var(--space-2) var(--space-4);
   background: var(--color-neutral-0, #ffffff);
 }
 
@@ -140,7 +140,7 @@
   cursor: pointer;
   font-size: 0.875rem;
   line-height: 1;
-  padding: 0 0.125rem;
+  padding: 0 var(--space-1);
 }
 
 .itdo-entity-reference-picker__remove:disabled {

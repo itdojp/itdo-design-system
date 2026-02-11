@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, within } from 'storybook/test';
 import { EntityReferencePicker } from './EntityReferencePicker';
@@ -96,10 +96,7 @@ export const MultipleSelection: Story = {
 export const MixedKinds: Story = {
   render: () => {
     const [value, setValue] = useState<EntityReferenceValue>([]);
-    const placeholder = useMemo(
-      () => 'Try query: erp / shinano / policy / handover',
-      []
-    );
+    const placeholder = 'Try query: erp / shinano / policy / handover';
 
     return (
       <EntityReferencePicker
