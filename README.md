@@ -100,6 +100,10 @@ itdo-design-system/
 - `docs/command-palette-guidelines.md`: command palette UX contract and integration checklist.
 - `docs/form-wizard-guidelines.md`: step navigation, autosave, and leave-guard rules for wizard flows.
 - `docs/audit-timeline-guidelines.md`: boundaries between EventLog and timeline+diff investigation flows.
+- `docs/policy-form-builder-guidelines.md`: schema contract and validation rules for declarative admin forms.
+- `docs/drawer-guidelines.md`: drawer vs dialog decision criteria and a11y/layout contract.
+- `docs/entity-reference-guidelines.md`: reference search/selection/deep-link contract for internal entities.
+- `docs/date-range-guidelines.md`: preset/timezone/validation contract for date and datetime range inputs.
 - `docs/editable-datagrid-guidelines.md`: inline editing/validation contract for editable data grids.
 - `docs/attachment-ux-guidelines.md`: upload status, retry, and preview behavior rules.
 - `docs/reliability-ux-guidelines.md`: undo notification and state preset recovery contracts.
