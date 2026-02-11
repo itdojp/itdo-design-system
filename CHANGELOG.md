@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.0 - 2026-02-11
+
+### Added
+- `DateRangePicker` / `DateTimeRangePicker` patterns with presets, range validation, and timezone-aware datetime support.
+- `EntityReferencePicker` pattern for reusable internal entity reference search/select flows.
+- `MentionComposer` pattern for unified mention/ack/attachment-aware message composition.
+- `Drawer` pattern for context-preserving detail and edit flows from list screens.
+- `PolicyFormBuilder` pattern for declarative admin policy forms.
+- `AuditTimeline` / `DiffViewer` patterns for investigation-oriented history and change inspection UX.
+- New usage guidelines for the above patterns under `docs/*-guidelines.md`.
+
 ## 1.0.3 - 2026-02-06
 
 ### Changed
