@@ -1,0 +1,212 @@
+.itdo-audit-timeline {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.itdo-audit-timeline__empty {
+  margin: 0;
+  color: var(--color-neutral-600, #4b5563);
+}
+
+.itdo-audit-timeline__group {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.itdo-audit-timeline__date {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-neutral-600, #4b5563);
+}
+
+.itdo-audit-timeline__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.itdo-audit-timeline__item {
+  border: 1px solid var(--color-border-default, #e5e7eb);
+  border-radius: 0.5rem;
+  background: var(--color-neutral-0, #ffffff);
+}
+
+.itdo-audit-timeline__item-button,
+.itdo-audit-timeline__item-static {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+}
+
+.itdo-audit-timeline__item-button {
+  cursor: pointer;
+}
+
+.itdo-audit-timeline__item-button:hover {
+  background: var(--color-neutral-50, #f9fafb);
+}
+
+.itdo-audit-timeline__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  margin-top: 0.375rem;
+  background: var(--color-neutral-400, #9ca3af);
+}
+
+.itdo-audit-timeline__item--info .itdo-audit-timeline__dot {
+  background: #2563eb;
+}
+
+.itdo-audit-timeline__item--success .itdo-audit-timeline__dot {
+  background: #059669;
+}
+
+.itdo-audit-timeline__item--warning .itdo-audit-timeline__dot {
+  background: #d97706;
+}
+
+.itdo-audit-timeline__item--error .itdo-audit-timeline__dot,
+.itdo-audit-timeline__item--critical .itdo-audit-timeline__dot {
+  background: #dc2626;
+}
+
+.itdo-audit-timeline__item.is-selected {
+  border-color: var(--color-primary-500, #f97316);
+}
+
+.itdo-audit-timeline__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.itdo-audit-timeline__action {
+  font-weight: 600;
+  color: var(--color-neutral-900, #111827);
+}
+
+.itdo-audit-timeline__time {
+  font-size: 0.75rem;
+  color: var(--color-neutral-500, #6b7280);
+}
+
+.itdo-audit-timeline__actor {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-neutral-600, #4b5563);
+}
+
+.itdo-audit-timeline__summary {
+  margin: 0.25rem 0 0;
+  color: var(--color-neutral-800, #1f2937);
+  font-size: 0.8125rem;
+}
+
+.itdo-audit-timeline__meta {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--color-neutral-500, #6b7280);
+}
+
+.itdo-audit-timeline.is-compact .itdo-audit-timeline__item-button,
+.itdo-audit-timeline.is-compact .itdo-audit-timeline__item-static {
+  padding: 0.5rem;
+}
+
+.itdo-diff-viewer {
+  border: 1px solid var(--color-border-default, #e5e7eb);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.itdo-diff-viewer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-default, #e5e7eb);
+  background: #f9fafb;
+}
+
+.itdo-diff-viewer__header h3,
+.itdo-diff-viewer__header p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-neutral-700, #374151);
+}
+
+.itdo-diff-viewer__surface {
+  overflow: auto;
+  max-height: 22rem;
+}
+
+.itdo-diff-viewer__pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  font-size: 0.75rem;
+}
+
+.itdo-diff-viewer__line {
+  display: grid;
+  grid-template-columns: 2.5rem 2.5rem 1rem 1fr;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  white-space: pre;
+}
+
+.itdo-diff-viewer__line-number,
+.itdo-diff-viewer__prefix {
+  color: var(--color-neutral-500, #6b7280);
+}
+
+.itdo-diff-viewer__line--add {
+  background: #ecfdf5;
+}
+
+.itdo-diff-viewer__line--add .itdo-diff-viewer__prefix {
+  color: #059669;
+}
+
+.itdo-diff-viewer__line--remove {
+  background: #fef2f2;
+}
+
+.itdo-diff-viewer__line--remove .itdo-diff-viewer__prefix {
+  color: #dc2626;
+}
+
+.itdo-diff-viewer__code {
+  font-family: inherit;
+  color: var(--color-neutral-800, #1f2937);
+}
+
+.itdo-diff-viewer__collapse {
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--color-border-default, #e5e7eb);
+  background: #f9fafb;
+}
+
+.itdo-diff-viewer__collapse button {
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.itdo-diff-viewer.is-compact .itdo-diff-viewer__surface {
+  max-height: 16rem;
+}
