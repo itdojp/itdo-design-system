@@ -1,10 +1,12 @@
-import { useEffect, useId, useMemo, useRef } from 'react';
+import { Children, isValidElement, useEffect, useId, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import type { DrawerFooterProps, DrawerHeaderProps, DrawerProps } from './Drawer.types';
 import './Drawer.css';
 
 const drawerStack: string[] = [];
+let bodyLockCount = 0;
+let previousBodyOverflow = '';
 
 const registerDrawer = (drawerId: string) => {
   if (!drawerStack.includes(drawerId)) {
@@ -21,6 +23,21 @@ const unregisterDrawer = (drawerId: string) => {
 
 const isTopmostDrawer = (drawerId: string) =>
   drawerStack.length > 0 && drawerStack[drawerStack.length - 1] === drawerId;
+
+const lockBodyScroll = () => {
+  if (bodyLockCount === 0) {
+    previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+  }
+  bodyLockCount += 1;
+};
+
+const unlockBodyScroll = () => {
+  bodyLockCount = Math.max(0, bodyLockCount - 1);
+  if (bodyLockCount === 0) {
+    document.body.style.overflow = previousBodyOverflow;
+  }
+};
 
 const getFocusableElements = (element: HTMLElement | null) => {
   if (!element) return [] as HTMLElement[];
@@ -61,6 +78,8 @@ export const Drawer = ({
   onClose,
   title,
   description,
+  ariaLabel,
+  ariaLabelledBy,
   footer,
   children,
   size = 'md',
@@ -84,6 +103,26 @@ export const Drawer = ({
     () => (description ? `itdo-drawer-desc-${drawerId}` : undefined),
     [description, drawerId]
   );
+  const parsedChildren = useMemo(() => {
+    const items = Children.toArray(children);
+    let customHeader: DrawerHeaderProps['children'] | null = null;
+    let customFooter: DrawerFooterProps['children'] | null = null;
+    const bodyItems: DrawerHeaderProps['children'][] = [];
+
+    items.forEach((child) => {
+      if (isValidElement(child) && child.type === DrawerHeader && customHeader === null) {
+        customHeader = child;
+        return;
+      }
+      if (isValidElement(child) && child.type === DrawerFooter && customFooter === null) {
+        customFooter = child;
+        return;
+      }
+      bodyItems.push(child);
+    });
+
+    return { customHeader, customFooter, bodyItems };
+  }, [children]);
 
   useEffect(() => {
     if (!open) {
@@ -101,8 +140,7 @@ export const Drawer = ({
       panel?.focus();
     }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isTopmostDrawer(drawerId)) {
@@ -111,6 +149,7 @@ export const Drawer = ({
 
       if (event.key === 'Escape' && closeOnEsc) {
         event.preventDefault();
+        event.stopPropagation();
         onClose();
         return;
       }
@@ -125,10 +164,21 @@ export const Drawer = ({
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
         const current = document.activeElement as HTMLElement | null;
+        const currentIndex = current ? focusables.indexOf(current) : -1;
 
         if (!current || !panel?.contains(current)) {
           event.preventDefault();
           first.focus();
+          return;
+        }
+
+        if (currentIndex === -1) {
+          event.preventDefault();
+          if (event.shiftKey) {
+            last.focus();
+          } else {
+            first.focus();
+          }
           return;
         }
 
@@ -147,7 +197,7 @@ export const Drawer = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       unregisterDrawer(drawerId);
-      document.body.style.overflow = previousOverflow;
+      unlockBodyScroll();
       if (previousActive && document.contains(previousActive)) {
         try {
           previousActive.focus();
@@ -181,11 +231,12 @@ export const Drawer = ({
         )}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={titleId}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabel ? undefined : (ariaLabelledBy ?? titleId)}
         aria-describedby={descriptionId}
         tabIndex={-1}
       >
-        {(title || description || showCloseButton) && (
+        {parsedChildren.customHeader ?? ((title || description || showCloseButton) && (
           <header className="itdo-drawer__header">
             <div className="itdo-drawer__heading">
               {title && (
@@ -210,10 +261,12 @@ export const Drawer = ({
               </button>
             )}
           </header>
-        )}
+        ))}
 
-        <div className="itdo-drawer__body">{children}</div>
-        {footer && <DrawerFooter>{footer}</DrawerFooter>}
+        <div className="itdo-drawer__body">{parsedChildren.bodyItems}</div>
+        {footer
+          ? (isValidElement(footer) && footer.type === DrawerFooter ? footer : <DrawerFooter>{footer}</DrawerFooter>)
+          : parsedChildren.customFooter}
       </aside>
     </div>
   );

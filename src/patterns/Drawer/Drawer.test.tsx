@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { Drawer } from './Drawer';
+import { Drawer, DrawerFooter, DrawerHeader } from './Drawer';
 
 const DrawerHarness = () => {
   const [open, setOpen] = useState(false);
@@ -90,5 +90,63 @@ describe('Drawer', () => {
 
     fireEvent.keyDown(document, { key: 'Tab' });
     expect(close).toHaveFocus();
+  });
+
+  it('keeps focus trapped when panel is focused but not in focusable list', () => {
+    render(
+      <Drawer open onClose={jest.fn()} title="Focus trap" portal={false}>
+        <button type="button">First</button>
+        <button type="button">Last</button>
+      </Drawer>
+    );
+
+    const dialog = screen.getByRole('dialog', { name: 'Focus trap' });
+    const first = screen.getByRole('button', { name: 'Close drawer' });
+    const last = screen.getByRole('button', { name: 'Last' });
+
+    dialog.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(first).toHaveFocus();
+
+    dialog.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(last).toHaveFocus();
+  });
+
+  it('renders slotted header and footer outside body container', () => {
+    const { container } = render(
+      <Drawer open onClose={jest.fn()} portal={false} ariaLabel="Custom drawer">
+        <DrawerHeader title="Custom header" />
+        <p>Body content</p>
+        <DrawerFooter>
+          <button type="button">Done</button>
+        </DrawerFooter>
+      </Drawer>
+    );
+
+    const body = container.querySelector('.itdo-drawer__body') as HTMLElement;
+    expect(body).toHaveTextContent('Body content');
+    expect(body).not.toHaveTextContent('Custom header');
+
+    const footer = container.querySelector('.itdo-drawer__footer') as HTMLElement;
+    expect(footer).toHaveTextContent('Done');
+  });
+
+  it('stops escape propagation when closing topmost drawer', () => {
+    const onClose = jest.fn();
+    const keydownListener = jest.fn();
+    window.addEventListener('keydown', keydownListener);
+
+    render(
+      <Drawer open onClose={onClose} title="Drawer title" portal={false}>
+        Body
+      </Drawer>
+    );
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(keydownListener).not.toHaveBeenCalled();
+
+    window.removeEventListener('keydown', keydownListener);
   });
 });

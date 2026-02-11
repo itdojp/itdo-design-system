@@ -8,6 +8,8 @@ export interface DrawerProps {
   onClose: () => void;
   title?: ReactNode;
   description?: ReactNode;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
   footer?: ReactNode;
   children?: ReactNode;
   size?: DrawerSize;

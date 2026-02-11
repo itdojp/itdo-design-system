@@ -70,6 +70,7 @@ export const LeftWithCustomSections: Story = {
         size="lg"
         closeOnOverlay={false}
         showCloseButton={false}
+        ariaLabel="Customer profile"
       >
         <DrawerHeader
           title="Customer profile"
