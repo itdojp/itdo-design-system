@@ -26,8 +26,8 @@ export interface AuditTimelineProps {
 export type DiffViewerFormat = 'text' | 'json';
 
 export interface DiffViewerProps {
-  before: unknown;
-  after: unknown;
+  before?: unknown;
+  after?: unknown;
   format?: DiffViewerFormat;
   compact?: boolean;
   maxVisibleLines?: number;

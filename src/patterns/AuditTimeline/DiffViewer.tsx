@@ -37,68 +37,78 @@ const stringifySource = (value: unknown, format: 'text' | 'json') => {
   return String(value);
 };
 
-const toLines = (value: string) => value.split('\n');
+const normalizeNewlines = (value: string) => value.replace(/\r\n?/g, '\n');
+
+const toLines = (value: string) => normalizeNewlines(value).split('\n');
 
 const createDiff = (beforeLines: string[], afterLines: string[]): DiffLine[] => {
+  const beforeLength = beforeLines.length;
+  const afterLength = afterLines.length;
+
+  const lcs: number[][] = Array.from({ length: beforeLength + 1 }, () =>
+    Array.from({ length: afterLength + 1 }, () => 0)
+  );
+
+  for (let beforeIndex = beforeLength - 1; beforeIndex >= 0; beforeIndex -= 1) {
+    for (let afterIndex = afterLength - 1; afterIndex >= 0; afterIndex -= 1) {
+      if (beforeLines[beforeIndex] === afterLines[afterIndex]) {
+        lcs[beforeIndex][afterIndex] = lcs[beforeIndex + 1][afterIndex + 1] + 1;
+      } else {
+        lcs[beforeIndex][afterIndex] = Math.max(
+          lcs[beforeIndex + 1][afterIndex],
+          lcs[beforeIndex][afterIndex + 1]
+        );
+      }
+    }
+  }
+
   const diff: DiffLine[] = [];
   let beforeIndex = 0;
   let afterIndex = 0;
+  let beforeLineNumber = 1;
+  let afterLineNumber = 1;
 
-  while (beforeIndex < beforeLines.length || afterIndex < afterLines.length) {
-    const beforeLine = beforeLines[beforeIndex];
-    const afterLine = afterLines[afterIndex];
-
-    if (beforeLine === afterLine) {
+  while (beforeIndex < beforeLength || afterIndex < afterLength) {
+    if (
+      beforeIndex < beforeLength &&
+      afterIndex < afterLength &&
+      beforeLines[beforeIndex] === afterLines[afterIndex]
+    ) {
       diff.push({
         type: 'context',
-        beforeLine: beforeIndex + 1,
-        afterLine: afterIndex + 1,
-        text: beforeLine ?? '',
+        beforeLine: beforeLineNumber,
+        afterLine: afterLineNumber,
+        text: beforeLines[beforeIndex] ?? '',
       });
       beforeIndex += 1;
       afterIndex += 1;
+      beforeLineNumber += 1;
+      afterLineNumber += 1;
       continue;
     }
 
-    const nextAfter = afterLines[afterIndex + 1];
-    const nextBefore = beforeLines[beforeIndex + 1];
-
-    if (beforeLine === nextAfter) {
+    if (
+      afterIndex < afterLength &&
+      (beforeIndex === beforeLength || lcs[beforeIndex][afterIndex + 1] >= lcs[beforeIndex + 1][afterIndex])
+    ) {
       diff.push({
         type: 'add',
-        afterLine: afterIndex + 1,
-        text: afterLine ?? '',
+        afterLine: afterLineNumber,
+        text: afterLines[afterIndex] ?? '',
       });
       afterIndex += 1;
+      afterLineNumber += 1;
       continue;
     }
 
-    if (afterLine === nextBefore) {
+    if (beforeIndex < beforeLength) {
       diff.push({
         type: 'remove',
-        beforeLine: beforeIndex + 1,
-        text: beforeLine ?? '',
+        beforeLine: beforeLineNumber,
+        text: beforeLines[beforeIndex] ?? '',
       });
       beforeIndex += 1;
-      continue;
-    }
-
-    if (beforeLine !== undefined) {
-      diff.push({
-        type: 'remove',
-        beforeLine: beforeIndex + 1,
-        text: beforeLine,
-      });
-      beforeIndex += 1;
-    }
-
-    if (afterLine !== undefined) {
-      diff.push({
-        type: 'add',
-        afterLine: afterIndex + 1,
-        text: afterLine,
-      });
-      afterIndex += 1;
+      beforeLineNumber += 1;
     }
   }
 
@@ -121,7 +131,11 @@ export const DiffViewer = ({
     return createDiff(toLines(beforeText), toLines(afterText));
   }, [after, before, format]);
 
-  const threshold = compact ? Math.min(maxVisibleLines, 80) : maxVisibleLines;
+  const normalizedMaxVisibleLines = Number.isFinite(maxVisibleLines)
+    ? Math.floor(maxVisibleLines)
+    : 0;
+  const rawThreshold = compact ? Math.min(normalizedMaxVisibleLines, 80) : normalizedMaxVisibleLines;
+  const threshold = rawThreshold > 0 ? rawThreshold : lines.length;
   const canCollapse = lines.length > threshold;
   const visibleLines = !canCollapse || expanded ? lines : lines.slice(0, threshold);
   const hiddenCount = canCollapse ? lines.length - threshold : 0;
@@ -133,7 +147,7 @@ export const DiffViewer = ({
         <p>{lines.length} lines</p>
       </header>
       <div className="itdo-diff-viewer__surface" role="region" aria-label="Diff output">
-        <pre className="itdo-diff-viewer__pre">
+        <div className="itdo-diff-viewer__rows">
           {visibleLines.map((line, index) => (
             <div
               key={`${index}-${line.beforeLine ?? 0}-${line.afterLine ?? 0}`}
@@ -151,7 +165,7 @@ export const DiffViewer = ({
               <code className="itdo-diff-viewer__code">{line.text || ' '}</code>
             </div>
           ))}
-        </pre>
+        </div>
       </div>
       {canCollapse && (
         <div className="itdo-diff-viewer__collapse">

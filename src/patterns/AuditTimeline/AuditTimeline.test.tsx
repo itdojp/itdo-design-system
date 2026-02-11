@@ -91,4 +91,27 @@ describe('DiffViewer', () => {
     expect(screen.getByText('"threshold": 10,')).toBeInTheDocument();
     expect(screen.getByText('"threshold": 20,')).toBeInTheDocument();
   });
+
+  it('does not collapse when maxVisibleLines is non-positive', () => {
+    const before = Array.from({ length: 5 }, (_, index) => `before-${index}`).join('\n');
+    const after = Array.from({ length: 5 }, (_, index) => `after-${index}`).join('\n');
+
+    render(<DiffViewer before={before} after={after} maxVisibleLines={0} />);
+
+    expect(screen.queryByRole('button', { name: /Show .* more lines/i })).not.toBeInTheDocument();
+    expect(screen.getByText('before-4')).toBeInTheDocument();
+    expect(screen.getByText('after-4')).toBeInTheDocument();
+  });
+
+  it('normalizes CRLF newlines before diffing', () => {
+    const { container } = render(<DiffViewer before={'a\r\nb'} after={'a\nb'} />);
+
+    expect(container.querySelectorAll('.itdo-diff-viewer__line--add')).toHaveLength(0);
+    expect(container.querySelectorAll('.itdo-diff-viewer__line--remove')).toHaveLength(0);
+  });
+
+  it('accepts undefined before/after values', () => {
+    render(<DiffViewer />);
+    expect(screen.getByText('Diff (TEXT)')).toBeInTheDocument();
+  });
 });
