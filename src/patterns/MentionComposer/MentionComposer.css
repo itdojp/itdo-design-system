@@ -1,0 +1,207 @@
+.itdo-mention-composer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.itdo-mention-composer__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.itdo-mention-composer__field > label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-neutral-900, #111827);
+}
+
+.itdo-mention-composer__field > textarea,
+.itdo-mention-composer__field > input {
+  width: 100%;
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  border-radius: var(--radius-sm, 0.375rem);
+  padding: 0.5rem 0.625rem;
+  font-size: 0.875rem;
+  color: var(--color-neutral-900, #111827);
+  background: var(--color-neutral-0, #ffffff);
+}
+
+.itdo-mention-composer__field > textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.itdo-mention-composer__field > textarea:focus-visible,
+.itdo-mention-composer__field > input:focus-visible {
+  outline: 2px solid var(--color-primary-500, #f97316);
+  outline-offset: 1px;
+  border-color: var(--color-primary-500, #f97316);
+}
+
+.itdo-mention-composer__limit {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-neutral-600, #4b5563);
+  text-align: right;
+}
+
+.itdo-mention-composer__picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.itdo-mention-composer__listbox {
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  border-radius: var(--radius-sm, 0.375rem);
+  background: var(--color-neutral-0, #ffffff);
+  max-height: 12rem;
+  overflow: auto;
+}
+
+.itdo-mention-composer__status {
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-neutral-600, #4b5563);
+}
+
+.itdo-mention-composer__option {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0.25rem;
+  padding: 0.4375rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.itdo-mention-composer__option:hover:not(:disabled),
+.itdo-mention-composer__option.is-active:not(:disabled) {
+  background: var(--color-neutral-100, #f3f4f6);
+}
+
+.itdo-mention-composer__option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itdo-mention-composer__tokens {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.itdo-mention-composer__token {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  border-radius: 999px;
+  padding: 0.25rem 0.5rem;
+  background: var(--color-neutral-0, #ffffff);
+}
+
+.itdo-mention-composer__kind {
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  border-radius: 999px;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.6875rem;
+  color: var(--color-neutral-700, #374151);
+  background: var(--color-neutral-50, #f9fafb);
+}
+
+.itdo-mention-composer__token > button {
+  border: 0;
+  background: transparent;
+  color: var(--color-neutral-500, #6b7280);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.itdo-mention-composer__token > button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itdo-mention-composer__required {
+  border: 1px solid var(--color-neutral-200, #e5e7eb);
+  border-radius: var(--radius-sm, 0.375rem);
+  background: var(--color-neutral-50, #f9fafb);
+  padding: 0.625rem;
+}
+
+.itdo-mention-composer__required > h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.itdo-mention-composer__required > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.375rem;
+}
+
+.itdo-mention-composer__required li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.itdo-mention-composer__message {
+  margin: 0;
+  color: var(--color-status-error-fg, #b91c1c);
+  font-size: 0.8125rem;
+}
+
+.itdo-mention-composer__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.itdo-mention-composer__cancel,
+.itdo-mention-composer__submit {
+  border-radius: var(--radius-sm, 0.375rem);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid var(--color-neutral-300, #d1d5db);
+  cursor: pointer;
+}
+
+.itdo-mention-composer__cancel {
+  background: var(--color-neutral-0, #ffffff);
+  color: var(--color-neutral-700, #374151);
+}
+
+.itdo-mention-composer__submit {
+  background: var(--color-primary-500, #f97316);
+  border-color: var(--color-primary-500, #f97316);
+  color: #ffffff;
+}
+
+.itdo-mention-composer__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.itdo-mention-composer--disabled .itdo-mention-composer__field > textarea,
+.itdo-mention-composer--disabled .itdo-mention-composer__field > input {
+  background: var(--color-neutral-100, #f3f4f6);
+}
